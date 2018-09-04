@@ -1,0 +1,223 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Examples &#8212; FileTransfer 0.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="License" href="license.html" />
+    <link rel="prev" title="API" href="api.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using filetransfer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure-and-run">configure() and run()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#transfer">transfer()</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="api.html" title="previous chapter">API</a></li>
+      <li>Next: <a href="license.html" title="next chapter">License</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-files">
+<span id="ref-configuration-files"></span><h2>Configuration files<a class="headerlink" href="#configuration-files" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">; application configuration: example/configs/filetransfer.cfg</span>
+
+<span class="k">[global]</span>
+<span class="na">jobs_dir</span> <span class="o">=</span> <span class="s">example/configs/jobs</span>
+<span class="na">hosts_cfg</span> <span class="o">=</span> <span class="s">example/configs/hosts.cfg</span>
+
+<span class="k">[logging]</span>
+<span class="na">log_dir</span> <span class="o">=</span> <span class="s">example/logs</span>
+
+<span class="k">[sftp]</span>
+<span class="na">known_hosts</span> <span class="o">=</span> <span class="s">example/ssh/known_hosts</span>
+<span class="na">key_rsa_file</span> <span class="o">=</span> <span class="s">example/ssh/rsa_key</span>
+
+<span class="k">[mail]</span>
+<span class="na">host</span> <span class="o">=</span> <span class="s">smtp.example.com:587</span>
+<span class="na">security</span> <span class="o">=</span> <span class="s">STARTTLS</span>
+<span class="na">user</span> <span class="o">=</span> <span class="s">transferuser</span>
+<span class="na">password</span> <span class="o">=</span> <span class="s">topsecret</span>
+<span class="na">from</span> <span class="o">=</span> <span class="s">transferuser@example.com</span>
+
+<span class="k">[notify]</span>
+<span class="na">error</span> <span class="o">=</span> <span class="s">admin@example.com</span>
+</pre></div>
+</div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">; job configuration: example/configs/jobs/job001.cfg</span>
+
+<span class="k">[source]</span>
+<span class="na">type</span> <span class="o">=</span> <span class="s">local</span>
+<span class="na">path</span> <span class="o">=</span> <span class="s">example/data</span>
+<span class="na">files</span> <span class="o">=</span> <span class="s">*.txt, *.csv</span>
+<span class="na">recursive</span> <span class="o">=</span> <span class="s">yes</span>
+
+<span class="k">[target]</span>
+<span class="na">host_id</span> <span class="o">=</span> <span class="s">other-company-sftp</span>
+<span class="na">path</span> <span class="o">=</span> <span class="s">path/on/server</span>
+<span class="na">temp</span> <span class="o">=</span> <span class="s">ext:.tmp</span>
+
+<span class="k">[notify]</span>
+<span class="na">name</span> <span class="o">=</span> <span class="s">Example file transfer</span>
+<span class="na">done</span> <span class="o">=</span> <span class="s">user@example.com</span>
+</pre></div>
+</div>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">; hosts configuration: example/configs/hosts.cfg</span>
+
+<span class="k">[other-company-sftp]</span>
+<span class="na">type</span> <span class="o">=</span> <span class="s">SFTP</span>
+<span class="na">host</span> <span class="o">=</span> <span class="s">other-company.com</span>
+<span class="na">user</span> <span class="o">=</span> <span class="s">user_xyz</span>
+<span class="na">key_file</span> <span class="o">=</span> <span class="s">RSA</span>
+
+<span class="k">[example-ftps]</span>
+<span class="na">type</span> <span class="o">=</span> <span class="s">FTPS</span>
+<span class="na">host</span> <span class="o">=</span> <span class="s">ftp.example.com</span>
+<span class="na">user</span> <span class="o">=</span> <span class="s">ftpuser</span>
+<span class="na">password</span> <span class="o">=</span> <span class="s">secret</span>
+<span class="na">encrypt_data</span> <span class="o">=</span> <span class="s">no</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>filetransfer --config example/configs/filetransfer.cfg job001
+</pre></div>
+</div>
+</div>
+<div class="section" id="configure-and-run">
+<span id="ref-configure-and-run"></span><h2>configure() and run()<a class="headerlink" href="#configure-and-run" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span><span class="p">,</span> <span class="n">run</span>
+
+<span class="o">...</span>
+
+<span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
+<span class="c1"># after configure() log messages will use the</span>
+<span class="c1"># logging configuration from filetransfer.cfg</span>
+<span class="c1"># only if is was not configured before</span>
+
+<span class="o">...</span>
+
+<span class="n">run</span><span class="p">()</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="transfer">
+<span id="ref-transfer"></span><h2>transfer()<a class="headerlink" href="#transfer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">transfer</span>
+
+<span class="o">...</span>
+
+<span class="n">src_cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;local&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;example/data&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="s1">&#39;*.txt, *.csv&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;recursive&#39;</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">}</span>
+<span class="n">tgt_cfg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;sftp&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;other-company.com&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;user_xyz&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;known_hosts&#39;</span><span class="p">:</span> <span class="s1">&#39;example/ssh/known_hosts&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;key_file&#39;</span><span class="p">:</span> <span class="s1">&#39;example/ssh/rsa_key&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;path/on/server&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;temp&#39;</span><span class="p">:</span> <span class="s1">&#39;ext:.tmp&#39;</span><span class="p">}</span>
+<span class="n">file_cnt</span><span class="p">,</span> <span class="n">src_err</span><span class="p">,</span> <span class="n">tgt_err</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="n">src_cfg</span><span class="p">,</span> <span class="n">tgt_cfg</span><span class="p">)</span>
+
+<span class="o">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Andreas19.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

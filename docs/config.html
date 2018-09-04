@@ -1,0 +1,472 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Configuration &#8212; FileTransfer 0.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using filetransfer" href="usage.html" />
+    <link rel="prev" title="Overview" href="overview.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#application-configuration">Application Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#job-configuration">Job Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using filetransfer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="overview.html" title="previous chapter">Overview</a></li>
+      <li>Next: <a href="usage.html" title="next chapter">Using filetransfer</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>To run a filetransfer two configurations (application and job) are
+needed. Both are INI-style files.</p>
+<p>In the tables below strings in single quotes must be given literally
+(case insensitive) and without the quotes.</p>
+<p>See: example <a class="reference internal" href="examples.html#ref-configuration-files"><span class="std std-ref">Configuration files</span></a></p>
+<div class="section" id="application-configuration">
+<h2>Application Configuration<a class="headerlink" href="#application-configuration" title="Permalink to this headline">¶</a></h2>
+<p>This configuration contains some global properties. It is the file
+that is set with the <code class="docutils literal notranslate"><span class="pre">--config</span></code> option or the <code class="docutils literal notranslate"><span class="pre">FILETRANSFER_CFG</span></code>
+environment variable (see: <a class="reference internal" href="usage.html"><span class="doc">Using filetransfer</span></a>).</p>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[global]</strong></td>
+<td colspan="2">directory for job configurations and hosts config</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code></td>
+<td>path to directory with job configs</td>
+<td>required</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code></td>
+<td>path to hosts configuration file</td>
+<td>see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[logging]</strong></td>
+<td colspan="2">logging configuration (optional)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">log_dir</span></code></td>
+<td>path to base directory for log files</td>
+<td>if not set the logging messages will go to STDERR</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">use_subdirs</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td><div class="first last line-block">
+<div class="line">yes (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></div>
+<div class="line">no: the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em><span class="pre">_</span><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed directly in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> directory</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">msg_format</span></code></td>
+<td>format string</td>
+<td><div class="first last line-block">
+<div class="line">default: <code class="docutils literal notranslate"><span class="pre">%(asctime)s</span> <span class="pre">%(levelname)-8s</span> <span class="pre">%(message)s</span></code></div>
+<div class="line">see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logrecord-attributes">LogRecord attributes</a></div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">log_level</span></code></td>
+<td>log level (string or number)</td>
+<td><div class="first last line-block">
+<div class="line">default: <code class="docutils literal notranslate"><span class="pre">INFO</span></code></div>
+<div class="line">see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[sftp]</strong></td>
+<td colspan="2">known_hosts file and private key files for SFTP (optional)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></td>
+<td>path to RSA private key file</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is set to ‘RSA’ in a job configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_rsa_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></td>
+<td>required if <code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code> is password protected</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></td>
+<td>path to DSA private key file</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is set to ‘DSA’ in a job configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_dsa_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></td>
+<td>required if <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code> is password protected</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
+<td>path to known_hosts file</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">known_hosts</span></code> is not set in a job configuration</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[mail]</strong></td>
+<td colspan="2">SMTP server for sending notifications (optional)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
+<td><span class="raw-html"><span class="nobr">(dns-name | ip)[:port]</span></span></td>
+<td>required</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">security</span></code></td>
+<td><span class="raw-html"><span class="nobr">'starttls' | 'tls' </span></span></td>
+<td>default: insecure connection</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
+<td>username</td>
+<td>required</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
+<td>password</td>
+<td>required</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">from</span></code></td>
+<td>from email address</td>
+<td>required</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[notify]</strong></td>
+<td colspan="2">email addresses of receipients who should be notified about all jobs (optional)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify if the job succeeded</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify if there was an error</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify in both cases</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="job-configuration">
+<span id="ref-job-configuration"></span><h2>Job Configuration<a class="headerlink" href="#job-configuration" title="Permalink to this headline">¶</a></h2>
+<p>A job configuration file must have a name of the form <code class="file docutils literal notranslate"><em><span class="pre">JOB_ID</span></em><span class="pre">.cfg</span></code>
+(e.g. <code class="docutils literal notranslate"><span class="pre">job001.cfg</span></code> where <code class="docutils literal notranslate"><span class="pre">job001</span></code> is the job id) and it must be
+saved in the <code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code> directory as defined in the application configuration.</p>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[source]</strong></td>
+<td colspan="2">definition of the source</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
+<td>host id</td>
+<td><div class="first last line-block">
+<div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
+<div class="line">It is an error if any possible host configuration setting is set in this section when <code class="docutils literal notranslate"><span class="pre">host_id</span></code> is used.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
+<td><span class="raw-html"><span class="nobr">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>required</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
+<td><span class="raw-html"><span class="nobr">(dns-name | ip)[:port]</span></span></td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
+<td>username</td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
+<td>password</td>
+<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
+<td>timeout in seconds</td>
+<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTP, FTPS; default: yes</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTPS; default: yes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>path to private key file | ‘RSA’ | ‘DSA’</td>
+<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
+<td>path to known_hosts file</td>
+<td>required for SFTP if not set in the application configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">path</span></code></td>
+<td>path to source directory</td>
+<td>required</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">files</span></code></td>
+<td>one or more filepatterns</td>
+<td>required (UNIX shell-style wildcards pattern)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ignore</span></code></td>
+<td>one or more filepatterns</td>
+<td>default: .* (UNIX shell-style wildcards pattern)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">recursive</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>default: no</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">delete</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>default: no</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[target]</strong></td>
+<td colspan="2">definition of the target</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
+<td>host id</td>
+<td><div class="first last line-block">
+<div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
+<div class="line">It is an error if any possible host configuration setting is set in this section when <code class="docutils literal notranslate"><span class="pre">host_id</span></code> is used.</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
+<td><span class="raw-html"><span class="nobr">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>required</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
+<td><span class="raw-html"><span class="nobr">(dns-name | ip)[:port]</span></span></td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
+<td>username</td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
+<td>password</td>
+<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
+<td>timeout in seconds</td>
+<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTP, FTPS; default: yes</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTPS; default: yes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>path to private key file | ‘RSA’ | ‘DSA’</td>
+<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
+<td>path to known_hosts file</td>
+<td>required for SFTP if not set in the application configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">path</span></code></td>
+<td>path to target directory</td>
+<td>required</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">temp</span></code></td>
+<td><span class="raw-html"><span class="nobr">'dot' | 'ext:'.ext | 'dir:'subdir</span></span></td>
+<td>default: no temporary files are used</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[notify]</strong></td>
+<td colspan="2">email addresses of receipients who should be notified about this job (optional)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">name</span></code></td>
+<td>job name to show in the email</td>
+<td>default: job id</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify if the job succeeded</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify if there was an error</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
+<td>comma separated list of email addresses</td>
+<td>receipients to notify in both cases</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="hosts-configuration">
+<h2>Hosts Configuration<a class="headerlink" href="#hosts-configuration" title="Permalink to this headline">¶</a></h2>
+<p>A hosts configuration contains sections which each define a configuration of
+a host like in the <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a job
+configuration. Such a host configuration can be referenced by setting the
+<code class="docutils literal notranslate"><span class="pre">host_id</span></code> in those sections to the section name of a host configuration.</p>
+<table border="1" class="cfgtable colwidths-auto docutils">
+<tbody valign="top">
+<tr class="row-odd"><td><strong>[{host_id}]</strong></td>
+<td colspan="2">host configuration</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
+<td><span class="raw-html"><span class="nobr">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>required</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
+<td><span class="raw-html"><span class="nobr">(dns-name | ip)[:port]</span></span></td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
+<td>username</td>
+<td>required for FTP, FTPS, SFTP</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
+<td>password</td>
+<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
+<td>timeout in seconds</td>
+<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTP, FTPS; default: yes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
+<td><span class="raw-html"><span class="nobr">'yes' | 'no'</span></span></td>
+<td>optional for FTPS; default: yes</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>path to private key file | ‘RSA’ | ‘DSA’</td>
+<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
+<td>path to known_hosts file</td>
+<td>required for SFTP if not set in the application configuration</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Andreas19.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/config.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

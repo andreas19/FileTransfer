@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>API &#8212; FileTransfer 0.5.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Using filetransfer" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using filetransfer</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Using filetransfer</a></li>
+      <li>Next: <a href="examples.html" title="next chapter">Examples</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-filetransfer">
+<span id="api"></span><h1>API<a class="headerlink" href="#module-filetransfer" title="Permalink to this headline">¶</a></h1>
+<p>Simple API to include <code class="docutils literal notranslate"><span class="pre">filetransfer</span></code> in a Python script.</p>
+<p>Either the functions <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a> and <a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> must be
+used together or only the function <a class="reference internal" href="#filetransfer.transfer" title="filetransfer.transfer"><code class="xref py py-func docutils literal notranslate"><span class="pre">transfer()</span></code></a>.</p>
+<p>See: <a class="reference internal" href="config.html"><span class="doc">Configuration</span></a>,
+examples <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">configure() and run()</span></a> and <a class="reference internal" href="examples.html#ref-transfer"><span class="std std-ref">transfer()</span></a></p>
+<dl class="exception">
+<dt id="filetransfer.ConfigError">
+<em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">ConfigError</code><a class="headerlink" href="#filetransfer.ConfigError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when there is a problem with the configuration.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="filetransfer.ConnectError">
+<em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">ConnectError</code><a class="headerlink" href="#filetransfer.ConnectError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when there is a problem connecting to a server.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="filetransfer.configure">
+<code class="descclassname">filetransfer.</code><code class="descname">configure</code><span class="sig-paren">(</span><em>cfg_file</em>, <em>job_id</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.configure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Configure the application.</p>
+<p>You can put your own configuration sections in the application
+and job configuration files. The names of theses sections must
+start with <code class="docutils literal notranslate"><span class="pre">x:</span></code>. If you define the same name in both configuration
+files the sections will be merged with the keys in the job
+configuration file taking precedence. The prefix <code class="docutils literal notranslate"><span class="pre">x:</span></code> will
+be stripped from the section names before putting them in a newly
+created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">configparser.ConfigParser</span></code></a> object that will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cfg_file</strong> (<a class="reference external" href="https://docs.python.org/3/glossary.html#term-path-like-object" title="(in Python v3.7)"><span class="xref std std-term">path-like object</span></a>) – the application configuration file</li>
+<li><strong>job_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – the Job-ID</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">extra configuration</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)">configparser.ConfigParser</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
+the configuration</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.Error" title="(in Python v3.7)"><strong>configparser.Error</strong></a> – if there is a problem while parsing
+one of the configuration files</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.7)"><strong>OSError</strong></a> – if there is a problem while reading one of the
+configuration files</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filetransfer.run">
+<code class="descclassname">filetransfer.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a file transfer.</p>
+<p>The function <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a> must be called before this function
+can be used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
+the configuration</li>
+<li><a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><strong>filetransfer.ConnectError</strong></a> – if there is a connection problem</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><strong>Exception</strong></a> – if another error occurs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="filetransfer.transfer">
+<code class="descclassname">filetransfer.</code><code class="descname">transfer</code><span class="sig-paren">(</span><em>src_cfg</em>, <em>tgt_cfg</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfer files.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">src_cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> dicts must represent valid
+<code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>.
+The values must all be strings even if they are boolean or numerical.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the source configuration</li>
+<li><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the target configuration</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">files count, source error count, target error count</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">(<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)">int</a>)</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
+the configuration</li>
+<li><a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><strong>filetransfer.ConnectError</strong></a> – if there is a connection problem</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><strong>Exception</strong></a> – if another error occurs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018, Andreas19.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
