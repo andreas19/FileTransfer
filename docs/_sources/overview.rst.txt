@@ -1,0 +1,41 @@
+Overview
+========
+
+Application and library for file transfer. Supported are local
+filesystem, FTP, FTPS and SFTP. After a job is done a notification
+email can be send. Its intended use is running the jobs by a
+scheduler (e.g. ``cron``).
+
+
+Installation
+------------
+
+.. highlight:: none
+
+System-wide::
+
+# pip install FileTransfer
+
+User::
+
+$ pip install --user FileTransfer
+
+.. tip::
+
+   Use a dedicated user and schedule the jobs in that user's ``crontab``.
+
+
+Links
+-----
+
+- PyPI: https://pypi.org/FileTransfer/
+- GitHub: https://github.com/andreas19/FileTransfer/
+
+
+History
+-------
+
+**2018-09-04 (0.5.0)**
+
+- First public release.
+

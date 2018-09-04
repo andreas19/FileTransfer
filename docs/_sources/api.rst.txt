@@ -1,0 +1,23 @@
+API
+===
+
+.. automodule:: filetransfer
+
+
+See: :doc:`Configuration <config>`,
+examples :ref:`ref-configure-and-run` and :ref:`ref-transfer`
+
+
+.. autoexception:: filetransfer.ConfigError
+
+
+.. autoexception:: filetransfer.ConnectError
+
+
+.. autofunction:: filetransfer.configure
+
+
+.. autofunction:: filetransfer.run
+
+
+.. autofunction:: filetransfer.transfer

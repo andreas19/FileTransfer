@@ -1,0 +1,122 @@
+Examples
+========
+
+.. _ref-configuration-files:
+
+Configuration files
+-------------------
+
+.. code-block:: ini
+
+   ; application configuration: example/configs/filetransfer.cfg
+
+   [global]
+   jobs_dir = example/configs/jobs
+   hosts_cfg = example/configs/hosts.cfg
+
+   [logging]
+   log_dir = example/logs
+
+   [sftp]
+   known_hosts = example/ssh/known_hosts
+   key_rsa_file = example/ssh/rsa_key
+
+   [mail]
+   host = smtp.example.com:587
+   security = STARTTLS
+   user = transferuser
+   password = topsecret
+   from = transferuser@example.com
+
+   [notify]
+   error = admin@example.com
+
+.. code-block:: ini
+
+   ; job configuration: example/configs/jobs/job001.cfg
+
+   [source]
+   type = local
+   path = example/data
+   files = *.txt, *.csv
+   recursive = yes
+
+   [target]
+   host_id = other-company-sftp
+   path = path/on/server
+   temp = ext:.tmp
+
+   [notify]
+   name = Example file transfer
+   done = user@example.com
+
+.. code-block:: ini
+
+   ; hosts configuration: example/configs/hosts.cfg
+
+   [other-company-sftp]
+   type = SFTP
+   host = other-company.com
+   user = user_xyz
+   key_file = RSA
+
+   [example-ftps]
+   type = FTPS
+   host = ftp.example.com
+   user = ftpuser
+   password = secret
+   encrypt_data = no
+
+.. code-block:: none
+
+   filetransfer --config example/configs/filetransfer.cfg job001
+
+
+.. _ref-configure-and-run:
+
+configure() and run()
+---------------------
+
+.. code-block:: python
+
+   from filetransfer import configure, run
+
+   ...
+
+   configure('example/configs/filetransfer.cfg', 'job001')
+   # after configure() log messages will use the
+   # logging configuration from filetransfer.cfg
+   # only if is was not configured before
+
+   ...
+
+   run()
+
+   ...
+
+
+.. _ref-transfer:
+
+transfer()
+----------
+
+.. code-block:: python
+
+   from filetransfer import transfer
+
+   ...
+
+   src_cfg = {'type': 'local',
+              'path': 'example/data',
+              'files': '*.txt, *.csv',
+              'recursive': 'yes'}
+   tgt_cfg = {'type': 'sftp',
+              'host': 'other-company.com',
+              'user': 'user_xyz',
+              'known_hosts': 'example/ssh/known_hosts',
+              'key_file': 'example/ssh/rsa_key',
+              'path': 'path/on/server',
+              'temp': 'ext:.tmp'}
+   file_cnt, src_err, tgt_err = transfer(src_cfg, tgt_cfg)
+
+   ...

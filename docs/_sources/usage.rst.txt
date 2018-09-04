@@ -1,0 +1,32 @@
+Using filetransfer
+==================
+
+.. code-block:: none
+
+   usage:
+    filetransfer [-c CONFIG] JOBID
+    filetransfer -k [-H] [-p PORT] HOST FILE
+    filetransfer -d [-p PORT] HOST FILE
+    filetransfer [-h] [-V]
+
+    JOBID   the job id
+    HOST    server name or IP
+    FILE    file to save the hostkey to
+
+    -c, --config CONFIG  the application configuration file
+                         If not given the value of the environment
+                         variable FILETRANSFER_CFG will be used.
+    -d, --delete         delete server hostkey from file
+    -H, --hash           hash hostnames
+    -k, --hostkey        get hostkey from SFTP server
+    -p, --port PORT      SFTP server port [default: 22]
+
+    -h, --help           show this help
+    -V, --version        show the version
+
+    return codes:
+     0   success
+     1   configuration error
+     2   connect error
+     9   unexpected error
+
