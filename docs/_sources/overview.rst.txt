@@ -28,7 +28,7 @@ $ pip install --user FileTransfer
 Links
 -----
 
-- PyPI: https://pypi.org/FileTransfer/
+- PyPI: https://pypi.org/project/FileTransfer/
 - GitHub: https://github.com/andreas19/FileTransfer/
 
 

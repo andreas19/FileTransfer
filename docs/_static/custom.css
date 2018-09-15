@@ -1,6 +1,3 @@
 img.logo { margin-bottom: 20px; }
 
-span.nobr { white-space: nowrap; }
-
 table.cfgtable { margin-bottom: 50px; }
-table.cfgtable td:nth-child(3) { line-height: 130%; }

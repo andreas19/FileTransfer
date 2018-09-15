@@ -1,6 +1,7 @@
 Examples
 ========
 
+
 .. _ref-configuration-files:
 
 Configuration files
