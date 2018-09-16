@@ -99,10 +99,11 @@ needed. Both are INI-style files.</p>
 <p>This configuration contains some global properties. It is the file
 that is set with the <code class="docutils literal notranslate"><span class="pre">--config</span></code> option or the <code class="docutils literal notranslate"><span class="pre">FILETRANSFER_CFG</span></code>
 environment variable (see: <a class="reference internal" href="usage.html"><span class="doc">Using filetransfer</span></a>).</p>
-<table border="1" class="cfgtable colwidths-auto docutils">
+<table border="1" class="colwidths-auto cfgtable docutils">
 <tbody valign="top">
 <tr class="row-odd"><td><strong>[global]</strong></td>
-<td colspan="2">directory for job configurations and hosts config</td>
+<td>&#160;</td>
+<td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code></td>
 <td>path to directory with job configs</td>
@@ -110,25 +111,30 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code></td>
 <td>path to hosts configuration file</td>
-<td>see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></td>
+<td><div class="first last line-block">
+<div class="line">optional</div>
+<div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
+</div>
+</td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td><strong>[logging]</strong></td>
-<td colspan="2">logging configuration (optional)</td>
+<td>&#160;</td>
+<td>optional</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">log_dir</span></code></td>
 <td>path to base directory for log files</td>
 <td>if not set the logging messages will go to STDERR</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">use_subdirs</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
-<td><div class="first last line-block">
-<div class="line">yes (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></div>
-<div class="line">no: the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em><span class="pre">_</span><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed directly in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> directory</div>
-</div>
+<td>‘yes’ | ‘no’</td>
+<td><ul class="first last simple">
+<li>yes (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></li>
+<li>no: the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em><span class="pre">_</span><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed directly in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> directory</li>
+</ul>
 </td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">msg_format</span></code></td>
@@ -147,12 +153,13 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </div>
 </td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td><strong>[sftp]</strong></td>
-<td colspan="2">known_hosts file and private key files for SFTP (optional)</td>
+<td>&#160;</td>
+<td>optional</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></td>
 <td>path to RSA private key file</td>
@@ -174,39 +181,41 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td>path to known_hosts file</td>
 <td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">known_hosts</span></code> is not set in a job configuration</td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
-<tr class="row-odd"><td><strong>[mail]</strong></td>
-<td colspan="2">SMTP server for sending notifications (optional)</td>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">(dns-name | ip)[:port]</span></span></td>
-<td>required</td>
+<tr class="row-even"><td><strong>[mail]</strong></td>
+<td>SMTP config</td>
+<td>optional</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">security</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'starttls' | 'tls' </span></span></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
+<td>(dns-name | ip)[:port]</td>
+<td>required: SMTP server</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">security</span></code></td>
+<td>‘starttls’ | ‘tls’</td>
 <td>default: insecure connection</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
 <td>username</td>
 <td>required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
 <td>password</td>
 <td>required</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">from</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">from</span></code></td>
 <td>from email address</td>
 <td>required</td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td><strong>[notify]</strong></td>
-<td colspan="2">email addresses of receipients who should be notified about all jobs (optional)</td>
+<td>&#160;</td>
+<td>optional</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
 <td>comma separated list of email addresses</td>
@@ -228,10 +237,11 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <p>A job configuration file must have a name of the form <code class="file docutils literal notranslate"><em><span class="pre">JOB_ID</span></em><span class="pre">.cfg</span></code>
 (e.g. <code class="docutils literal notranslate"><span class="pre">job001.cfg</span></code> where <code class="docutils literal notranslate"><span class="pre">job001</span></code> is the job id) and it must be
 saved in the <code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code> directory as defined in the application configuration.</p>
-<table border="1" class="cfgtable colwidths-auto docutils">
+<table border="1" class="colwidths-auto cfgtable docutils">
 <tbody valign="top">
 <tr class="row-odd"><td><strong>[source]</strong></td>
-<td colspan="2">definition of the source</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
 <td>host id</td>
@@ -242,11 +252,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 </td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
 <td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">(dns-name | ip)[:port]</span></span></td>
+<td>(dns-name | ip)[:port]</td>
 <td>required for FTP, FTPS, SFTP</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
@@ -262,11 +272,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTP, FTPS; default: yes</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTPS; default: yes</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
@@ -294,19 +304,20 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>default: .* (UNIX shell-style wildcards pattern)</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">recursive</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>default: no</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">delete</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>default: no</td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
+<tr class="row-even"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td><strong>[target]</strong></td>
-<td colspan="2">definition of the target</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
 <td>host id</td>
@@ -317,11 +328,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 </td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
 <td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">(dns-name | ip)[:port]</span></span></td>
+<td>(dns-name | ip)[:port]</td>
 <td>required for FTP, FTPS, SFTP</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
@@ -337,11 +348,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTP, FTPS; default: yes</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTPS; default: yes</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
@@ -361,29 +372,30 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">temp</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'dot' | 'ext:'.ext | 'dir:'subdir</span></span></td>
+<td>‘dot’ | ‘ext:’.ext | ‘dir:’subdir</td>
 <td>default: no temporary files are used</td>
 </tr>
-</tbody>
-</table>
-<table border="1" class="cfgtable colwidths-auto docutils">
-<tbody valign="top">
-<tr class="row-odd"><td><strong>[notify]</strong></td>
-<td colspan="2">email addresses of receipients who should be notified about this job (optional)</td>
+<tr class="row-odd"><td>&#160;</td>
+<td>&#160;</td>
+<td>&#160;</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">name</span></code></td>
+<tr class="row-even"><td><strong>[notify]</strong></td>
+<td>&#160;</td>
+<td>optional</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">name</span></code></td>
 <td>job name to show in the email</td>
 <td>default: job id</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
 <td>comma separated list of email addresses</td>
 <td>receipients to notify if the job succeeded</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
 <td>comma separated list of email addresses</td>
 <td>receipients to notify if there was an error</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
 <td>comma separated list of email addresses</td>
 <td>receipients to notify in both cases</td>
 </tr>
@@ -396,17 +408,18 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 a host like in the <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a job
 configuration. Such a host configuration can be referenced by setting the
 <code class="docutils literal notranslate"><span class="pre">host_id</span></code> in those sections to the section name of a host configuration.</p>
-<table border="1" class="cfgtable colwidths-auto docutils">
+<table border="1" class="colwidths-auto cfgtable docutils">
 <tbody valign="top">
 <tr class="row-odd"><td><strong>[{host_id}]</strong></td>
-<td colspan="2">host configuration</td>
+<td>&#160;</td>
+<td><cite>host_id</cite> must be unique</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'local' | 'ftp' | 'ftps' | 'sftp'</span></span></td>
+<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
 <td>required</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">(dns-name | ip)[:port]</span></span></td>
+<td>(dns-name | ip)[:port]</td>
 <td>required for FTP, FTPS, SFTP</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
@@ -422,11 +435,11 @@ configuration. Such a host configuration can be referenced by setting the
 <td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTP, FTPS; default: yes</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
-<td><span class="raw-html"><span style="white-space: nowrap;">'yes' | 'no'</span></span></td>
+<td>‘yes’ | ‘no’</td>
 <td>optional for FTPS; default: yes</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
@@ -460,9 +473,6 @@ configuration. Such a host configuration can be referenced by setting the
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
-      |
-      <a href="_sources/config.rst.txt"
-          rel="nofollow">Page source</a>
     </div>
 
     
