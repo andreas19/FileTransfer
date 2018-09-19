@@ -28,7 +28,7 @@ def configure(cfg, job_id):
     :param cfg: application configuration
     :type cfg: configparser.ConfigParser
     :param str job_id: job ID
-    :raises KeyError: if a required key or section is missing
+    :raises ConfigError: if a required key or section is missing
     """
     global log_file, jobs_dir, sftp_cfg, mail_cfg, _hosts_cfg_file
     try:
