@@ -9,7 +9,7 @@ import configparser
 from . import config, job
 from .exceptions import ConfigError, ConnectError
 
-__version__ = '0.5.0'
+__version__ = '0.5.1'
 __all__ = ['ConfigError', 'ConnectError', 'configure', 'run', 'transfer']
 _job_cfg = None
 _job_id = None
