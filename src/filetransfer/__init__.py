@@ -76,7 +76,6 @@ def transfer(src_cfg, tgt_cfg):
 
     The ``src_cfg`` and ``tgt_cfg`` dicts must represent valid
     ``[source]`` and ``[target]`` sections of a :ref:`ref-job-configuration`.
-    The values must all be strings even if they are boolean or numerical.
 
     :param dict src_cfg: the source configuration
     :param dict tgt_cfg: the target configuration

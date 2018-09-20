@@ -26,6 +26,9 @@ class LocalSource(BaseSource):
         self._isfile = os.path.isfile
         _logger.info('Source - LOCAL: %s', os.path.abspath(self._path))
 
+    def _close(self):
+        pass
+
 
 class LocalTarget(BaseTarget):
     """Target implementation for local filesystem.
@@ -45,3 +48,6 @@ class LocalTarget(BaseTarget):
         self._makedirs = partial(os.makedirs, exist_ok=True)
         self._rename = os.rename
         _logger.info('Target - LOCAL: %s', os.path.abspath(self._path))
+
+    def _close(self):
+        pass

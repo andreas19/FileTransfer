@@ -2,7 +2,6 @@
 
 import fnmatch
 import logging
-from contextlib import suppress
 
 from . import utils
 from .exceptions import ConfigError
@@ -40,8 +39,7 @@ class Endpoint:
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        with suppress(Exception):
-            self._conn.close()
+        self._close()
 
 
 class BaseSource(Endpoint):

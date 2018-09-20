@@ -3,6 +3,7 @@
 import logging
 import posixpath
 import stat
+from contextlib import suppress
 
 from paramiko import HostKeys, SSHException, Transport, RSAKey, DSSKey
 
@@ -43,6 +44,10 @@ class SFTPSource(BaseSource):
         except OSError:
             return False
 
+    def _close(self):
+        with suppress(Exception):
+            self._conn.get_channel().get_transport().close()
+
 
 class SFTPTarget(BaseTarget):
     """Target implementation for SFTP.
@@ -76,6 +81,10 @@ class SFTPTarget(BaseTarget):
             p = posixpath.join(p, x)
             if not self._path_exists(p):
                 self._conn.mkdir(p)
+
+    def _close(self):
+        with suppress(Exception):
+            self._conn.get_channel().get_transport().close()
 
 
 def _connect(obj, cfg):

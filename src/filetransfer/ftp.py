@@ -2,6 +2,7 @@
 
 import ftplib
 import logging
+from contextlib import suppress
 
 import ftputil
 import ftputil.session
@@ -33,6 +34,10 @@ class FTPSource(BaseSource):
         _logger.info('Source - FTP%s: %s:%d | %s', 'S' if tls else '',
                      self._host, self._port, self._path)
 
+    def _close(self):
+        with suppress(Exception):
+            self._conn.close()
+
 
 class FTPTarget(BaseTarget):
     """Target implementation for FTP and FTPS.
@@ -55,6 +60,10 @@ class FTPTarget(BaseTarget):
         self._rename = self._conn.rename
         _logger.info('Target - FTP%s: %s:%d | %s', 'S' if tls else '',
                      self._host, self._port, self._path)
+
+    def _close(self):
+        with suppress(Exception):
+            self._conn.close()
 
 
 def _connect(obj, cfg, tls):
