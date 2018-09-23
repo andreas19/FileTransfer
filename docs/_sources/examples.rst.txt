@@ -87,7 +87,7 @@ configure() and run()
    configure('example/configs/filetransfer.cfg', 'job001')
    # after configure() log messages will use the
    # logging configuration from filetransfer.cfg
-   # only if is was not configured before
+   # only if logging was not configured before
 
    ...
 

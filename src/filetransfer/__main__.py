@@ -4,7 +4,7 @@ usage:
  %(prog)s [-c CONFIG] JOBID
  %(prog)s -k [-H] [-p PORT] HOST FILE
  %(prog)s -d [-p PORT] HOST FILE
- %(prog)s [-h] [-V]
+ %(prog)s -h | -V
 
  JOBID   the job id
  HOST    server name or IP

@@ -1,7 +1,7 @@
 Configuration
 =============
 
-To run a filetransfer two configurations (application and job) are
+To run a file transfer two configurations (application and job) are
 needed. Both are INI-style files.
 
 In the tables below strings in single quotes must be given literally
@@ -42,7 +42,7 @@ Hosts Configuration
 -------------------
 
 A hosts configuration contains sections which each define a configuration of
-a host like in the ``[source]`` and ``[target]`` sections of a job
+a host as in the ``[source]`` and ``[target]`` sections of a job
 configuration. Such a host configuration can be referenced by setting the
 ``host_id`` in those sections to the section name of a host configuration.
 
