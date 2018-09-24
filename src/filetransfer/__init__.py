@@ -27,7 +27,7 @@ def configure(cfg_file, job_id):
     files the sections will be merged with the keys in the job
     configuration file taking precedence. The prefix ``x:`` will
     be stripped from the section names before putting them in a newly
-    created :class:`configparser.ConfigParser` object that will be returned.
+    created :class:`~configparser.ConfigParser` object that will be returned.
 
     :param cfg_file: the application configuration file
     :type cfg_file: :term:`path-like object`
@@ -74,14 +74,20 @@ def run():
     job.run(_job_cfg, _job_id)
 
 
-def transfer(src_cfg, tgt_cfg):
+def transfer(src_cfg, tgt_cfg=None):
     """Transfer files.
 
-    The ``src_cfg`` and ``tgt_cfg`` dicts must represent valid
-    ``[source]`` and ``[target]`` sections of a :ref:`ref-job-configuration`.
+    The first parameter (``src_cfg``) may be a :class:`dict` or a
+    :class:`~configparser.ConfigParser` object. If it is a
+    :class:`dict` the ``src_cfg`` and ``tgt_cfg`` dicts must represent
+    valid ``[source]`` and ``[target]`` sections of a
+    :ref:`ref-job-configuration`. Else it must contain those sections
+    and the second parameter can be omitted because it will be ignored.
 
-    :param dict src_cfg: the source configuration
-    :param dict tgt_cfg: the target configuration
+    :param src_cfg: the source or job configuration
+    :type src_cfg: dict or configparser.ConfigParser
+    :param tgt_cfg: the target configuration
+    :type tgt_cfg: dict or None
     :return: files count, source error count, target error count
     :rtype: (int, int, int)
     :raises filetransfer.ConfigError: if there is a problem with
@@ -89,6 +95,9 @@ def transfer(src_cfg, tgt_cfg):
     :raises filetransfer.ConnectError: if there is a connection problem
     :raises Exception: if another error occurs
     """
-    cfg = configparser.ConfigParser(interpolation=None)
-    cfg.read_dict({'source': src_cfg, 'target': tgt_cfg})
-    return job.transfer(cfg)
+    if isinstance(src_cfg, configparser.ConfigParser):
+        return job.transfer(src_cfg)
+    else:
+        cfg = configparser.ConfigParser(interpolation=None)
+        cfg.read_dict({'source': src_cfg, 'target': tgt_cfg})
+        return job.transfer(cfg)

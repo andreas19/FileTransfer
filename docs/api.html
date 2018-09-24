@@ -113,7 +113,7 @@ start with <code class="docutils literal notranslate"><span class="pre">x:</span
 files the sections will be merged with the keys in the job
 configuration file taking precedence. The prefix <code class="docutils literal notranslate"><span class="pre">x:</span></code> will
 be stripped from the section names before putting them in a newly
-created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">configparser.ConfigParser</span></code></a> object that will be returned.</p>
+created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object that will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -168,17 +168,21 @@ the configuration</li>
 
 <dl class="function">
 <dt id="filetransfer.transfer">
-<code class="descclassname">filetransfer.</code><code class="descname">transfer</code><span class="sig-paren">(</span><em>src_cfg</em>, <em>tgt_cfg</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">filetransfer.</code><code class="descname">transfer</code><span class="sig-paren">(</span><em>src_cfg</em>, <em>tgt_cfg=None</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transfer files.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">src_cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> dicts must represent valid
-<code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>.</p>
+<p>The first parameter (<code class="docutils literal notranslate"><span class="pre">src_cfg</span></code>) may be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or a
+<a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object. If it is a
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> the <code class="docutils literal notranslate"><span class="pre">src_cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> dicts must represent
+valid <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a
+<a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>. Else it must contain those sections
+and the second parameter can be omitted because it will be ignored.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the source configuration</li>
-<li><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a>) – the target configuration</li>
+<li><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><em>configparser.ConfigParser</em></a>) – the source or job configuration</li>
+<li><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.7)"><em>None</em></a>) – the target configuration</li>
 </ul>
 </td>
 </tr>
