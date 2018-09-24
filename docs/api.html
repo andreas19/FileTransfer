@@ -87,6 +87,8 @@
 <p>Simple API to include <code class="docutils literal notranslate"><span class="pre">filetransfer</span></code> in a Python script.</p>
 <p>Either the functions <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a> and <a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> must be
 used together or only the function <a class="reference internal" href="#filetransfer.transfer" title="filetransfer.transfer"><code class="xref py py-func docutils literal notranslate"><span class="pre">transfer()</span></code></a>.</p>
+<p>Using <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a>/<a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> is NOT THREAD SAFE. If you
+have to do multiple file transfers in a script do it sequentially.</p>
 <p>See: <a class="reference internal" href="config.html"><span class="doc">Configuration</span></a>,
 examples <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">configure() and run()</span></a> and <a class="reference internal" href="examples.html#ref-transfer"><span class="std std-ref">transfer()</span></a></p>
 <dl class="exception">

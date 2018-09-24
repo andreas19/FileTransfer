@@ -1,4 +1,19 @@
-"""Configuration module."""
+"""Configuration module.
+
+The following global variables will be set in this module:
+
+In :func:`configure`:
+
+* ``log_file``
+* ``jobs_dir``
+* ``sftp_cfg``
+* ``mail_cfg``
+* ``_hosts_cfg_file``
+
+In :func:`host_configuration`:
+
+* ``_hosts_cfg``
+"""
 
 import configparser
 import logging
@@ -17,13 +32,6 @@ _log_file_format = '{:%Y%m%d-%H%M%S}.log'
 
 def configure(cfg, job_id):
     """Configure the application.
-
-    The following global variables will be set in this module:
-
-    * ``log_file``
-    * ``jobs_dir``
-    * ``sftp_cfg``
-    * ``mail_cfg``
 
     :param cfg: application configuration
     :type cfg: configparser.ConfigParser
@@ -63,7 +71,8 @@ def host_configuration(cfg, section):
     :param cfg: job configuration
     :type cfg: configparser.ConfigParser
     :param str section: ``'source'`` or ``'target'``
-    :raises KeyError: if a required key or section is missing
+    :raises ConfigError: if a key is missing, set in the job config or no
+                         hosts config file is set in the application config
     """
     global _hosts_cfg
     try:
@@ -74,9 +83,13 @@ def host_configuration(cfg, section):
         return
     if not _hosts_cfg:
         try:
-            _hosts_cfg = configparser.ConfigParser(interpolation=None)
-            with _hosts_cfg_file.open() as fh:
-                _hosts_cfg.read_file(fh)
+            if _hosts_cfg_file:
+                _hosts_cfg = configparser.ConfigParser(interpolation=None)
+                with _hosts_cfg_file.open() as fh:
+                    _hosts_cfg.read_file(fh)
+            else:
+                raise ConfigError('Hosts configuration: hosts_cfg not set in'
+                                  ' application config')
         except (FileNotFoundError, configparser.Error) as ex:
             raise ConfigError('Hosts configuration: %s' % ex)
     for k in _hosts_cfg_keys:

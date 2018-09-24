@@ -2,6 +2,9 @@
 
 Either the functions :func:`configure` and :func:`run` must be
 used together or only the function :func:`transfer`.
+
+Using :func:`configure`/:func:`run` is NOT THREAD SAFE. If you
+have to do multiple file transfers in a script do it sequentially.
 """
 
 import configparser
