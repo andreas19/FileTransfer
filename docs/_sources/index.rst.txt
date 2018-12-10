@@ -1,5 +1,5 @@
-FileTransfer
-============
+FileTransfer |version|
+======================
 
 Contents
 --------

@@ -3,3 +3,20 @@ Using filetransfer
 
 .. literalinclude:: usage.txt
    :language: none
+
+
+To start a job the JOBID (which is the :ref:`ref-job-configuration` filename without
+the extension) must be given on the commandline. When starting multiple jobs e.g. from
+a crontab the environment variable FILETRANSFER_CFG can be set to the path of the 
+application configuration file so that it can be omitted on the commandline of each job.
+
+It is also possible to get hostkeys from SFTP servers and save them to a file. Deleting
+the keys from the file is also possible.
+
+
+.. seealso::
+   * `OpenSSH <https://www.openssh.com/>`_
+      * `ssh <https://man.openbsd.org/ssh.1>`_
+      * `sftp <https://man.openbsd.org/sftp.1>`_
+      * `ssh-keyscan <https://man.openbsd.org/ssh-keyscan.1>`_
+      * `ssh-keygen <https://man.openbsd.org/ssh-keygen.1>`_
