@@ -1,6 +1,10 @@
 History
 -------
 
+**2018-12-16 (0.5.4)**
+- Improve usage message and documentation
+
+
 **2018-09-24 (0.5.3)**
 
 - Some minor corrections
