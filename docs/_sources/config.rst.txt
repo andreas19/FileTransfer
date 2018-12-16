@@ -10,6 +10,8 @@ In the tables below strings in single quotes must be given literally
 See: example :ref:`ref-configuration-files`
 
 
+.. _ref-app-configuration:
+
 Application Configuration
 -------------------------
 
@@ -37,6 +39,8 @@ saved in the ``jobs_dir`` directory as defined in the application configuration.
    :widths: auto
    :file: job_cfg.csv
 
+
+.. _ref-hosts-configuration:
 
 Hosts Configuration
 -------------------

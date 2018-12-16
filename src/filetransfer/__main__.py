@@ -8,12 +8,12 @@ usage:
 
  JOBID   the job id
  HOST    server name or IP
- FILE    file to save the hostkey to
+ FILE    known-hosts file
 
  -c, --config CONFIG  the application configuration file
                       If not given the value of the environment
                       variable %(envvar)s will be used.
- -d, --delete         delete server hostkey from file
+ -d, --delete         delete server hostkey from known-hosts file
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
  -p, --port PORT      SFTP server port [default: %(sshport)d]

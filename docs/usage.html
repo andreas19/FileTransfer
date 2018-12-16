@@ -92,12 +92,12 @@
 
  JOBID   the job id
  HOST    server name or IP
- FILE    file to save the hostkey to
+ FILE    known-hosts file
 
  -c, --config CONFIG  the application configuration file
                       If not given the value of the environment
                       variable FILETRANSFER_CFG will be used.
- -d, --delete         delete server hostkey from file
+ -d, --delete         delete server hostkey from known-hosts file
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
  -p, --port PORT      SFTP server port [default: 22]
@@ -112,12 +112,13 @@
   9   unexpected error
 </pre></div>
 </div>
-<p>To start a job the JOBID (which is the <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a> filename without
-the extension) must be given on the commandline. When starting multiple jobs e.g. from
-a crontab the environment variable FILETRANSFER_CFG can be set to the path of the
-application configuration file so that it can be omitted on the commandline of each job.</p>
-<p>It is also possible to get hostkeys from SFTP servers and save them to a file. Deleting
-the keys from the file is also possible.</p>
+<p>To start a job the JOBID (which is the <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">job configuration</span></a>
+filename without the extension) must be given on the commandline. When starting multiple
+jobs e.g. from a crontab the environment variable FILETRANSFER_CFG can be set to the path
+of the <a class="reference internal" href="config.html#ref-app-configuration"><span class="std std-ref">application configuration file</span></a>
+so that it can be omitted on the commandline of each job.</p>
+<p>It is also possible to get hostkeys from SFTP servers and save them to or delete them from
+the known-hosts file.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <ul class="last simple">
@@ -147,7 +148,7 @@ the keys from the file is also possible.</p>
       &copy;2018, Andreas19.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.6</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
       
     </div>
