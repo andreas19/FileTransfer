@@ -5,14 +5,21 @@ import posixpath
 import stat
 from contextlib import suppress
 
-from paramiko import HostKeys, SSHException, Transport, RSAKey, DSSKey
+from paramiko import (HostKeys, SSHException, Transport,
+                      RSAKey, DSSKey, ECDSAKey, Ed25519Key)
 
 from . import config, utils
 from .base import BaseSource, BaseTarget, server_config
 from .const import SSH_PORT
-from .exceptions import ConnectError
+from .exceptions import ConnectError, ConfigError
 
 _logger = logging.getLogger(__name__)
+_KEY_TYPES = {
+    'RSA': (RSAKey, 'key_rsa_file', 'key_rsa_pass'),
+    'DSA': (DSSKey, 'key_dsa_file', 'key_dsa_pass'),
+    'ECDSA': (ECDSAKey, 'key_ecdsa_file', 'key_ecdsa_pass'),
+    'ED25519': (Ed25519Key, 'key_ed25519_file', 'key_ed25519_pass')
+}
 
 
 class SFTPSource(BaseSource):
@@ -94,25 +101,25 @@ def _connect(obj, cfg):
     else:
         sftp_cfg = {}
     known_hosts = cfg.get('known_hosts') or sftp_cfg['known_hosts']
-    key_file = cfg.get('key_file')
+    key_type = cfg.get('key_type')
     try:
-        if key_file:
-            if key_file.upper() == 'RSA':
-                key = RSAKey(filename=sftp_cfg['key_rsa_file'],
-                             password=sftp_cfg.get('key_rsa_pass'))
-            elif key_file.upper() == 'DSA':
-                key = DSSKey(filename=sftp_cfg['key_dsa_file'],
-                             password=sftp_cfg.get('key_dsa_pass'))
-            else:
-                try:
-                    key = RSAKey(filename=key_file,
-                                 password=cfg.get('key_pass'))
-                except SSHException:
-                    try:
-                        key = DSSKey(filename=key_file,
-                                     password=cfg.get('key_pass'))
-                    except SSHException:
-                        raise SSHException('Could not create RSA or DSA key')
+        if key_type:
+            key_type = key_type.upper()
+            key_file = cfg.get('key_file')
+            try:
+                if key_file:
+                    key_pass = cfg.get('key_pass')
+                else:
+                    key_file = sftp_cfg.get(_KEY_TYPES[key_type][1])
+                    if not key_file:
+                        raise ConfigError(
+                            'Missing "%s" in application configuration' %
+                            _KEY_TYPES[key_type][1])
+                    key_pass = sftp_cfg.get(_KEY_TYPES[key_type][2])
+                key = _KEY_TYPES[key_type][0](filename=key_file,
+                                              password=key_pass)
+            except KeyError:
+                raise ConfigError('Unknown key type: %s' % key_type)
             _logger.debug('private key: %s', key.get_name())
         else:
             key = None

@@ -3,7 +3,7 @@
 Either the functions :func:`configure` and :func:`run` must be
 used together or only the function :func:`transfer`.
 
-Using :func:`configure`/:func:`run` is NOT THREAD SAFE. If you
+Using :func:`configure`/:func:`run` is **NOT THREAD SAFE**. If you
 have to do multiple file transfers in a script do it sequentially.
 """
 
@@ -28,6 +28,9 @@ def configure(cfg_file, job_id):
     configuration file taking precedence. The prefix ``x:`` will
     be stripped from the section names before putting them in a newly
     created :class:`~configparser.ConfigParser` object that will be returned.
+
+    The logging configuration from ``cfg_file`` will only be used if
+    logging was not configured before the call to this function.
 
     :param cfg_file: the application configuration file
     :type cfg_file: :term:`path-like object`
@@ -78,11 +81,19 @@ def transfer(src_cfg, tgt_cfg=None):
     """Transfer files.
 
     The first parameter (``src_cfg``) may be a :class:`dict` or a
-    :class:`~configparser.ConfigParser` object. If it is a
-    :class:`dict` the ``src_cfg`` and ``tgt_cfg`` dicts must represent
-    valid ``[source]`` and ``[target]`` sections of a
-    :ref:`ref-job-configuration`. Else it must contain those sections
+    :class:`~configparser.ConfigParser` object.
+
+    If it is a
+    :class:`dict` the argument ``tgt_cfg`` must also be a dict and they
+    must represent valid ``[source]`` and ``[target]`` sections of a
+    :ref:`ref-job-configuration`.
+
+    Else it must contain those sections
     and the second parameter can be omitted because it will be ignored.
+
+    When using FTP, FTPS or SFTP the ``host_id`` option must be omitted
+    and the options from the host configuration must be contained in the
+    above configuration objects.
 
     :param src_cfg: the source or job configuration
     :type src_cfg: dict or configparser.ConfigParser

@@ -37,7 +37,6 @@ Configuration files
    ; job configuration: example/configs/jobs/job001.cfg
 
    [source]
-   type = local
    path = example/data
    files = *.txt, *.csv
    recursive = yes
@@ -59,7 +58,7 @@ Configuration files
    type = SFTP
    host = other-company.com
    user = user_xyz
-   key_file = RSA
+   key_type = RSA
 
    [example-ftps]
    type = FTPS
@@ -85,9 +84,6 @@ configure() and run()
    ...
 
    configure('example/configs/filetransfer.cfg', 'job001')
-   # after configure() log messages will use the
-   # logging configuration from filetransfer.cfg
-   # only if logging was not configured before
 
    ...
 
@@ -107,14 +103,14 @@ transfer()
 
    ...
 
-   src_cfg = {'type': 'local',
-              'path': 'example/data',
+   src_cfg = {'path': 'example/data',
               'files': '*.txt, *.csv',
               'recursive': 'yes'}
    tgt_cfg = {'type': 'sftp',
               'host': 'other-company.com',
               'user': 'user_xyz',
               'known_hosts': 'example/ssh/known_hosts',
+              'key_type': 'RSA',
               'key_file': 'example/ssh/rsa_key',
               'path': 'path/on/server',
               'temp': 'ext:.tmp'}

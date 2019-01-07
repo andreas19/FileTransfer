@@ -25,8 +25,8 @@ from .exceptions import ConfigError
 _logger = logging.getLogger(__name__)
 _hosts_cfg = None
 _hosts_cfg_keys = ['type', 'host', 'user', 'password', 'timeout',
-                   'passive_mode', 'encrypt_data', 'key_file',
-                   'key_pass', 'known_hosts']
+                   'passive_mode', 'encrypt_data', 'key_type',
+                   'key_file', 'key_pass', 'known_hosts']
 _log_file_format = '{:%Y%m%d-%H%M%S}.log'
 
 
@@ -78,7 +78,11 @@ def host_configuration(cfg, section):
     try:
         cfg = cfg[section]
     except KeyError as ex:
-        raise ConfigError('"%s" is required' % ex.args[0])
+        raise ConfigError('Section "%s" is required' % ex.args[0])
+    for k in _hosts_cfg_keys:
+        if k in cfg:
+            raise ConfigError('Host configuration setting(s) not allowed'
+                              ' in job configuration section "%s"' % section)
     if 'host_id' not in cfg:
         return
     if not _hosts_cfg:
@@ -92,10 +96,6 @@ def host_configuration(cfg, section):
                                   ' application config')
         except (FileNotFoundError, configparser.Error) as ex:
             raise ConfigError('Hosts configuration: %s' % ex)
-    for k in _hosts_cfg_keys:
-        if k in cfg:
-            raise ConfigError('Host configuration setting(s)'
-                              ' in "%s" but host_id used' % section)
     for k, v in _hosts_cfg[cfg['host_id']].items():
         cfg[k] = v
 

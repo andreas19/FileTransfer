@@ -89,11 +89,27 @@
             
   <div class="section" id="configuration">
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
-<p>To run a file transfer two configurations (application and job) are
-needed. Both are INI-style files.</p>
+<p>All configuration files are INI-style files.</p>
 <p>In the tables below strings in single quotes must be given literally
 (case insensitive) and without the quotes.</p>
 <p>See: example <a class="reference internal" href="examples.html#ref-configuration-files"><span class="std std-ref">Configuration files</span></a></p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<dl class="last docutils">
+<dt>Changes in version 0.6.0:</dt>
+<dd><ul class="first last simple">
+<li><strong>Host configuration</strong> is now only allowed in
+<a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configuration files</span></a>.
+<code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code> in the <a class="reference internal" href="#ref-app-configuration"><span class="std std-ref">application configuration</span></a>
+and <code class="docutils literal notranslate"><span class="pre">host_id</span></code> in the sections [source] and [target] in
+<a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configurations</span></a> are not optional any more
+when using FTP, FTPS or SFTP.</li>
+<li><strong>SFTP authentication keyfiles</strong> in <a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configurations</span></a>
+must now have their type declared with <code class="docutils literal notranslate"><span class="pre">key_type</span></code></li>
+</ul>
+</dd>
+</dl>
+</div>
 <div class="section" id="application-configuration">
 <span id="ref-app-configuration"></span><h2>Application Configuration<a class="headerlink" href="#application-configuration" title="Permalink to this headline">¶</a></h2>
 <p>This configuration contains some global properties. It is the file
@@ -106,13 +122,13 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code></td>
-<td>path to directory with job configs</td>
+<td>path to directory with job configuration files</td>
 <td>required</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code></td>
 <td>path to hosts configuration file</td>
 <td><div class="first last line-block">
-<div class="line">optional</div>
+<div class="line">required if FTP, FTPS or SFTP is used</div>
 <div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
 </div>
 </td>
@@ -163,7 +179,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></td>
 <td>path to RSA private key file</td>
-<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is set to ‘RSA’ in a job configuration</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘RSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_rsa_pass</span></code></td>
 <td>password for <code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></td>
@@ -171,11 +187,27 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></td>
 <td>path to DSA private key file</td>
-<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is set to ‘DSA’ in a job configuration</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘DSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_dsa_pass</span></code></td>
 <td>password for <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></td>
 <td>required if <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code> is password protected</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_ecdsa_file</span></code></td>
+<td>path to ECDSA private key file</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘ECDSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_ecdsa_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_ecdsa_file</span></code></td>
+<td>required if <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code> is password protected</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code></td>
+<td>path to Ed25519 private key file</td>
+<td>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘Ed25519’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_ed25519_pass</span></code></td>
+<td>password for <code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code></td>
+<td>required if <code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code> is password protected</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
 <td>path to known_hosts file</td>
@@ -246,50 +278,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
 <td>host id</td>
 <td><div class="first last line-block">
+<div class="line">required for FTP, FTPS, SFTP</div>
 <div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
-<div class="line">It is an error if any possible host configuration setting is set in this section when <code class="docutils literal notranslate"><span class="pre">host_id</span></code> is used.</div>
+<div class="line">if omitted <code class="docutils literal notranslate"><span class="pre">path</span></code> must be on the local filesystem</div>
 </div>
 </td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
-<td>required</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td>(dns-name | ip)[:port]</td>
-<td>required for FTP, FTPS, SFTP</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
-<td>username</td>
-<td>required for FTP, FTPS, SFTP</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
-<td>password</td>
-<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
-<td>timeout in seconds</td>
-<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
-<td>‘yes’ | ‘no’</td>
-<td>optional for FTP, FTPS; default: yes</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
-<td>‘yes’ | ‘no’</td>
-<td>optional for FTPS; default: yes</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>path to private key file | ‘RSA’ | ‘DSA’</td>
-<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
-<td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
-<td>path to known_hosts file</td>
-<td>required for SFTP if not set in the application configuration</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">path</span></code></td>
 <td>path to source directory</td>
@@ -322,50 +315,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host_id</span></code></td>
 <td>host id</td>
 <td><div class="first last line-block">
+<div class="line">required for FTP, FTPS, SFTP</div>
 <div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
-<div class="line">It is an error if any possible host configuration setting is set in this section when <code class="docutils literal notranslate"><span class="pre">host_id</span></code> is used.</div>
+<div class="line">if omitted <code class="docutils literal notranslate"><span class="pre">path</span></code> must be on the local filesystem</div>
 </div>
 </td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
-<td>required</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
-<td>(dns-name | ip)[:port]</td>
-<td>required for FTP, FTPS, SFTP</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
-<td>username</td>
-<td>required for FTP, FTPS, SFTP</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
-<td>password</td>
-<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
-<td>timeout in seconds</td>
-<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
-<td>‘yes’ | ‘no’</td>
-<td>optional for FTP, FTPS; default: yes</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></td>
-<td>‘yes’ | ‘no’</td>
-<td>optional for FTPS; default: yes</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>path to private key file | ‘RSA’ | ‘DSA’</td>
-<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
-<td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
-<td>path to known_hosts file</td>
-<td>required for SFTP if not set in the application configuration</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">path</span></code></td>
 <td>path to target directory</td>
@@ -404,10 +358,10 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 </div>
 <div class="section" id="hosts-configuration">
 <span id="ref-hosts-configuration"></span><h2>Hosts Configuration<a class="headerlink" href="#hosts-configuration" title="Permalink to this headline">¶</a></h2>
-<p>A hosts configuration contains sections which each define a configuration of
-a host as in the <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a job
-configuration. Such a host configuration can be referenced by setting the
-<code class="docutils literal notranslate"><span class="pre">host_id</span></code> in those sections to the section name of a host configuration.</p>
+<p>A hosts configuration contains sections each of them defining a configuration of
+a host. Such a host configuration can be referenced by setting the
+<code class="docutils literal notranslate"><span class="pre">host_id</span></code> in the <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections in
+a <a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configuration</span></a> to the section name.</p>
 <table border="1" class="colwidths-auto cfgtable docutils">
 <tbody valign="top">
 <tr class="row-odd"><td><strong>[{host_id}]</strong></td>
@@ -415,24 +369,24 @@ configuration. Such a host configuration can be referenced by setting the
 <td><cite>host_id</cite> must be unique</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td>‘local’ | ‘ftp’ | ‘ftps’ | ‘sftp’</td>
+<td>‘ftp’ | ‘ftps’ | ‘sftp’</td>
 <td>required</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
 <td>(dns-name | ip)[:port]</td>
-<td>required for FTP, FTPS, SFTP</td>
+<td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
 <td>username</td>
-<td>required for FTP, FTPS, SFTP</td>
+<td>required</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
 <td>password</td>
-<td>optional for FTP, FTPS, SFTP (SFTP: ignored when <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is used)</td>
+<td>optional (SFTP: ignored when a authentication key is used)</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
 <td>timeout in seconds</td>
-<td>optional for FTP, FTPS, SFTP; default: 0.0 = no timeout</td>
+<td>optional; default: 0.0 = no timeout</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></td>
 <td>‘yes’ | ‘no’</td>
@@ -442,15 +396,19 @@ configuration. Such a host configuration can be referenced by setting the
 <td>‘yes’ | ‘no’</td>
 <td>optional for FTPS; default: yes</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>path to private key file | ‘RSA’ | ‘DSA’</td>
-<td>optional for SFTP (‘RSA’ / ‘DSA’ refer to the keyfiles in the [sftp] section of the application configuration)</td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_type</span></code></td>
+<td>‘RSA’ | ‘DSA’ |  ‘ECDSA’ | ‘Ed25519’</td>
+<td>required for SFTP if a authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the [sftp] section in the application configuration</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
+<td>path to private key file</td>
+<td>optional for SFTP</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></td>
 <td>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></td>
-<td>optional for SFTP (not used if ‘RSA’ or ‘DSA’ is used for <code class="docutils literal notranslate"><span class="pre">key_file</span></code>)</td>
+<td>optional for SFTP (not used if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set)</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></td>
 <td>path to known_hosts file</td>
 <td>required for SFTP if not set in the application configuration</td>
 </tr>
@@ -467,7 +425,7 @@ configuration. Such a host configuration can be referenced by setting the
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018, Andreas19.
+      &copy;2018-2019, Andreas19.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>

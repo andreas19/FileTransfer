@@ -79,7 +79,7 @@ def run(cfg, job_id):
 def _create_source(cfg):
     try:
         cfg = cfg['source']
-        src_type = cfg['type'].upper()
+        src_type = cfg['type'].upper() if 'type' in cfg else 'LOCAL'
         if src_type == 'LOCAL':
             return LocalSource(cfg)
         elif src_type == 'FTP':
@@ -91,13 +91,13 @@ def _create_source(cfg):
         else:
             raise ConfigError('Unknown source type "%s"' % src_type)
     except KeyError as ex:
-        raise ConfigError('"%s" is required' % ex.args[0])
+        raise ConfigError('Section "%s" is required' % ex.args[0])
 
 
 def _create_target(cfg):
     try:
         cfg = cfg['target']
-        tgt_type = cfg['type'].upper()
+        tgt_type = cfg['type'].upper() if 'type' in cfg else 'LOCAL'
         if tgt_type == 'LOCAL':
             return LocalTarget(cfg)
         elif tgt_type == 'FTP':
@@ -109,7 +109,7 @@ def _create_target(cfg):
         else:
             raise ConfigError('Unknown target type "%s"' % tgt_type)
     except KeyError as ex:
-        raise ConfigError('"%s" is required' % ex.args[0])
+        raise ConfigError('Section "%s" is required' % ex.args[0])
 
 
 def transfer(cfg):

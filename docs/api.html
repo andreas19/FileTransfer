@@ -87,7 +87,7 @@
 <p>Simple API to include <code class="docutils literal notranslate"><span class="pre">filetransfer</span></code> in a Python script.</p>
 <p>Either the functions <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a> and <a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> must be
 used together or only the function <a class="reference internal" href="#filetransfer.transfer" title="filetransfer.transfer"><code class="xref py py-func docutils literal notranslate"><span class="pre">transfer()</span></code></a>.</p>
-<p>Using <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a>/<a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> is NOT THREAD SAFE. If you
+<p>Using <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a>/<a class="reference internal" href="#filetransfer.run" title="filetransfer.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">run()</span></code></a> is <strong>NOT THREAD SAFE</strong>. If you
 have to do multiple file transfers in a script do it sequentially.</p>
 <p>See: <a class="reference internal" href="config.html"><span class="doc">Configuration</span></a>,
 examples <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">configure() and run()</span></a> and <a class="reference internal" href="examples.html#ref-transfer"><span class="std std-ref">transfer()</span></a></p>
@@ -114,6 +114,8 @@ files the sections will be merged with the keys in the job
 configuration file taking precedence. The prefix <code class="docutils literal notranslate"><span class="pre">x:</span></code> will
 be stripped from the section names before putting them in a newly
 created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object that will be returned.</p>
+<p>The logging configuration from <code class="docutils literal notranslate"><span class="pre">cfg_file</span></code> will only be used if
+logging was not configured before the call to this function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -171,11 +173,16 @@ the configuration</li>
 <code class="descclassname">filetransfer.</code><code class="descname">transfer</code><span class="sig-paren">(</span><em>src_cfg</em>, <em>tgt_cfg=None</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transfer files.</p>
 <p>The first parameter (<code class="docutils literal notranslate"><span class="pre">src_cfg</span></code>) may be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or a
-<a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object. If it is a
-<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> the <code class="docutils literal notranslate"><span class="pre">src_cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> dicts must represent
-valid <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a
-<a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>. Else it must contain those sections
+<a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object.</p>
+<p>If it is a
+<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> the argument <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> must also be a dict and they
+must represent valid <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code> sections of a
+<a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>.</p>
+<p>Else it must contain those sections
 and the second parameter can be omitted because it will be ignored.</p>
+<p>When using FTP, FTPS or SFTP the <code class="docutils literal notranslate"><span class="pre">host_id</span></code> option must be omitted
+and the options from the host configuration must be contained in the
+above configuration objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -214,7 +221,7 @@ the configuration</li>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018, Andreas19.
+      &copy;2018-2019, Andreas19.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>

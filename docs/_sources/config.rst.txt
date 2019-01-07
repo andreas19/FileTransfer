@@ -1,14 +1,24 @@
 Configuration
 =============
 
-To run a file transfer two configurations (application and job) are
-needed. Both are INI-style files.
+All configuration files are INI-style files.
 
 In the tables below strings in single quotes must be given literally
 (case insensitive) and without the quotes.
 
 See: example :ref:`ref-configuration-files`
 
+
+.. attention::
+   Changes in version 0.6.0:
+    - **Host configuration** is now only allowed in
+      :ref:`host configuration files <ref-hosts-configuration>`.
+      ``hosts_cfg`` in the :ref:`application configuration <ref-app-configuration>`
+      and ``host_id`` in the sections [source] and [target] in
+      :ref:`job configurations <ref-job-configuration>` are not optional any more
+      when using FTP, FTPS or SFTP.
+    - **SFTP authentication keyfiles** in :ref:`host configurations <ref-hosts-configuration>`
+      must now have their type declared with ``key_type``
 
 .. _ref-app-configuration:
 
@@ -45,10 +55,10 @@ saved in the ``jobs_dir`` directory as defined in the application configuration.
 Hosts Configuration
 -------------------
 
-A hosts configuration contains sections which each define a configuration of
-a host as in the ``[source]`` and ``[target]`` sections of a job
-configuration. Such a host configuration can be referenced by setting the
-``host_id`` in those sections to the section name of a host configuration.
+A hosts configuration contains sections each of them defining a configuration of
+a host. Such a host configuration can be referenced by setting the
+``host_id`` in the ``[source]`` and ``[target]`` sections in
+a :ref:`job configuration <ref-job-configuration>` to the section name.
 
 .. csv-table::
    :class: cfgtable
