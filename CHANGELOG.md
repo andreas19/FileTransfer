@@ -1,6 +1,7 @@
 History
 -------
 
+**2019-01-08 (0.6.0)**
  - Support ECDSA and Ed25519 for SFTP authentication keys
  - Change SFTP authentication key configuration
  - Remove host configurations from job configuration files
