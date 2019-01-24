@@ -1,3 +1,15 @@
 img.logo { margin-bottom: 20px; }
 
 table.cfgtable { margin-bottom: 50px; }
+
+dl.function > dt,
+dl.data > dt,
+dl.exception > dt,
+dl.class > dt,
+dl.attribute > dt,
+dl.method > dt,
+dl.classmethod > dt,
+dl.staticmethod > dt {
+    background-color: gainsboro;
+    padding: 1px 5px
+}
