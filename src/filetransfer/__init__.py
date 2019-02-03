@@ -1,25 +1,32 @@
 """Simple API to include ``filetransfer`` in a Python script.
 
-Either the functions :func:`configure` and :func:`run` must be
-used together or only the function :func:`transfer`.
-
-Using :func:`configure`/:func:`run` is **NOT THREAD SAFE**. If you
-have to do multiple file transfers in a script do it sequentially.
+.. attention::
+   Change in version 0.7.0:
+    - There is no ``run()`` function any more. The required function is
+      returned by :func:`configure`.
+    - The function :func:`transfer` now returns a :class:`JobResult` object.
 """
 
 import configparser
 
 from . import config, job
-from .exceptions import ConfigError, ConnectError
+from .exceptions import Error, ConfigError, ConnectError, TransferError
+from .job import JobResult
 
 __version__ = '0.6.0'
-__all__ = ['ConfigError', 'ConnectError', 'configure', 'run', 'transfer']
-_job_cfg = None
-_job_id = None
+
+__all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
+           'JobResult', 'configure', 'transfer']
 
 
-def configure(cfg_file, job_id):
+def configure(cfg_file, job_id, **kwargs):
     """Configure the application.
+
+    This function returns a function that must be called without
+    arguments to run the actual file transfer. The function may
+    raise :exc:`~filetransfer.ConnectError` if there is a connection
+    problem, :exc:`~filetransfer.TransferError` if there is a fatal
+    problem during transfer, or :exc:`Exception` if another error occurs.
 
     You can put your own configuration sections in the application
     and job configuration files. The names of theses sections must
@@ -35,8 +42,10 @@ def configure(cfg_file, job_id):
     :param cfg_file: the application configuration file
     :type cfg_file: :term:`path-like object`
     :param str job_id: the Job-ID
-    :return: extra configuration
-    :rtype: configparser.ConfigParser
+    :param kwargs: :class:`~configparser.ConfigParser` arguments for
+                   the extra configuration
+    :return: run function and extra configuration
+    :rtype: function(), configparser.ConfigParser
     :raises filetransfer.ConfigError: if there is a problem with
                                       the configuration
     :raises configparser.Error: if there is a problem while parsing
@@ -44,37 +53,18 @@ def configure(cfg_file, job_id):
     :raises OSError: if there is a problem while reading one of the
                      configuration files
     """
-    global _job_id, _job_cfg
-    _job_id = job_id
-    app_cfg = configparser.ConfigParser(interpolation=None)
+    app_cfg, job_cfg = config.configure(cfg_file, job_id)
+    cp = configparser.ConfigParser(**kwargs)
     with open(cfg_file) as fh:
-        app_cfg.read_file(fh)
-    config.configure(app_cfg, job_id)
-    job_file = (config.jobs_dir / job_id).with_suffix('.cfg')
-    _job_cfg = configparser.ConfigParser(interpolation=None)
-    with job_file.open() as fh:
-        _job_cfg.read_file(fh)
-    extra_cfg = configparser.ConfigParser(interpolation=None)
-    for cfg in (app_cfg, _job_cfg):
-        for sec in [sec for sec in cfg.sections() if sec.startswith('x:')]:
-            extra_cfg.read_dict({sec[2:]: cfg[sec]})
-    return extra_cfg
-
-
-def run():
-    """Run a file transfer.
-
-    The function :func:`configure` must be called before this function
-    can be used.
-
-    :raises filetransfer.ConfigError: if there is a problem with
-                                      the configuration
-    :raises filetransfer.ConnectError: if there is a connection problem
-    :raises Exception: if another error occurs
-    """
-    if not _job_cfg:
-        raise ConfigError('no configuration')
-    job.run(_job_cfg, _job_id)
+        cp.read_file(fh)
+    with job_cfg['job_cfg_file'].open() as fh:
+        cp.read_file(fh)
+    d = {}
+    for sec in [sec for sec in cp.sections() if sec.startswith('x:')]:
+        d[sec[2:]] = dict(cp.items(sec))
+    cp.clear()
+    cp.read_dict(d)
+    return lambda: job.run(app_cfg, job_cfg), cp
 
 
 def transfer(src_cfg, tgt_cfg=None):
@@ -83,13 +73,13 @@ def transfer(src_cfg, tgt_cfg=None):
     The first parameter (``src_cfg``) may be a :class:`dict` or a
     :class:`~configparser.ConfigParser` object.
 
-    If it is a
-    :class:`dict` the argument ``tgt_cfg`` must also be a dict and they
-    must represent valid ``[source]`` and ``[target]`` sections of a
-    :ref:`ref-job-configuration`.
+    If it is a :class:`dict` the argument ``tgt_cfg`` must also be a
+    dict and they must represent valid ``[source]`` and ``[target]``
+    sections of a :ref:`ref-job-configuration`.
 
-    Else it must contain those sections
-    and the second parameter can be omitted because it will be ignored.
+    Else the :class:`~configparser.ConfigParser` object must contain
+    those sections and the second parameter can be omitted because
+    it will be ignored.
 
     When using FTP, FTPS or SFTP the ``host_id`` option must be omitted
     and the options from the host configuration must be contained in the
@@ -99,16 +89,26 @@ def transfer(src_cfg, tgt_cfg=None):
     :type src_cfg: dict or configparser.ConfigParser
     :param tgt_cfg: the target configuration
     :type tgt_cfg: dict or None
-    :return: files count, source error count, target error count
-    :rtype: (int, int, int)
+    :return: job result
+    :rtype: filetransfer.JobResult
     :raises filetransfer.ConfigError: if there is a problem with
                                       the configuration
     :raises filetransfer.ConnectError: if there is a connection problem
+    :raises filetransfer.TransferError: if there is a fatal problem
+                                        during transfer
     :raises Exception: if another error occurs
     """
-    if isinstance(src_cfg, configparser.ConfigParser):
-        return job.transfer(src_cfg)
+    if not isinstance(src_cfg, configparser.ConfigParser):
+        cp = configparser.ConfigParser()
+        cp.read_dict({'source': src_cfg, 'target': tgt_cfg})
     else:
-        cfg = configparser.ConfigParser(interpolation=None)
-        cfg.read_dict({'source': src_cfg, 'target': tgt_cfg})
-        return job.transfer(cfg)
+        cp = src_cfg
+    job_cfg = config.get_job_cfg(cp)
+    if 'type' in cp['source']:
+        host_cfg = config.get_host_cfg(cp, 'source')
+        job_cfg.add('source_host_cfg', host_cfg)
+    if 'type' in cp['target']:
+        host_cfg = config.get_host_cfg(cp, 'target')
+        job_cfg.add('target_host_cfg', host_cfg)
+    config.set_urls(job_cfg)
+    return job.transfer(job_cfg)

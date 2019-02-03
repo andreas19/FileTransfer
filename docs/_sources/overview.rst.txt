@@ -29,8 +29,9 @@ Dependencies
 ------------
 
 - `ftputil >= 3.4 <https://pypi.org/project/ftputil/>`_
-- `paramiko >= 2.4.1 <https://pypi.org/project/paramiko/>`_
+- `paramiko >= 2.4.2 <https://pypi.org/project/paramiko/>`_
 - `docopt >= 0.6.2 <https://pypi.org/project/docopt/>`_
+- `salmagundi >= 0.7.0 <https://pypi.org/project/salmagundi/>`_
 
 
 Links

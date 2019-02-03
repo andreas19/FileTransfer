@@ -51,7 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuration-files">Configuration files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#configure-and-run">configure() and run()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configure">configure()</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#transfer">transfer()</a></li>
 </ul>
 </li>
@@ -109,13 +109,16 @@
 <span class="na">security</span> <span class="o">=</span> <span class="s">STARTTLS</span>
 <span class="na">user</span> <span class="o">=</span> <span class="s">transferuser</span>
 <span class="na">password</span> <span class="o">=</span> <span class="s">topsecret</span>
-<span class="na">from</span> <span class="o">=</span> <span class="s">transferuser@example.com</span>
+<span class="na">from_addr</span> <span class="o">=</span> <span class="s">transferuser@example.com</span>
 
 <span class="k">[notify]</span>
 <span class="na">error</span> <span class="o">=</span> <span class="s">admin@example.com</span>
 </pre></div>
 </div>
 <div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1">; job configuration: example/configs/jobs/job001.cfg</span>
+
+<span class="k">[job]</span>
+<span class="na">name</span> <span class="o">=</span> <span class="s">Example file transfer</span>
 
 <span class="k">[source]</span>
 <span class="na">path</span> <span class="o">=</span> <span class="s">example/data</span>
@@ -128,7 +131,6 @@
 <span class="na">temp</span> <span class="o">=</span> <span class="s">ext:.tmp</span>
 
 <span class="k">[notify]</span>
-<span class="na">name</span> <span class="o">=</span> <span class="s">Example file transfer</span>
 <span class="na">done</span> <span class="o">=</span> <span class="s">user@example.com</span>
 </pre></div>
 </div>
@@ -152,15 +154,15 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="configure-and-run">
-<span id="ref-configure-and-run"></span><h2>configure() and run()<a class="headerlink" href="#configure-and-run" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span><span class="p">,</span> <span class="n">run</span>
+<div class="section" id="configure">
+<span id="ref-configure-and-run"></span><h2>configure()<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span>
 
 <span class="o">...</span>
 
-<span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
+<span class="n">run</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
 
-<span class="o">...</span>
+<span class="o">...</span>  <span class="c1"># e.g. prepare data that will be transferred</span>
 
 <span class="n">run</span><span class="p">()</span>
 
@@ -185,7 +187,7 @@
            <span class="s1">&#39;key_file&#39;</span><span class="p">:</span> <span class="s1">&#39;example/ssh/rsa_key&#39;</span><span class="p">,</span>
            <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;path/on/server&#39;</span><span class="p">,</span>
            <span class="s1">&#39;temp&#39;</span><span class="p">:</span> <span class="s1">&#39;ext:.tmp&#39;</span><span class="p">}</span>
-<span class="n">file_cnt</span><span class="p">,</span> <span class="n">src_err</span><span class="p">,</span> <span class="n">tgt_err</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="n">src_cfg</span><span class="p">,</span> <span class="n">tgt_cfg</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">transfer</span><span class="p">(</span><span class="n">src_cfg</span><span class="p">,</span> <span class="n">tgt_cfg</span><span class="p">)</span>
 
 <span class="o">...</span>
 </pre></div>

@@ -92,6 +92,8 @@
 <p>All configuration files are INI-style files.</p>
 <p>In the tables below strings in single quotes must be given literally
 (case insensitive) and without the quotes.</p>
+<p>The paths mentioned in the configuration files must be either absolute
+or relative to the working directory of the <em>filetransfer</em> process.</p>
 <p>See: example <a class="reference internal" href="examples.html#ref-configuration-files"><span class="std std-ref">Configuration files</span></a></p>
 <div class="admonition attention">
 <p class="first admonition-title">Attention</p>
@@ -106,6 +108,14 @@ and <code class="docutils literal notranslate"><span class="pre">host_id</span><
 when using FTP, FTPS or SFTP.</li>
 <li><strong>SFTP authentication keyfiles</strong> in <a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configurations</span></a>
 must now have their type declared with <code class="docutils literal notranslate"><span class="pre">key_type</span></code></li>
+</ul>
+</dd>
+<dt>Change in version 0.7.0:</dt>
+<dd><ul class="first last simple">
+<li>The <strong>password</strong> option in host configurations is now required except
+for SFTP when an authentication key is used.</li>
+<li>Option <code class="docutils literal notranslate"><span class="pre">name</span></code> moved from section <code class="docutils literal notranslate"><span class="pre">[notify]</span></code> to the new section <code class="docutils literal notranslate"><span class="pre">[job]</span></code>
+in <a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configuration</span></a>.</li>
 </ul>
 </dd>
 </dl>
@@ -125,13 +135,21 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td>path to directory with job configuration files</td>
 <td>required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">job_cfg_ext</span></code></td>
+<td>extension for job configuration files</td>
+<td>optional (default: <code class="docutils literal notranslate"><span class="pre">.cfg</span></code>)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code></td>
 <td>path to hosts configuration file</td>
 <td><div class="first last line-block">
 <div class="line">required if FTP, FTPS or SFTP is used</div>
 <div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
 </div>
 </td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">collect_data</span></code></td>
+<td>‘yes’ | ‘no’</td>
+<td>collect data about transferred files and errors (default: no); the list will be shown in the notification email (can be overwritten in the job configuration)</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td>&#160;</td>
@@ -162,7 +180,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">log_level</span></code></td>
-<td>log level (string or number)</td>
+<td>log level name</td>
 <td><div class="first last line-block">
 <div class="line">default: <code class="docutils literal notranslate"><span class="pre">INFO</span></code></div>
 <div class="line">see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a></div>
@@ -226,7 +244,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td>required: SMTP server</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">security</span></code></td>
-<td>‘starttls’ | ‘tls’</td>
+<td>‘STARTTLS’ | ‘TLS’</td>
 <td>default: insecure connection</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">user</span></code></td>
@@ -237,7 +255,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td>password</td>
 <td>required</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">from</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">from_addr</span></code></td>
 <td>from email address</td>
 <td>required</td>
 </tr>
@@ -251,15 +269,15 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify if the job succeeded</td>
+<td>receipients to notify if the job succeeded (default: empty list)</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify if there was an error</td>
+<td>receipients to notify if there was an error (default: empty list)</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify in both cases</td>
+<td>receipients to notify in both cases (default: empty list)</td>
 </tr>
 </tbody>
 </table>
@@ -267,10 +285,27 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <div class="section" id="job-configuration">
 <span id="ref-job-configuration"></span><h2>Job Configuration<a class="headerlink" href="#job-configuration" title="Permalink to this headline">¶</a></h2>
 <p>A job configuration file must have a name of the form <code class="file docutils literal notranslate"><em><span class="pre">JOB_ID</span></em><span class="pre">.cfg</span></code>
-(e.g. <code class="docutils literal notranslate"><span class="pre">job001.cfg</span></code> where <code class="docutils literal notranslate"><span class="pre">job001</span></code> is the job id) and it must be
+(e.g. <code class="docutils literal notranslate"><span class="pre">job001.cfg</span></code> where <code class="docutils literal notranslate"><span class="pre">job001</span></code> is the job id; the extension <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> can
+be changed in the application configuration) and it must be
 saved in the <code class="docutils literal notranslate"><span class="pre">jobs_dir</span></code> directory as defined in the application configuration.</p>
 <table border="1" class="colwidths-auto cfgtable docutils">
 <tbody valign="top">
+<tr class="row-odd"><td><strong>[job]</strong></td>
+<td>&#160;</td>
+<td>optional</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">name</span></code></td>
+<td>job name</td>
+<td>will be shown in the email (default: job id)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">info</span></code></td>
+<td>info about the job</td>
+<td>optional; will be shown in the email</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">collect_data</span></code></td>
+<td>‘yes’ | ‘no’</td>
+<td>collect data about transferred files and errors (default: value set in the application configuration); the list will be shown in the notification email</td>
+</tr>
 <tr class="row-odd"><td><strong>[source]</strong></td>
 <td>&#160;</td>
 <td>&#160;</td>
@@ -289,11 +324,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>required</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">files</span></code></td>
-<td>one or more filepatterns</td>
+<td>one or more filepatterns (comma separated)</td>
 <td>required (UNIX shell-style wildcards pattern)</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">ignore</span></code></td>
-<td>one or more filepatterns</td>
+<td>one or more filepatterns (comma separated)</td>
 <td>default: .* (UNIX shell-style wildcards pattern)</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">recursive</span></code></td>
@@ -337,21 +372,17 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td>&#160;</td>
 <td>optional</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">name</span></code></td>
-<td>job name to show in the email</td>
-<td>default: job id</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">success</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify if the job succeeded</td>
+<td>receipients to notify if the job succeeded (default: empty list)</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">error</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify if there was an error</td>
+<td>receipients to notify if there was an error (default: empty list)</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">done</span></code></td>
 <td>comma separated list of email addresses</td>
-<td>receipients to notify in both cases</td>
+<td>receipients to notify in both cases (default: empty list)</td>
 </tr>
 </tbody>
 </table>
@@ -369,7 +400,7 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 <td><cite>host_id</cite> must be unique</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">type</span></code></td>
-<td>‘ftp’ | ‘ftps’ | ‘sftp’</td>
+<td>‘FTP’ | ‘FTPS’ | ‘SFTP’</td>
 <td>required</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">host</span></code></td>
@@ -382,7 +413,7 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 </tr>
 <tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">password</span></code></td>
 <td>password</td>
-<td>optional (SFTP: ignored when a authentication key is used)</td>
+<td>required (SFTP: only if no authentication key is used)</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">timeout</span></code></td>
 <td>timeout in seconds</td>

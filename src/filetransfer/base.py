@@ -2,38 +2,23 @@
 
 import fnmatch
 import logging
-
-from . import utils
-from .exceptions import ConfigError
+from contextlib import suppress
 
 _logger = logging.getLogger(__name__)
 
-
-def server_config(obj, cfg, dflt_port):
-    """Set server configuration.
-
-    :param obj: source or target object
-    :param cfg: source or target configuration
-    :type cfg: :class:`configparser.ConfigParser` section
-    :param int dflt_port: default port
-    """
-    obj._host, obj._port = utils.split_host_port(cfg['host'], dflt_port)
-    obj._user = cfg['user']
-    obj._passwd = cfg.get('password', '')
-    obj._timeout = cfg.getfloat('timeout') or None
+_CHUNK_SIZE = 64 * 1024
 
 
 class Endpoint:
     """Base class for source and target implementations.
 
-    :param cfg: source or target configuration
-    :type cfg: :class:`configparser.ConfigParser` section
-
+    :param str path: the path
     """
 
-    def __init__(self, cfg):
-        self._path = cfg['path']
+    def __init__(self, path, collect_data):
+        self._path = path.rstrip('/')
         self.error_cnt = 0
+        self.error_files = [] if collect_data else None
 
     def __enter__(self):
         return self
@@ -41,30 +26,41 @@ class Endpoint:
     def __exit__(self, exc_type, exc_value, traceback):
         self._close()
 
+    def _close(self):
+        raise NotImplementedError('%s._close()' % self.__class__.__name__)
+
+    def _handle_error(self, text, file_path, ex):
+        file = file_path[len(self._path) + 1:]
+        self.error_cnt += 1
+        if self.error_files is not None:
+            self.error_files.append((file, str(ex).split('\n')[0]))
+        _logger.error('%s: %s (%s)', text, file, ex)
+
 
 class BaseSource(Endpoint):
     """Base class for source implementations.
 
-    :param cfg: source configuration
-    :type cfg: :class:`configparser.ConfigParser` section
+    Subclasses must define::
+
+        self._path_join
+        self._open
+        self._remove
+        self._listdir
+        self._isdir
+        self._isfile
+
+    :param job_cfg: job configuration
+    :type job_cfg: salmagundi.config.Config
     """
 
-    def __init__(self, cfg):
-        super().__init__(cfg)
-        self._files = utils.str_to_tuple(cfg['files'], ',')
-        _logger.debug('source files=%s', self._files)
-        self._ignore = utils.str_to_tuple(cfg.get('ignore', '.*'), ',')
-        _logger.debug('source ignore=%s', self._ignore)
-        try:
-            self._recursive = cfg.getboolean('recursive', False)
-        except ValueError as ex:
-            raise ConfigError('Wrong value for "source.recursive": %s' % ex)
-        try:
-            self._delete = cfg.getboolean('delete', False)
-        except ValueError as ex:
-            raise ConfigError('Wrong value for "source.delete": %s' % ex)
-        _logger.debug('source recursive=%s | delete=%s',
-                      self._recursive, self._delete)
+    def __init__(self, job_cfg):
+        super().__init__(job_cfg['source', 'path'],
+                         job_cfg['job', 'collect_data'])
+        _logger.info('Source: %s' % job_cfg['source_url'])
+        self._files = job_cfg['source', 'files']
+        self._ignore = job_cfg['source', 'ignore']
+        self._recursive = job_cfg['source', 'recursive']
+        self._delete = job_cfg['source', 'delete']
 
     def _patterns(self, patterns):
         lst = []
@@ -90,51 +86,58 @@ class BaseSource(Endpoint):
                     for file_path in self._walk(p):
                         yield file_path
                 except Exception as ex:
-                    self.error_cnt += 1
-                    _logger.error('Source - directory: %s (%s)', p, ex)
+                    self._handle_error('Source - directory', p, ex)
             elif self._isfile(p):
                 yield p
 
     def files(self):
-        """Return a generator that yields 2-tuples.
+        """Return an iterator that yields 2-tuples.
 
-        The first element of the tuple is the file path as a :class:`str`,
-        the second a :term:`binary file` opened in read-mode.
+        The first element of the tuple is the file path relative to the source
+        base path as a :class:`str`, the second a :term:`binary file` opened in
+        read-mode.
 
-        :return: generator
+        :return: iterator
         """
         files = self._patterns(self._files)
         ignore = self._patterns(self._ignore)
+        path_len = len(self._path) + 1
         for file_path in self._walk(self._path):
             if (self._match(files, file_path) and
                     not self._match(ignore, file_path)):
                 _logger.debug('source files file_path=%s', file_path)
                 try:
-                    yield (file_path[len(self._path) + 1:],
-                           self._open(file_path, 'rb'))
+                    yield file_path[path_len:], self._open(file_path, 'rb')
                     if self._delete:
-                        self._remove(file_path)
+                        with suppress(Exception):
+                            self._remove(file_path)
                 except Exception as ex:
-                    self.error_cnt += 1
-                    _logger.error('Source - file: %s (%s)', file_path, ex)
+                    self._handle_error('Source - file', file_path, ex)
 
 
 class BaseTarget(Endpoint):
     """Base class for target implementations.
 
-    :param cfg: target configuration
-    :type cfg: :class:`configparser.ConfigParser` section
+    Subclasses must define::
+
+        self._path_join
+        self._open
+        self._remove
+        self._path_base
+        self._path_dir
+        self._path_exists
+        self._makedirs
+        self._rename
+
+    :param job_cfg: job configuration
+    :type job_cfg: salmagundi.config.Config
     """
 
-    def __init__(self, cfg):
-        super().__init__(cfg)
-        self._temp = utils.str_to_tuple(cfg.get('temp', ''), ':')
-        _logger.debug('target temp=%s', self._temp)
-        if self._temp and (len(self._temp) > 2 or
-                           self._temp[0] not in ('dot', 'ext', 'dir') or
-                           self._temp[0] == 'dot' and len(self._temp) > 1):
-            raise ConfigError('Wrong value for "target.temp": %s' %
-                              cfg['temp'])
+    def __init__(self, job_cfg):
+        super().__init__(job_cfg['target', 'path'],
+                         job_cfg['job', 'collect_data'])
+        _logger.info('Target: %s' % job_cfg['target_url'])
+        self._temp = job_cfg['target', 'temp']
 
     def _temp_path(self, file_path):
         if self._temp:
@@ -154,7 +157,7 @@ class BaseTarget(Endpoint):
 
         See: :meth:`BaseSource.files`.
 
-        :param str file_path: file path
+        :param str file_path: file path relative to the target base path
         :param reader: file reader
         :type reader: :term:`binary file` opened in read-mode
         """
@@ -167,11 +170,11 @@ class BaseTarget(Endpoint):
             if self._path_exists(full_path):
                 self._remove(full_path)
             with self._open(tmp_path or full_path, 'wb') as fh:
-                fh.write(reader.read())
+                while fh.write(reader.read(_CHUNK_SIZE)):
+                    pass
             if tmp_path:
                 self._rename(tmp_path, full_path)
             return True
         except Exception as ex:
-            self.error_cnt += 1
-            _logger.error('Target - file: %s (%s)', file_path, ex)
+            self._handle_error('Target - file', full_path, ex)
         return False

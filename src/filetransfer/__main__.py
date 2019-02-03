@@ -1,7 +1,7 @@
 """Main module.
 
 usage:
- %(prog)s [-c CONFIG] JOBID
+ %(prog)s [-v] [-c CONFIG] JOBID
  %(prog)s -k [-H] [-p PORT] HOST FILE
  %(prog)s -d [-p PORT] HOST FILE
  %(prog)s -h | -V
@@ -17,6 +17,7 @@ usage:
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
  -p, --port PORT      SFTP server port [default: %(sshport)d]
+ -v, --verbose        print traceback for uncaught errors
 
  -h, --help           show this help
  -V, --version        show the version
@@ -25,24 +26,26 @@ usage:
   0   success
   1   configuration error
   2   connect error
-  9   unexpected error
+  3   transfer error
+  8   terminated
+  9   another error
 """
 
 import base64
-import configparser
 import hashlib
 import locale
 import logging
 import os
+import signal
 import sys
-from pathlib import Path
 
 from docopt import docopt
 from paramiko import HostKeys, Transport, SSHException
+from salmagundi import strings
 
 from . import __version__, config, job, utils
 from .const import SSH_PORT
-from .exceptions import ConfigError, ConnectError
+from .exceptions import ConfigError, ConnectError, TransferError, Terminated
 
 progname = 'FileTransfer'
 env_var_name = 'FILETRANSFER_CFG'
@@ -64,41 +67,27 @@ def main():
 
 
 def _run_filetransfer(args):
+    signal.signal(signal.SIGTERM, utils.terminate)
     try:
         if args['--config']:
-            cfg_file = Path(args['--config'])
+            cfg_file = args['--config']
         else:
-            path = os.getenv(env_var_name)
-            if path is None:
-                raise ConfigError('A config file is required!')
-            cfg_file = Path(path)
-        cfg_file = cfg_file.expanduser()
-        job_id = args['JOBID']
-        app_cfg = configparser.ConfigParser(interpolation=None)
-        with cfg_file.open() as fh:
-            app_cfg.read_file(fh)
-        config.configure(app_cfg, job_id)
-        job_file = (config.jobs_dir / job_id).with_suffix('.cfg')
-        _logger.debug('job_file=%s', job_file)
-        job_cfg = configparser.ConfigParser(interpolation=None)
-        with job_file.open() as fh:
-            job_cfg.read_file(fh)
-    except (FileNotFoundError, configparser.Error, ConfigError) as ex:
-        if _logger.hasHandlers():
-            _logger.critical('Configuration error: %s', ex)
-            _logger.info('Job "%s" finished', job_id)
-            _logger.debug('exit status=1')
-        else:
-            print(ex, file=sys.stderr)
-        return 1
-    try:
-        job.run(job_cfg, job_id)
+            cfg_file = os.getenv(env_var_name)
+        app_cfg, job_cfg = config.configure(cfg_file, args['JOBID'])
+        job.run(app_cfg, job_cfg)
         status = 0
     except ConfigError:
         status = 1
     except ConnectError:
         status = 2
+    except TransferError:
+        status = 3
+    except (KeyboardInterrupt, Terminated):
+        status = 8
     except Exception:
+        if args['--verbose']:
+            import traceback
+            traceback.print_exc()
         status = 9
     _logger.debug('exit status=%d', status)
     return status
@@ -109,7 +98,7 @@ def _get_hostkey(args):
     file = args['FILE']
     hash_ = args['--hash']
     try:
-        port = utils.str2port(args['--port'])
+        port = strings.str2port(args['--port'])
         with Transport((host, port)) as transport:
             transport.start_client()
             hostkey = transport.get_remote_server_key()
@@ -118,7 +107,8 @@ def _get_hostkey(args):
             print('%s (%d) Fingerprints:' % (name, hostkey.get_bits()))
             fp_md5 = hashlib.md5()
             fp_md5.update(hostkey.asbytes())
-            print(' MD5: %s' % utils.format_hex(fp_md5.hexdigest()))
+            print(' MD5: %s' %
+                  strings.insert_separator(fp_md5.hexdigest(), ':', 2))
             fp_sha = hashlib.sha256()
             fp_sha.update(hostkey.asbytes())
             print(' SHA256: %s' % base64.b64encode(fp_sha.digest()).
@@ -171,7 +161,7 @@ def _del_hostkey(args):
     host = args['HOST']
     file = args['FILE']
     try:
-        port = utils.str2port(args['--port'])
+        port = strings.str2port(args['--port'])
         hostname = utils.format_knownhost(host, port)
         hostkeys = HostKeys()
         hostkeys.load(file)

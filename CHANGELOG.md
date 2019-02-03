@@ -1,6 +1,10 @@
 History
 -------
 
+ - Re-implementation of configuration handling
+ - Changes in API
+ - Minor changes in job and host configurations
+
 **2019-01-08 (0.6.0)**
  - Support ECDSA and Ed25519 for SFTP authentication keys
  - Change SFTP authentication key configuration

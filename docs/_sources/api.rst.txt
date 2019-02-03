@@ -8,16 +8,22 @@ See: :doc:`Configuration <config>`,
 examples :ref:`ref-configure-and-run` and :ref:`ref-transfer`
 
 
+.. autoexception:: filetransfer.Error
+
+
 .. autoexception:: filetransfer.ConfigError
 
 
 .. autoexception:: filetransfer.ConnectError
 
 
+.. autoexception:: filetransfer.TransferError
+
+
+.. autoclass:: filetransfer.JobResult
+
+
 .. autofunction:: filetransfer.configure
-
-
-.. autofunction:: filetransfer.run
 
 
 .. autofunction:: filetransfer.transfer

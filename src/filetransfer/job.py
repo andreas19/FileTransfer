@@ -1,148 +1,155 @@
 """Job module."""
 
 import logging
-import pprint
-import textwrap
 import traceback
+from collections import namedtuple
 from datetime import datetime
 
-from . import config, mail
-from .exceptions import ConfigError, ConnectError
+from .const import ErrorsEnum
+from .exceptions import ConnectError, TransferError, Terminated
 from .local import LocalSource, LocalTarget
 from .ftp import FTPSource, FTPTarget
 from .sftp import SFTPSource, SFTPTarget
 
 _logger = logging.getLogger(__name__)
 
+JobResult = namedtuple('JobResult', 'files_cnt, src_error_cnt, '
+                       'tgt_error_cnt file_list')
+JobResult.__doc__ = """Class that contains job results.
 
-def run(cfg, job_id):
+This class has the following fields:
+
+=================  ===
+**files_cnt**      number of successfully transferred files
+**src_error_cnt**  number of files that could not be read
+**tgt_error_cnt**  number of files that could not be written
+**file_list**      list of tuples: (path, info, tag)
+                    - path: path relative to source/target directory
+                    - info: duration of transfer or error text
+                    - tag: > (source), < (target), = (transffered)
+
+                   if data collection is disabled this will be ``None``
+=================  ===
+"""
+
+
+def run(app_cfg, job_cfg):
     """Run a job.
 
-    :param cfg: a job configuration
-    :type cfg: configparser.ConfigParser
-    :raises filetransfer.exceptions.ConfigError: if there is a problem with
-                                                 the configuration
+    :param app_cfg: the application configuration
+    :type app_cfg: salmagundi.config.Config
+    :param job_cfg: the job configuration
+    :type job_cfg: salmagundi.config.Config
     :raises filetransfer.exceptions.ConnectError: if there is a connection
                                                   problem
+    :raises filetransfer.TransferError: if there is a fatal problem
+                                        during transfer
+    :raises filetransfer.Terminated: if terminatated
     :raises Exception: if another error occurs
     """
-    start_time = datetime.now()
-    job_name = _get_job_name(cfg, job_id)
     try:
-        config.host_configuration(cfg, 'source')
-        config.host_configuration(cfg, 'target')
-        files_cnt, src_error_cnt, tgt_error_cnt = transfer(cfg)
-        if src_error_cnt or tgt_error_cnt:
-            err = 'Transfer error(s)'
-            msg = ('%d files transferred, %d source error(s), '
-                   '%d target error(s)' %
-                   (files_cnt, src_error_cnt, tgt_error_cnt))
-            _logger.error('Transfer completed: %s', msg)
-            msg += ' (see log)'
+        result = transfer(job_cfg)
+        _logger.info('Transfer completed: %d files transferred, %d source '
+                     'errors, %d target errors' % result[:3])
+        if result.src_error_cnt or result.tgt_error_cnt:
+            err = ErrorsEnum.FILES
         else:
-            err = None
-            msg = '%d files transferred' % files_cnt
-            _logger.info('Transfer completed: %s', msg)
-    except ConfigError as ex:
-        _logger.critical('Configuration error: %s', ex)
-        err = 'Configuration error'
-        msg = str(ex)
-        raise ex
+            err = ErrorsEnum.NONE
     except ConnectError as ex:
         _logger.critical('Connect error: %s', ex)
-        err = 'Connect error'
-        msg = str(ex)
+        err = ErrorsEnum.CONNECT
+        result = ex
         raise ex
+    except TransferError as ex:
+        _logger.critical('Transfer error: %s', ex)
+        err = ErrorsEnum.TRANSFER
+        result = ex
+        raise ex
+    except (KeyboardInterrupt, Terminated) as ex:
+        _logger.critical('Terminated')
+        err = ErrorsEnum.OTHER
+        result = ex
+        raise Terminated
     except Exception as ex:
-        _logger.critical('Unexpected error\n%s', traceback.format_exc().strip())
-        err = 'Unexpected error'
-        msg = str(ex)
+        _logger.critical('Another error\n%s', traceback.format_exc().strip())
+        err = ErrorsEnum.OTHER
+        result = ex
         raise ex
     finally:
         end_time = datetime.now()
-        duration = end_time - start_time
-        if config.mail_cfg:
-            args = {
-                'jobid': job_id,
-                'jobname': job_name,
-                'starttime': start_time,
-                'endtime': end_time,
-                'duration': duration,
-                'msg': textwrap.indent(msg, '  ') if msg else ''
-            }
-            if _logger.isEnabledFor(logging.DEBUG):
-                _logger.debug('mail args:\n%s', pprint.pformat(args))
-            mail.send(cfg, args, err)
-        _logger.info('Job "%s" finished: duration=%s', job_id, duration)
+        if app_cfg['mail_config_ok']:
+            args = dict(endtime=end_time)
+            from . import mail
+            mail.send(app_cfg, job_cfg, args, err, result)
+        _logger.info('Job "%s" finished: duration=%s',
+                     job_cfg['job_id'], end_time - app_cfg['start_time'])
 
 
-def _create_source(cfg):
-    try:
-        cfg = cfg['source']
-        src_type = cfg['type'].upper() if 'type' in cfg else 'LOCAL'
-        if src_type == 'LOCAL':
-            return LocalSource(cfg)
-        elif src_type == 'FTP':
-            return FTPSource(cfg)
+def _create_source(job_cfg):
+    host_id = job_cfg['source', 'host_id']
+    if host_id:
+        src_type = job_cfg['source_host_cfg'][host_id, 'type']
+        if src_type == 'FTP':
+            return FTPSource(job_cfg)
         elif src_type == 'FTPS':
-            return FTPSource(cfg, True)
+            return FTPSource(job_cfg, True)
         elif src_type == 'SFTP':
-            return SFTPSource(cfg)
-        else:
-            raise ConfigError('Unknown source type "%s"' % src_type)
-    except KeyError as ex:
-        raise ConfigError('Section "%s" is required' % ex.args[0])
+            return SFTPSource(job_cfg)
+    else:
+        return LocalSource(job_cfg)
 
 
-def _create_target(cfg):
-    try:
-        cfg = cfg['target']
-        tgt_type = cfg['type'].upper() if 'type' in cfg else 'LOCAL'
-        if tgt_type == 'LOCAL':
-            return LocalTarget(cfg)
-        elif tgt_type == 'FTP':
-            return FTPTarget(cfg)
+def _create_target(job_cfg):
+    host_id = job_cfg['target', 'host_id']
+    if host_id:
+        tgt_type = job_cfg['target_host_cfg'][host_id, 'type']
+        if tgt_type == 'FTP':
+            return FTPTarget(job_cfg)
         elif tgt_type == 'FTPS':
-            return FTPTarget(cfg, True)
+            return FTPTarget(job_cfg, True)
         elif tgt_type == 'SFTP':
-            return SFTPTarget(cfg)
-        else:
-            raise ConfigError('Unknown target type "%s"' % tgt_type)
-    except KeyError as ex:
-        raise ConfigError('Section "%s" is required' % ex.args[0])
+            return SFTPTarget(job_cfg)
+    else:
+        return LocalTarget(job_cfg)
 
 
-def transfer(cfg):
+def transfer(job_cfg):
     """Transfer files.
 
-    :param cfg: a job configuration
-    :type cfg: configparser.ConfigParser
-    :return: files count, source error count, target error count
-    :rtype: (int, int, int)
-    :raises filetransfer.ConfigError: if there is a problem with
-                                      the configuration
+    :param job_cfg: the job configuration
+    :type job_cfg: salmagundi.config.Config
+    :return: job result
+    :rtype: JobResult
     :raises filetransfer.ConnectError: if there is a connection problem
+    :raises filetransfer.TransferError: if there is a fatal problem
+                                        during transfer
     :raises Exception: if another error occurs
     """
-    with _create_source(cfg) as source, _create_target(cfg) as target:
+    transferred_files = [] if job_cfg['job', 'collect_data'] else None
+    with _create_source(job_cfg) as source, _create_target(job_cfg) as target:
         files_cnt = 0
-        for file_path, reader in source.files():
-            try:
-                if target.store(file_path, reader):
-                    files_cnt += 1
-                    _logger.info('Transferred - file: %s', file_path)
-            finally:
-                reader.close()
-    return files_cnt, source.error_cnt, target.error_cnt
-
-
-def _get_job_name(cfg, job_id):
-    if 'notify' in cfg:
-        job_name = cfg['notify'].get('name')
-        if job_name:
-            _logger.info('Job name: %s', job_name)
-        else:
-            job_name = job_id
+        try:
+            for file_path, reader in source.files():
+                try:
+                    start_time = datetime.now()
+                    if target.store(file_path, reader):
+                        files_cnt += 1
+                        duration = datetime.now() - start_time
+                        if transferred_files is not None:
+                            transferred_files.append((file_path, duration))
+                        _logger.info('Transferred - file: %s (%s)',
+                                     file_path, duration)
+                finally:
+                    reader.close()
+        except Exception as ex:
+            raise TransferError(ex)
+    if job_cfg['job', 'collect_data']:
+        file_lst = []
+        for lst, tag in zip((transferred_files, source.error_files,
+                             target.error_files), ('=', '>', '<')):
+            for path, info in lst:
+                file_lst.append((path, info, tag))
+        file_lst.sort()
     else:
-        job_name = job_id
-    return job_name
+        file_lst = None
+    return JobResult(files_cnt, source.error_cnt, target.error_cnt, file_lst)

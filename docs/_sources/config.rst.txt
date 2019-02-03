@@ -6,6 +6,9 @@ All configuration files are INI-style files.
 In the tables below strings in single quotes must be given literally
 (case insensitive) and without the quotes.
 
+The paths mentioned in the configuration files must be either absolute
+or relative to the working directory of the *filetransfer* process.
+
 See: example :ref:`ref-configuration-files`
 
 
@@ -19,6 +22,11 @@ See: example :ref:`ref-configuration-files`
       when using FTP, FTPS or SFTP.
     - **SFTP authentication keyfiles** in :ref:`host configurations <ref-hosts-configuration>`
       must now have their type declared with ``key_type``
+   Change in version 0.7.0:
+    - The **password** option in host configurations is now required except
+      for SFTP when an authentication key is used.
+    - Option ``name`` moved from section ``[notify]`` to the new section ``[job]``
+      in :ref:`job configuration <ref-job-configuration>`.
 
 .. _ref-app-configuration:
 
@@ -41,7 +49,8 @@ Job Configuration
 -----------------
 
 A job configuration file must have a name of the form :file:`{JOB_ID}.cfg`
-(e.g. ``job001.cfg`` where ``job001`` is the job id) and it must be
+(e.g. ``job001.cfg`` where ``job001`` is the job id; the extension ``.cfg`` can
+be changed in the application configuration) and it must be
 saved in the ``jobs_dir`` directory as defined in the application configuration.
 
 .. csv-table::

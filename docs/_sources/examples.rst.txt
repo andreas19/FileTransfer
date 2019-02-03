@@ -27,7 +27,7 @@ Configuration files
    security = STARTTLS
    user = transferuser
    password = topsecret
-   from = transferuser@example.com
+   from_addr = transferuser@example.com
 
    [notify]
    error = admin@example.com
@@ -35,6 +35,9 @@ Configuration files
 .. code-block:: ini
 
    ; job configuration: example/configs/jobs/job001.cfg
+
+   [job]
+   name = Example file transfer
 
    [source]
    path = example/data
@@ -47,7 +50,6 @@ Configuration files
    temp = ext:.tmp
 
    [notify]
-   name = Example file transfer
    done = user@example.com
 
 .. code-block:: ini
@@ -74,18 +76,18 @@ Configuration files
 
 .. _ref-configure-and-run:
 
-configure() and run()
----------------------
+configure()
+-----------
 
 .. code-block:: python
 
-   from filetransfer import configure, run
+   from filetransfer import configure
 
    ...
 
-   configure('example/configs/filetransfer.cfg', 'job001')
+   run, _ = configure('example/configs/filetransfer.cfg', 'job001')
 
-   ...
+   ...  # e.g. prepare data that will be transferred
 
    run()
 
@@ -114,6 +116,6 @@ transfer()
               'key_file': 'example/ssh/rsa_key',
               'path': 'path/on/server',
               'temp': 'ext:.tmp'}
-   file_cnt, src_err, tgt_err = transfer(src_cfg, tgt_cfg)
+   result = transfer(src_cfg, tgt_cfg)
 
    ...
