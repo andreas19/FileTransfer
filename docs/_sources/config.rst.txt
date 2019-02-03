@@ -22,7 +22,7 @@ See: example :ref:`ref-configuration-files`
       when using FTP, FTPS or SFTP.
     - **SFTP authentication keyfiles** in :ref:`host configurations <ref-hosts-configuration>`
       must now have their type declared with ``key_type``
-   Change in version 0.7.0:
+   Changes in version 0.7.0:
     - The **password** option in host configurations is now required except
       for SFTP when an authentication key is used.
     - Option ``name`` moved from section ``[notify]`` to the new section ``[job]``
