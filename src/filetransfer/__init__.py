@@ -1,7 +1,7 @@
 """Simple API to include ``filetransfer`` in a Python script.
 
 .. attention::
-   Change in version 0.7.0:
+   Change in version 0.7.1:
     - There is no ``run()`` function any more. The required function is
       returned by :func:`configure`.
     - The function :func:`transfer` now returns a :class:`JobResult` object.
@@ -13,7 +13,7 @@ from . import config, job
 from .exceptions import Error, ConfigError, ConnectError, TransferError
 from .job import JobResult
 
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 
 __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
            'JobResult', 'configure', 'transfer']
