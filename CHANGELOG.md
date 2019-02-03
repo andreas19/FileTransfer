@@ -1,6 +1,9 @@
 History
 -------
 
+**2019-02-03 (0.7.1)**
+ - Bugfix: subpackage data was not included
+
 **2019-02-03 (0.7.0)**
  - Re-implementation of configuration handling
  - Changes in API
