@@ -1,6 +1,7 @@
 History
 -------
 
+**2019-02-03 (0.7.0)**
  - Re-implementation of configuration handling
  - Changes in API
  - Minor changes in job and host configurations
