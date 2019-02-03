@@ -13,7 +13,7 @@ from . import config, job
 from .exceptions import Error, ConfigError, ConnectError, TransferError
 from .job import JobResult
 
-__version__ = '0.6.0'
+__version__ = '0.7.0'
 
 __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
            'JobResult', 'configure', 'transfer']
