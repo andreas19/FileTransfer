@@ -1,7 +1,7 @@
 """Simple API to include ``filetransfer`` in a Python script.
 
 .. attention::
-   Change in version 0.7.1:
+   Changes in version 0.7.0:
     - There is no ``run()`` function any more. The required function is
       returned by :func:`configure`.
     - The function :func:`transfer` now returns a :class:`JobResult` object.
