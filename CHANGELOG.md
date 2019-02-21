@@ -1,6 +1,7 @@
 History
 -------
 
+**2019-02-21 (0.7.3)**
  - Improve email handling code
  - Improve API
 
