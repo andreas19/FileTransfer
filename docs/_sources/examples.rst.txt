@@ -81,17 +81,28 @@ configure()
 
 .. code-block:: python
 
-   from filetransfer import configure
+   import signal
+   from filetransfer import configure, Terminated, Error
 
-   ...
+   def terminated(n, f):
+      raise Terminated
 
-   run, _ = configure('example/configs/filetransfer.cfg', 'job001')
+   signal.signal(signal.SIGTERM, terminated)
 
-   ...  # e.g. prepare data that will be transferred
+   try:
+      exc = None
+      run, _ = configure('example/configs/filetransfer.cfg', 'job001')
 
-   run()
+      try:
+         ...  # e.g. prepare data that will be transferred
+      except (Terminated, Exception) as ex:
+         exc = ex
 
-   ...
+      run(exc)
+   except (Error, Terminated) as ex:
+      raise SystemExit(ex.code)
+   except Exception as ex:
+      raise SystemExit(9)
 
 
 .. _ref-transfer:

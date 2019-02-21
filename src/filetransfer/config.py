@@ -7,6 +7,7 @@ import os
 import pkgutil
 import sys
 from datetime import datetime
+from email.utils import parseaddr
 from pathlib import Path
 from urllib.parse import urlunsplit
 
@@ -267,7 +268,7 @@ _CONVS = {
     'hostport': lambda s: strings.split_host_port(s, 0),
     'secopts': config.convert_choice(('STARTTLS', 'TLS'), converter=str.upper),
     'strtuple': strings.str2tuple,
-    'strset': lambda s: set(strings.str2tuple(s)),
+    'addrs': lambda s: set(map(parseaddr, strings.str2tuple(s))),
     'tempopts': _tempopts,
     'typeopts': config.convert_choice(('FTP', 'FTPS', 'SFTP'),
                                       converter=str.upper,

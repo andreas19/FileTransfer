@@ -10,23 +10,31 @@
 import configparser
 
 from . import config, job
-from .exceptions import Error, ConfigError, ConnectError, TransferError
+from .exceptions import (Error, ConfigError, ConnectError,
+                         TransferError, Terminated)
 from .job import JobResult
 
 __version__ = '0.7.2'
 
 __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
-           'JobResult', 'configure', 'transfer']
+           'Terminated', 'JobResult', 'configure', 'transfer']
 
 
 def configure(cfg_file, job_id, **kwargs):
     """Configure the application.
 
-    This function returns a function that must be called without
-    arguments to run the actual file transfer. The function may
-    raise :exc:`~filetransfer.ConnectError` if there is a connection
-    problem, :exc:`~filetransfer.TransferError` if there is a fatal
-    problem during transfer, or :exc:`Exception` if another error occurs.
+    This function returns a function that must be called
+    to run the actual file transfer. The function may
+    raise :exc:`~filetransfer.ConnectError`, :exc:`~filetransfer.TransferError`,
+    :exc:`Terminated`, or :exc:`Exception` if another error occurs.
+    The function takes one optional argument that must be an instance of a
+    subclass of :exc:`BaseException`
+    that will be reraised within ``run()``. The intended use for this is
+    to handle an exception from code between ``configure`` and ``run`` in
+    the usual way (logging and sending an email notification). The transfer
+    itself will not be run. See :ref:`example <ref-configure-and-run>`.
+
+    .. versionchanged:: 0.7.3 add exception parameter to run()
 
     You can put your own configuration sections in the application
     and job configuration files. The names of theses sections must
@@ -64,7 +72,10 @@ def configure(cfg_file, job_id, **kwargs):
         d[sec[2:]] = dict(cp.items(sec))
     cp.clear()
     cp.read_dict(d)
-    return lambda: job.run(app_cfg, job_cfg), cp
+
+    def run(exc=None):
+        job.run(app_cfg, job_cfg, exc)
+    return run, cp
 
 
 def transfer(src_cfg, tgt_cfg=None):

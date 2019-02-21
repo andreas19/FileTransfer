@@ -1,5 +1,6 @@
 """Mail module."""
 
+import email
 import logging
 import pprint
 import string
@@ -30,7 +31,7 @@ def _get_addrs(app_cfg, err):
     if not addrs:
         _logger.warning('No email addresses for status %r' % status)
         return
-    return ', '.join(addrs)
+    return ', '.join(map(lambda a: '%s <%s>' % (a) if a[0] else a[1], addrs))
 
 
 def _add_args_from_app_cfg(app_cfg, args, err):
@@ -102,37 +103,42 @@ def send(app_cfg, job_cfg, args, err, result):
     _add_args_from_result(result, args)
     if _logger.isEnabledFor(logging.DEBUG):
         _logger.debug('mail template args:\n%s', pprint.pformat(args))
-    templ = string.Template(template)
-    text = templ.substitute(defaultdict(lambda: '-', args))
+    emailmsg = email.message.EmailMessage()
+    emailmsg['From'] = args['fromaddr']
+    emailmsg['To'] = args['toaddrs']
+    emailmsg['Subject'] = _substitute(subject, args)
+    emailmsg.set_content(_substitute(content, args))
     host, port = app_cfg['mail', 'host']
     _logger.debug('mail host: %s:%d', host, port)
     _logger.debug('mail security: %s', app_cfg['mail', 'security'])
     smtp_cls = SMTP_SSL if app_cfg['mail', 'security'] == 'TLS' else SMTP
     if host == 'TEST':
         print('=====\nCLASS: %s\n' % smtp_cls.__name__)
-        print('%s\n=====' % text)
+        print('%s\n=====' % emailmsg)
     else:
         try:
             with smtp_cls(host, port) as smtp:
                 if app_cfg['mail', 'security'] == 'STARTTLS':
                     smtp.starttls()
                 smtp.login(app_cfg['mail', 'user'], app_cfg['mail', 'password'])
-                smtp.sendmail(app_cfg['mail', 'from_addr'], args['toaddrs'],
-                              text.encode(errors='replace'))
+                smtp.send_message(emailmsg)
             _logger.info('Notification sent')
             if _logger.isEnabledFor(logging.DEBUG):
                 _logger.debug('%s:%d\n%s', host, port,
-                              textwrap.indent(text, ' >'))
+                              textwrap.indent(str(emailmsg), ' >'))
         except (OSError, SMTPException):
             _logger.exception('Notification not sent:\n%s' %
-                              textwrap.indent(text, ' >'))
+                              textwrap.indent(str(emailmsg), ' >'))
 
 
-template = '''From: ${fromaddr}
-To: ${toaddrs}
-Subject: Job "${jobname}" finished [${status}]
-Content-Type: text/plain; Charset = UTF-8
+def _substitute(templ, args):
+    t = string.Template(templ)
+    return t.substitute(defaultdict(lambda: '-', args))
 
+
+subject = 'Job "${jobname}" finished [${status}]'
+
+content = '''\
 Job "${jobname}" (ID: ${jobid}):
 
 Start: ${starttime}

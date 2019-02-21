@@ -33,13 +33,14 @@ This class has the following fields:
 """
 
 
-def run(app_cfg, job_cfg):
+def run(app_cfg, job_cfg, exc=None):
     """Run a job.
 
     :param app_cfg: the application configuration
     :type app_cfg: salmagundi.config.Config
     :param job_cfg: the job configuration
     :type job_cfg: salmagundi.config.Config
+    :param Exception exc: Exception to be reraised
     :raises filetransfer.exceptions.ConnectError: if there is a connection
                                                   problem
     :raises filetransfer.TransferError: if there is a fatal problem
@@ -48,6 +49,8 @@ def run(app_cfg, job_cfg):
     :raises Exception: if another error occurs
     """
     try:
+        if exc and isinstance(exc, BaseException):
+            raise exc
         result = transfer(job_cfg)
         _logger.info('Transfer completed: %d files transferred, %d source '
                      'errors, %d target errors' % result[:3])

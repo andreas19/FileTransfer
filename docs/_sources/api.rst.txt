@@ -12,12 +12,19 @@ examples :ref:`ref-configure-and-run` and :ref:`ref-transfer`
 
 
 .. autoexception:: filetransfer.ConfigError
+   :members:
 
 
 .. autoexception:: filetransfer.ConnectError
+   :members:
 
 
 .. autoexception:: filetransfer.TransferError
+   :members:
+
+
+.. autoexception:: filetransfer.Terminated
+   :members:
 
 
 .. autoclass:: filetransfer.JobResult

@@ -1,6 +1,9 @@
 History
 -------
 
+ - Improve email handling code
+ - Improve API
+
 **2019-02-03 (0.7.2)**
  - Fix dependency (wrong salmagundi version in setup.cfg)
 

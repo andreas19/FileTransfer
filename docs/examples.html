@@ -156,17 +156,28 @@
 </div>
 <div class="section" id="configure">
 <span id="ref-configure-and-run"></span><h2>configure()<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">,</span> <span class="n">Error</span>
 
-<span class="o">...</span>
+<span class="k">def</span> <span class="nf">terminated</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+   <span class="k">raise</span> <span class="n">Terminated</span>
 
-<span class="n">run</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
+<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">terminated</span><span class="p">)</span>
 
-<span class="o">...</span>  <span class="c1"># e.g. prepare data that will be transferred</span>
+<span class="k">try</span><span class="p">:</span>
+   <span class="n">exc</span> <span class="o">=</span> <span class="bp">None</span>
+   <span class="n">run</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
 
-<span class="n">run</span><span class="p">()</span>
+   <span class="k">try</span><span class="p">:</span>
+      <span class="o">...</span>  <span class="c1"># e.g. prepare data that will be transferred</span>
+   <span class="k">except</span> <span class="p">(</span><span class="n">Terminated</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+      <span class="n">exc</span> <span class="o">=</span> <span class="n">ex</span>
 
-<span class="o">...</span>
+   <span class="n">run</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="k">except</span> <span class="p">(</span><span class="n">Error</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+   <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

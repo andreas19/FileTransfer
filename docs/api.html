@@ -109,18 +109,50 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt id="filetransfer.ConfigError">
 <em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">ConfigError</code><a class="headerlink" href="#filetransfer.ConfigError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when there is a problem with the configuration.</p>
+<dl class="attribute">
+<dt id="filetransfer.ConfigError.code">
+<code class="descname">code</code><em class="property"> = 1</em><a class="headerlink" href="#filetransfer.ConfigError.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="exception">
 <dt id="filetransfer.ConnectError">
 <em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">ConnectError</code><a class="headerlink" href="#filetransfer.ConnectError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when there is a problem connecting to a server.</p>
+<dl class="attribute">
+<dt id="filetransfer.ConnectError.code">
+<code class="descname">code</code><em class="property"> = 2</em><a class="headerlink" href="#filetransfer.ConnectError.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="exception">
 <dt id="filetransfer.TransferError">
 <em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">TransferError</code><a class="headerlink" href="#filetransfer.TransferError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when there is a fatal problem during transfer.</p>
+<dl class="attribute">
+<dt id="filetransfer.TransferError.code">
+<code class="descname">code</code><em class="property"> = 3</em><a class="headerlink" href="#filetransfer.TransferError.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="filetransfer.Terminated">
+<em class="property">exception </em><code class="descclassname">filetransfer.</code><code class="descname">Terminated</code><a class="headerlink" href="#filetransfer.Terminated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when terminated with SIGTERM, SIGINT or KeyboardInterrupt.</p>
+<p>This is a subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>.</p>
+<p>See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
+<dl class="attribute">
+<dt id="filetransfer.Terminated.code">
+<code class="descname">code</code><em class="property"> = 8</em><a class="headerlink" href="#filetransfer.Terminated.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -164,11 +196,19 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt id="filetransfer.configure">
 <code class="descclassname">filetransfer.</code><code class="descname">configure</code><span class="sig-paren">(</span><em>cfg_file</em>, <em>job_id</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.configure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure the application.</p>
-<p>This function returns a function that must be called without
-arguments to run the actual file transfer. The function may
-raise <a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConnectError</span></code></a> if there is a connection
-problem, <a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TransferError</span></code></a> if there is a fatal
-problem during transfer, or <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> if another error occurs.</p>
+<p>This function returns a function that must be called
+to run the actual file transfer. The function may
+raise <a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConnectError</span></code></a>, <a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TransferError</span></code></a>,
+<a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> if another error occurs.
+The function takes one optional argument that must be an instance of a
+subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
+that will be reraised within <code class="docutils literal notranslate"><span class="pre">run()</span></code>. The intended use for this is
+to handle an exception from code between <code class="docutils literal notranslate"><span class="pre">configure</span></code> and <code class="docutils literal notranslate"><span class="pre">run</span></code> in
+the usual way (logging and sending an email notification). The transfer
+itself will not be run. See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.3: </span>add exception parameter to run()</p>
+</div>
 <p>You can put your own configuration sections in the application
 and job configuration files. The names of theses sections must
 start with <code class="docutils literal notranslate"><span class="pre">x:</span></code>. If you define the same name in both configuration

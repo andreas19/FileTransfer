@@ -45,10 +45,11 @@ from salmagundi import strings
 
 from . import __version__, config, job, utils
 from .const import SSH_PORT
-from .exceptions import ConfigError, ConnectError, TransferError, Terminated
+from .exceptions import Error, ConfigError, ConnectError, Terminated
 
 progname = 'FileTransfer'
 env_var_name = 'FILETRANSFER_CFG'
+other_err_code = 9
 _logger = logging.getLogger(__name__)
 
 
@@ -76,19 +77,15 @@ def _run_filetransfer(args):
         app_cfg, job_cfg = config.configure(cfg_file, args['JOBID'])
         job.run(app_cfg, job_cfg)
         status = 0
-    except ConfigError:
-        status = 1
-    except ConnectError:
-        status = 2
-    except TransferError:
-        status = 3
+    except Error as ex:
+        status = ex.code
     except (KeyboardInterrupt, Terminated):
-        status = 8
+        status = Terminated.code
     except Exception:
         if args['--verbose']:
             import traceback
             traceback.print_exc()
-        status = 9
+        status = other_err_code
     _logger.debug('exit status=%d', status)
     return status
 
@@ -147,13 +144,13 @@ def _get_hostkey(args):
                     hostkeys.save(file)
     except ConfigError as ex:
         print(ex, file=sys.stderr)
-        return 1
+        return ConfigError.code
     except (OSError, SSHException) as ex:
         print(ex, file=sys.stderr)
-        return 2
+        return ConnectError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return 9
+        return other_err_code
     return 0
 
 
@@ -173,10 +170,10 @@ def _del_hostkey(args):
             print('Key for "%s" not found in file "%s"' % (hostname, file))
     except (FileNotFoundError, ConfigError) as ex:
         print(ex, file=sys.stderr)
-        return 1
+        return ConfigError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return 9
+        return other_err_code
     return 0
 
 
