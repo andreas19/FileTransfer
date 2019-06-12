@@ -1,7 +1,6 @@
 """Job module."""
 
 import logging
-import traceback
 from collections import namedtuple
 from datetime import datetime
 
@@ -74,7 +73,7 @@ def run(app_cfg, job_cfg, exc=None):
         result = ex
         raise Terminated
     except Exception as ex:
-        _logger.critical('Another error\n%s', traceback.format_exc().strip())
+        _logger.critical('Another error\n%s', exc_info=True)
         err = ErrorsEnum.OTHER
         result = ex
         raise ex
