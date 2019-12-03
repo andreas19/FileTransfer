@@ -1,6 +1,7 @@
 History
 -------
 
+**2019-12-03 (0.7.5)**
  - Improve documentation
  - Add more examples
 
