@@ -23,14 +23,14 @@ __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
 def configure(cfg_file, job_id, **kwargs):
     """Configure the application.
 
-    This function returns a function that must be called
-    to run the actual file transfer. The function may
+    This function returns a function (called ``run()`` from here on)
+    that must be called to run the actual file transfer. ``run()`` may
     raise :exc:`~filetransfer.ConnectError`, :exc:`~filetransfer.TransferError`,
     :exc:`Terminated`, or :exc:`Exception` if another error occurs.
-    The function takes one optional argument that must be an instance of a
+    ``run()`` takes one optional argument that must be an instance of a
     subclass of :exc:`BaseException`
     that will be reraised within ``run()``. The intended use for this is
-    to handle an exception from code between ``configure`` and ``run`` in
+    to handle an exception from code between  ``configure()`` and ``run()`` in
     the usual way (logging and sending an email notification). The transfer
     itself will not be run. See :ref:`example <ref-configure-and-run>`.
 
@@ -43,6 +43,7 @@ def configure(cfg_file, job_id, **kwargs):
     configuration file taking precedence. The prefix ``x:`` will
     be stripped from the section names before putting them in a newly
     created :class:`~configparser.ConfigParser` object that will be returned.
+    See :ref:`example <ref-extra-config>`.
 
     The logging configuration from ``cfg_file`` will only be used if
     logging was not configured before the call to this function.
@@ -95,6 +96,8 @@ def transfer(src_cfg, tgt_cfg=None):
     When using FTP, FTPS or SFTP the ``host_id`` option must be omitted
     and the options from the host configuration must be contained in the
     above configuration objects.
+
+    See :ref:`examples <ref-transfer>`.
 
     :param src_cfg: the source or job configuration
     :type src_cfg: dict or configparser.ConfigParser

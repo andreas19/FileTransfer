@@ -105,6 +105,36 @@ configure()
       raise SystemExit(9)
 
 
+.. _ref-extra-config:
+
+extra configuration
+-------------------
+
+.. code-block:: ini
+
+   ; job configuration: example/configs/jobs/job002.cfg
+
+   ; sections for FileTransfer configuration omitted
+
+   [x:DEFAULT]
+   quuz = 47
+
+   [x:foo]
+   bar = 42
+
+>>> from filetransfer import configure
+>>> run, extra = configure('example/configs/filetransfer.cfg',
+...                        'job002', defaults={'quux':'1729'})
+>>> extra['foo']['bar']
+'42'
+>>> extra['foo']['quuz']
+'47'
+>>> extra['foo']['quux']
+'1729'
+>>> type(extra)
+configparser.ConfigParser
+
+
 .. _ref-transfer:
 
 transfer()
@@ -128,5 +158,41 @@ transfer()
               'path': 'path/on/server',
               'temp': 'ext:.tmp'}
    result = transfer(src_cfg, tgt_cfg)
+
+   ...
+
+or
+
+.. code-block:: ini
+
+   ; config.ini
+
+   [source]
+   path: example/data
+   files: *.txt, *.csv
+   recursive: yes
+
+   [target]
+   type: sftp
+   host: other-company.com
+   user: user_xyz
+   known_hosts: example/ssh/known_hosts
+   key_type: RSA
+   key_file: example/ssh/rsa_key
+   path: path/on/server
+   temp: ext:.tmp
+
+.. code-block:: python
+
+   from configparser import ConfigParser
+
+   from filetransfer import transfer
+
+   ...
+
+   cfg=ConfigParser()
+   with open('config.ini') as fh:
+       cfg.read_file(fh)
+   result = transfer(cfg)
 
    ...

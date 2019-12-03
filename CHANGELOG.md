@@ -1,6 +1,9 @@
 History
 -------
 
+ - Improve documentation
+ - Add more examples
+
 **2019-06-12 (0.7.4)**
  - Upgrade dependency: paramiko 2.4.2 -> 2.5.0
 
