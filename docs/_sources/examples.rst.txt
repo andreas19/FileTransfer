@@ -79,7 +79,7 @@ Configuration files
 configure()
 -----------
 
-.. code-block:: python
+.. code-block:: python3
 
    import signal
    from filetransfer import configure, Terminated, Error
@@ -140,7 +140,7 @@ configparser.ConfigParser
 transfer()
 ----------
 
-.. code-block:: python
+.. code-block:: python3
 
    from filetransfer import transfer
 
@@ -182,7 +182,7 @@ or
    path: path/on/server
    temp: ext:.tmp
 
-.. code-block:: python
+.. code-block:: python3
 
    from configparser import ConfigParser
 

@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Examples &#8212; FileTransfer 0.7.5 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,6 +11,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -69,17 +68,23 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
@@ -157,7 +162,7 @@
 </div>
 <div class="section" id="configure">
 <span id="ref-configure-and-run"></span><h2>configure()<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">signal</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">signal</span>
 <span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">,</span> <span class="n">Error</span>
 
 <span class="k">def</span> <span class="nf">terminated</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -166,7 +171,7 @@
 <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">terminated</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
-   <span class="n">exc</span> <span class="o">=</span> <span class="bp">None</span>
+   <span class="n">exc</span> <span class="o">=</span> <span class="kc">None</span>
    <span class="n">run</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;job001&#39;</span><span class="p">)</span>
 
    <span class="k">try</span><span class="p">:</span>
@@ -195,7 +200,7 @@
 <span class="na">bar</span> <span class="o">=</span> <span class="s">42</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="k">import</span> <span class="n">configure</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">run</span><span class="p">,</span> <span class="n">extra</span> <span class="o">=</span> <span class="n">configure</span><span class="p">(</span><span class="s1">&#39;example/configs/filetransfer.cfg&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                       <span class="s1">&#39;job002&#39;</span><span class="p">,</span> <span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;quux&#39;</span><span class="p">:</span><span class="s1">&#39;1729&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">extra</span><span class="p">[</span><span class="s1">&#39;foo&#39;</span><span class="p">][</span><span class="s1">&#39;bar&#39;</span><span class="p">]</span>
@@ -211,7 +216,7 @@
 </div>
 <div class="section" id="transfer">
 <span id="ref-transfer"></span><h2>transfer()<a class="headerlink" href="#transfer" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">transfer</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">transfer</span>
 
 <span class="o">...</span>
 
@@ -250,7 +255,7 @@
 <span class="na">temp: ext:.tmp</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">configparser</span> <span class="kn">import</span> <span class="n">ConfigParser</span>
 
 <span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">transfer</span>
 
@@ -275,11 +280,11 @@
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018-2019, Andreas Suhre.
+      &copy;2018-2020, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 

@@ -25,10 +25,10 @@ $ pip install --user FileTransfer
    Use a dedicated user and schedule the jobs in that user's ``crontab``.
 
 
-Dependencies
+Requirements
 ------------
 
-.. include:: dependencies.txt
+.. include:: requirements.incl
 
 
 Links

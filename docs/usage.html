@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Using filetransfer &#8212; FileTransfer 0.7.5 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,6 +11,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,17 +62,23 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="documentwrapper">
@@ -123,15 +128,14 @@ so that it can be omitted on the commandline of each job.</p>
 <p>It is also possible to get hostkeys from SFTP servers and save them to or delete them from
 the known-hosts file.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<ul class="last simple">
-<li><dl class="first docutils">
-<dt><a class="reference external" href="https://www.openssh.com/">OpenSSH</a></dt>
-<dd><ul class="first last">
-<li><a class="reference external" href="https://man.openbsd.org/ssh.1">ssh</a></li>
-<li><a class="reference external" href="https://man.openbsd.org/sftp.1">sftp</a></li>
-<li><a class="reference external" href="https://man.openbsd.org/ssh-keyscan.1">ssh-keyscan</a></li>
-<li><a class="reference external" href="https://man.openbsd.org/ssh-keygen.1">ssh-keygen</a></li>
+<p class="admonition-title">See also</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference external" href="https://www.openssh.com/">OpenSSH</a></dt><dd><ul>
+<li><p><a class="reference external" href="https://man.openbsd.org/ssh.1">ssh</a></p></li>
+<li><p><a class="reference external" href="https://man.openbsd.org/sftp.1">sftp</a></p></li>
+<li><p><a class="reference external" href="https://man.openbsd.org/ssh-keyscan.1">ssh-keyscan</a></p></li>
+<li><p><a class="reference external" href="https://man.openbsd.org/ssh-keygen.1">ssh-keygen</a></p></li>
 </ul>
 </dd>
 </dl>
@@ -148,11 +152,11 @@ the known-hosts file.</p>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018-2019, Andreas Suhre.
+      &copy;2018-2020, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.2</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.11</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
 
