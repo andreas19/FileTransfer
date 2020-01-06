@@ -50,7 +50,7 @@ def configure(cfg_file, job_id):
                                        create_properties=False,
                                        converters=_CONVS)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError('in app config: %s' % ex)
+            raise ConfigError(f'in app config: {ex!s}')
         _configure_logging(app_cfg, job_id)
         app_cfg.add('start_time', datetime.now())
         mail_config_ok = _check_mail_config(app_cfg)
@@ -64,7 +64,7 @@ def configure(cfg_file, job_id):
                                                         'job_cfg_ext'])
             job_cfg = get_job_cfg(job_cfg_file, app_cfg)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError('in job config: %s' % ex)
+            raise ConfigError(f'in job config: {ex!s}')
         job_cfg.add('job_id', job_id)
         job_cfg.add('job_cfg_file', job_cfg_file)
         if not job_cfg['job', 'name']:
@@ -112,8 +112,7 @@ def _debug_config(title, cfg):
                 value = '*' * len(value)
             row = 'RO' if readonly else 'RW'
             lines.append(f'  {row} ({sec}, {opt}) = {value!r}')
-        if _logger.isEnabledFor(logging.DEBUG):
-            _logger.debug('%s:\n%s', title, '\n'.join(lines))
+        _logger.debug('%s:\n%s', title, '\n'.join(lines))
 
 
 def _check_mail_config(app_cfg):
@@ -121,8 +120,8 @@ def _check_mail_config(app_cfg):
         if (app_cfg['mail', 'security'] is None or
             not all(t[2] is not config.NOTFOUND
                     for t in app_cfg if t[0] == 'mail' and t[1] != 'security')):
-            raise ConfigError('in app config: incomplete or invalid mail '
-                              'server configuration')
+            raise ConfigError('in app config: incomplete or invalid mail'
+                              ' server configuration')
         return True
     return False
 
@@ -134,8 +133,8 @@ def _merge_notify_addrs(app_cfg, job_cfg, mail_config_ok):
             (app_cfg['notify', 'success'] or
              app_cfg['notify', 'error'] or
              app_cfg['notify', 'done'])):
-        _logger.warning('notification addresses present but '
-                        'mail server not configured')
+        _logger.warning('notification addresses present but'
+                        ' mail server not configured')
 
 
 def _configure_logging(app_cfg, job_id):
@@ -179,7 +178,7 @@ def get_host_cfg(conf, host_id, app_cfg=None):
     if host_cfg[host_id, 'type'] == 'SFTP':
         _sftp_settings(app_cfg, host_cfg, host_id)
     elif host_cfg[host_id, 'password'] is config.NOTFOUND:
-        raise ConfigError('in host config %r: password required' % host_id)
+        raise ConfigError(f'in host config {host_id!r}: password required')
     host_cfg.add('host_id', host_id)
     return host_cfg
 
@@ -189,7 +188,7 @@ def set_urls(job_cfg):
     for host_kind in ('source', 'target'):
         host_id = job_cfg[host_kind, 'host_id']
         if host_id:
-            host_cfg = job_cfg['%s_host_cfg' % host_kind]
+            host_cfg = job_cfg[f'{host_kind}_host_cfg']
             scheme = host_cfg[host_id, 'type'].lower()
             netloc = '%s:%s' % host_cfg[host_id, 'host']
             path = job_cfg[host_kind, 'path']
@@ -197,8 +196,8 @@ def set_urls(job_cfg):
             scheme = 'file'
             netloc = ''
             path = os.path.abspath(job_cfg[host_kind, 'path'])
-        job_cfg.add('%s_url' %
-                    host_kind, urlunsplit((scheme, netloc, path, '', '')))
+        job_cfg.add(f'{host_kind}_url',
+                    urlunsplit((scheme, netloc, path, '', '')))
 
 
 def _host_config(host_kind, app_cfg, job_cfg):
@@ -209,10 +208,10 @@ def _host_config(host_kind, app_cfg, job_cfg):
             raise ConfigError('no hosts configuration file')
         try:
             host_cfg = get_host_cfg(hosts_cfg_file, host_id, app_cfg)
-            job_cfg.add('%s_host_cfg' % host_kind, host_cfg)
-            _debug_config('%s HOST CONFIG' % host_kind.upper(), host_cfg)
+            job_cfg.add(f'{host_kind}_host_cfg', host_cfg)
+            _debug_config(f'{host_kind.upper()} HOST CONFIG', host_cfg)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError('in host config %r: %s' % (host_id, ex))
+            raise ConfigError(f'in host config {host_id!r}: {ex!s}')
     else:
         _logger.debug('NO %s HOST CONFIG', host_kind.upper())
 
@@ -222,7 +221,7 @@ def _sftp_settings(app_cfg, host_cfg, host_id):
         if app_cfg and app_cfg['sftp', 'known_hosts']:
             host_cfg[host_id, 'known_hosts'] = app_cfg['sftp', 'known_hosts']
         else:
-            raise ConfigError('in host config %r: no known_hosts' % host_id)
+            raise ConfigError(f'in host config {host_id!r}: no known_hosts')
     key_type = host_cfg[host_id, 'key_type']
     if key_type and not host_cfg[host_id, 'key_file']:
         key_file, key_pass = _SFTP_KEY_TYPES[key_type]
@@ -230,13 +229,13 @@ def _sftp_settings(app_cfg, host_cfg, host_id):
             host_cfg[host_id, 'key_file'] = app_cfg['sftp', key_file]
             host_cfg[host_id, 'key_pass'] = app_cfg['sftp', key_pass]
         else:
-            raise ConfigError('in host config %r: no key_file for %r '
-                              'authentication key' % (host_id, key_type))
+            raise ConfigError(f'in host config {host_id!r}: no key_file'
+                              ' authentication key')
     if host_cfg[host_id, 'key_pass'] == config.NOTFOUND:
         host_cfg[host_id, 'key_pass'] = None
     if not key_type and host_cfg[host_id, 'password'] is config.NOTFOUND:
-        raise ConfigError('in host config %r: password or '
-                          'authentication key required' % host_id)
+        raise ConfigError(f'in host config {host_id!r}: password or'
+                          f' for {key_type!r} authentication key required')
 
 
 def _set_default_port(host_cfg, key_host, hosttype):
@@ -259,7 +258,7 @@ def _tempopts(s):
         if opt == 'ext' and not t[1].startswith('.'):
             return opt, '.' + t[1]
         return opt, t[1]
-    raise ValueError('unknown or invalid temp option: %r' % s)
+    raise ValueError(f'unknown or invalid temp option: {s!r}')
 
 
 _CONVS = {

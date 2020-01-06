@@ -29,7 +29,7 @@ def _get_addrs(app_cfg, err):
     status = 'success' if err is ErrorsEnum.NONE else 'error'
     addrs = app_cfg['notify', status] | app_cfg['notify', 'done']
     if not addrs:
-        _logger.warning('No email addresses for status %r' % status)
+        _logger.warning('No email addresses for status %r', status)
         return
     return ', '.join(map(lambda a: '%s <%s>' % (a) if a[0] else a[1], addrs))
 
@@ -65,7 +65,7 @@ def _add_args_from_result(result, args):
         if not msg:
             msg = result.__class__.__name__
         file_list = ' -'
-    args['message'] += ':\n' + textwrap.indent(textwrap.fill(msg), ' ')
+    args['message'] += f':\n{textwrap.indent(textwrap.fill(msg), " ")}'
     args['file_list'] = file_list
 
 
@@ -113,8 +113,8 @@ def send(app_cfg, job_cfg, args, err, result):
     _logger.debug('mail security: %s', app_cfg['mail', 'security'])
     smtp_cls = SMTP_SSL if app_cfg['mail', 'security'] == 'TLS' else SMTP
     if host == 'TEST':
-        print('=====\nCLASS: %s\n' % smtp_cls.__name__)
-        print('%s\n=====' % emailmsg)
+        print(f'=====\nCLASS: {smtp_cls.__name__}\n')
+        print(f'{emailmsg}\n=====')
     else:
         try:
             with smtp_cls(host, port) as smtp:
@@ -127,8 +127,8 @@ def send(app_cfg, job_cfg, args, err, result):
                 _logger.debug('%s:%d\n%s', host, port,
                               textwrap.indent(str(emailmsg), ' >'))
         except (OSError, SMTPException):
-            _logger.exception('Notification not sent:\n%s' %
-                              textwrap.indent(str(emailmsg), ' >'))
+            msg = textwrap.indent(str(emailmsg), ' >')
+            _logger.exception(f'Notification not sent:\n{msg}')
 
 
 def _substitute(templ, args):

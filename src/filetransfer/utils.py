@@ -13,7 +13,7 @@ def format_knownhost(host, port):
     :rytpe: str
     """
     if port != SSH_PORT:
-        return '[%s]:%d' % (host, port)
+        return f'[{host}]:{port}'
     else:
         return host
 

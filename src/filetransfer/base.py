@@ -27,7 +27,7 @@ class Endpoint:
         self._close()
 
     def _close(self):
-        raise NotImplementedError('%s._close()' % self.__class__.__name__)
+        raise NotImplementedError(f'{self.__class__.__name__}._close()')
 
     def _handle_error(self, text, file_path, ex):
         file = file_path[len(self._path) + 1:]
@@ -56,7 +56,7 @@ class BaseSource(Endpoint):
     def __init__(self, job_cfg):
         super().__init__(job_cfg['source', 'path'],
                          job_cfg['job', 'collect_data'])
-        _logger.info('Source: %s' % job_cfg['source_url'])
+        _logger.info('Source: %s', job_cfg['source_url'])
         self._files = job_cfg['source', 'files']
         self._ignore = job_cfg['source', 'ignore']
         self._recursive = job_cfg['source', 'recursive']
@@ -136,7 +136,7 @@ class BaseTarget(Endpoint):
     def __init__(self, job_cfg):
         super().__init__(job_cfg['target', 'path'],
                          job_cfg['job', 'collect_data'])
-        _logger.info('Target: %s' % job_cfg['target_url'])
+        _logger.info('Target: %s', job_cfg['target_url'])
         self._temp = job_cfg['target', 'temp']
 
     def _temp_path(self, file_path):

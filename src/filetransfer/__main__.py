@@ -1,10 +1,10 @@
 """Main module.
 
 usage:
- %(prog)s [-v] [-c CONFIG] JOBID
- %(prog)s -k [-H] [-p PORT] HOST FILE
- %(prog)s -d [-p PORT] HOST FILE
- %(prog)s -h | -V
+ $prog [-v] [-c CONFIG] JOBID
+ $prog -k [-H] [-p PORT] HOST FILE
+ $prog -d [-p PORT] HOST FILE
+ $prog -h | -V
 
  JOBID   the job id
  HOST    server name or IP
@@ -12,12 +12,12 @@ usage:
 
  -c, --config CONFIG  the application configuration file
                       If not given the value of the environment
-                      variable %(envvar)s will be used.
+                      variable $envvar will be used.
  -d, --delete         delete server hostkey from known-hosts file
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
- -p, --port PORT      SFTP server port [default: %(sshport)d]
- -v, --verbose        print traceback for uncaught errors
+ -p, --port PORT      SFTP server port [default: $sshport]
+ -v, --verbose        print stack trace for uncaught errors
 
  -h, --help           show this help
  -V, --version        show the version
@@ -39,9 +39,9 @@ import os
 import signal
 import sys
 
-from docopt import docopt
 from paramiko import HostKeys, Transport, SSHException
 from salmagundi import strings
+from salmagundi.utils import docopt_helper
 
 from . import __version__, config, job, utils
 from .const import SSH_PORT
@@ -56,10 +56,11 @@ _logger = logging.getLogger(__name__)
 def main():
     """Execute command."""
     locale.setlocale(locale.LC_ALL, '')
-    args = docopt(__doc__.split('\n', 2)[2] %
-                  dict(prog=progname.lower(), envvar=env_var_name,
-                       sshport=SSH_PORT),
-                  version='%s %s' % (progname, __version__))
+    args = docopt_helper(__doc__.split('\n', 2)[2],
+                         version_str=f'{progname} {__version__}',
+                         prog=progname.lower(),
+                         envvar=env_var_name,
+                         sshport=SSH_PORT)
     if args['--hostkey']:
         return _get_hostkey(args)
     if args['--delete']:
@@ -101,18 +102,17 @@ def _get_hostkey(args):
             hostkey = transport.get_remote_server_key()
             name = hostkey.get_name().split('-', 1)[1].upper()
             # same fingerprints as the OpenSSH commands generate
-            print('%s (%d) Fingerprints:' % (name, hostkey.get_bits()))
+            print(f'{name} ({hostkey.get_bits()}) Fingerprints:')
             fp_md5 = hashlib.md5()
             fp_md5.update(hostkey.asbytes())
-            print(' MD5: %s' %
-                  strings.insert_separator(fp_md5.hexdigest(), ':', 2))
+            fp_md5_dig = strings.insert_separator(fp_md5.hexdigest(), ':', 2)
+            print(f' MD5: {fp_md5_dig}')
             fp_sha = hashlib.sha256()
             fp_sha.update(hostkey.asbytes())
-            print(' SHA256: %s' % base64.b64encode(fp_sha.digest()).
-                  decode().strip('='))
+            fp_sha_dig = base64.b64encode(fp_sha.digest()).decode().strip('=')
+            print(f' SHA256: {fp_sha_dig}')
             while True:
-                a = input('Save this key to file "%s" (yes/no)? ' %
-                          file).lower()
+                a = input(f'Save this key to file "{file}" (yes/no)? ').lower()
                 if a in ('yes', 'no'):
                     break
                 print('Type "yes" or "no"!')
@@ -124,19 +124,17 @@ def _get_hostkey(args):
                     hostkeys.load(file)
                     if hostkeys.lookup(hostname):
                         if hostkeys.check(hostname, hostkey):
-                            print('Key for "%s" exists in file "%s"' %
-                                  (hostname, file))
+                            print(f'Key for "{hostname}" exists'
+                                  f' in file "{file}"')
                             addkey = False
                         else:
                             del hostkeys[hostname]
-                            print('Key for "%s" replaced in file "%s"' %
-                                  (hostname, file))
+                            print(f'Key for "{hostname}" replaced'
+                                  f' in file "{file}"')
                     else:
-                        print('Key for "%s" added in file "%s"' %
-                              (hostname, file))
+                        print(f'Key for "{hostname}" added in file "{file}"')
                 else:
-                    print('Key for "%s" added in new file "%s"' %
-                          (hostname, file))
+                    print(f'Key for "{hostname}" added in new file "{file}"')
                 if addkey:
                     if hash_:
                         hostname = HostKeys.hash_host(hostname)
@@ -165,9 +163,9 @@ def _del_hostkey(args):
         if hostkeys.lookup(hostname):
             del hostkeys[hostname]
             hostkeys.save(file)
-            print('Key for "%s" deleted in file "%s"' % (hostname, file))
+            print(f'Key for "{hostname}" deleted in file "{file}"')
         else:
-            print('Key for "%s" not found in file "%s"' % (hostname, file))
+            print(f'Key for "{hostname}" not found in file "{file}"')
     except (FileNotFoundError, ConfigError) as ex:
         print(ex, file=sys.stderr)
         return ConfigError.code

@@ -63,8 +63,8 @@ class _Sftp:
             _logger.debug('client for %s created', hostname)
             return client
         except (OSError, SSHException) as ex:
-            raise ConnectError('Connection to server "%s:%d" failed: %s' %
-                               (host, port, ex.args))
+            raise ConnectError(f'Connection to server "{host}:{port}"'
+                               f' failed: {ex.args!s}')
 
     def _close(self):
         with suppress(Exception):

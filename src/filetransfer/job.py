@@ -52,7 +52,7 @@ def run(app_cfg, job_cfg, exc=None):
             raise exc
         result = transfer(job_cfg)
         _logger.info('Transfer completed: %d files transferred, %d source '
-                     'errors, %d target errors' % result[:3])
+                     'errors, %d target errors', *result[:3])
         if result.src_error_cnt or result.tgt_error_cnt:
             err = ErrorsEnum.FILES
         else:
