@@ -1,0 +1,37 @@
+DATETIME_FORMAT: %Y-%m-%d %H:%M:%S
+DURATION_FORMAT: %M:%02S.%03s
+
+ERR_NONE: No errors
+ERR_FILES: File error(s)
+ERR_CONFIG: Configuration error
+ERR_CONNECT: Connect error
+ERR_TRANSFER: Transfer error
+ERR_OTHER: Another error
+
+STATUS_OK: OK
+STATUS_ERR: ERROR
+
+SUBJECT: Job "$jobname" finished [$status]
+
+RESULT: $files_cnt files transferred, $src_error_cnt source errors, $tgt_error_cnt target errors
+
+MESSAGE:
+Job "$jobname" (ID: $jobid):
+
+Start: $starttime
+End: $endtime
+Duration: $duration
+
+Info:
+  $info
+
+Logfile: $logfile
+
+$errstr:
+  $result
+
+Source: $source
+Target: $target
+
+Files: (= is transferred, > is source error, < is target error)
+  $filelist

@@ -5,24 +5,75 @@ import logging
 import pprint
 import string
 import textwrap
-from collections import defaultdict
 from smtplib import SMTP, SMTP_SSL, SMTPException
+
+from salmagundi.strings import format_timedelta
 
 from .const import ErrorsEnum
 from .job import JobResult
+from .utils import read_resource
 
 _logger = logging.getLogger(__name__)
 
-_msg_titles = {
-    ErrorsEnum.NONE: 'No errors',
-    ErrorsEnum.FILES: 'File error(s)',
-    ErrorsEnum.CONFIG: 'Configuration error',
-    ErrorsEnum.CONNECT: 'Connect error',
-    ErrorsEnum.TRANSFER: 'Transfer error',
-    ErrorsEnum.OTHER: 'Another error'
+_mail_default = 'default'
+_mail_default_cfg = 'default.mail'
+_names = ['datetime_format', 'duration_format', 'err_none', 'err_files',
+          'err_config', 'err_connect', 'err_transfer', 'err_other',
+          'status_ok', 'status_err', 'subject', 'result', 'message']
+_msg_strings = {
+    ErrorsEnum.NONE: 'err_none',
+    ErrorsEnum.FILES: 'err_files',
+    ErrorsEnum.CONFIG: 'err_config',
+    ErrorsEnum.CONNECT: 'err_connect',
+    ErrorsEnum.TRANSFER: 'err_transfer',
+    ErrorsEnum.OTHER: 'err_other'
 }
-_completed_msg = '%d files transferred, %d source errors, %d target errors'
-_status_strings = ('OK', 'ERROR')
+_indentables = ['info', 'result', 'filelist']
+
+
+class _MailCfg:
+    def __init__(self, content):
+        names = _names[:]
+        it = iter(content.splitlines())
+        for line in it:
+            line = line.strip()
+            if line:
+                name, value = line.split(':', 1)
+                name = name.strip().lower()
+                if name not in _names:
+                    raise Exception(f'unknown name in mail config {name!r}')
+                names.remove(name)
+                if name == 'message':
+                    value = '\n'.join(it)
+                setattr(self, name, value.replace('\\n', '\n').strip())
+        if names:
+            raise Exception('incomplete mail config:'
+                            f' missing {", ".join(names)}')
+
+
+def _get_mail_cfg(app_cfg, job_cfg):
+    mail_cfg = job_cfg['notify', 'mail_cfg'] or app_cfg['notify', 'mail_cfg']
+    if mail_cfg != _mail_default:
+        if not app_cfg['global', 'mail_cfgs_dir']:
+            _logger.warning('No mail_cfgs_dir in application configuration;'
+                            ' using default')
+            mail_cfg = _mail_default
+        else:
+            mail_cfg = app_cfg['global', 'mail_cfgs_dir'] / mail_cfg
+            if not mail_cfg.exists():
+                _logger.warning('Mail configuration %s not found;'
+                                ' using default', mail_cfg)
+                mail_cfg = _mail_default
+    if mail_cfg == _mail_default:
+        content = read_resource(_mail_default_cfg)
+    else:
+        content = mail_cfg.read_text()
+    _logger.info('Using mail configuration: %s', mail_cfg)
+    try:
+        return _MailCfg(content)
+    except Exception as ex:
+        _logger.error('Error "%s"; using default', ex)
+        return _MailCfg(read_resource(_mail_default_cfg))
 
 
 def _get_addrs(app_cfg, err):
@@ -34,80 +85,83 @@ def _get_addrs(app_cfg, err):
     return ', '.join(map(lambda a: '%s <%s>' % (a) if a[0] else a[1], addrs))
 
 
-def _add_args_from_app_cfg(app_cfg, args, err):
-    args['fromaddr'] = app_cfg['mail', 'from_addr']
-    args['logfile'] = app_cfg['log_file']
-    args['starttime'] = app_cfg['start_time'].strftime('%x %X')
-    args['toaddrs'] = _get_addrs(app_cfg, err)
-
-
-def _add_args_from_job_cfg(job_cfg, args):
-    if job_cfg:
-        args['jobname'] = job_cfg['job', 'name']
-        args['jobid'] = job_cfg['job_id']
-        if 'source_url' in job_cfg:
-            args['source'] = job_cfg['source_url']
-        if 'target_url' in job_cfg:
-            args['target'] = job_cfg['target_url']
-        if job_cfg['job', 'info']:
-            info = job_cfg['job', 'info']
-        else:
-            info = '-'
-        args['info'] = textwrap.indent(info, ' ')
-
-
-def _add_args_from_result(result, args):
-    if isinstance(result, JobResult):
-        msg = _completed_msg % result[:3]
-        file_list = _create_file_list(result.file_list)
-    else:
-        msg = str(result)
-        if not msg:
-            msg = result.__class__.__name__
-        file_list = ' -'
-    args['message'] += f':\n{textwrap.indent(textwrap.fill(msg), " ")}'
-    args['file_list'] = file_list
-
-
-def _create_file_list(file_list):
-    if file_list is None:
-        return ' no data collected'
-    if not file_list:
-        return ' no data'
+def _format_file_list(file_list, duration_format):
     lst = []
     for entry in file_list:
-        lst.append(' {2} {0} ({1})'.format(*entry))
-    return '\n'.join(lst)
+        lst.append(f'{entry[2]} {entry[0]}'
+                   f' ({format_timedelta(duration_format, entry[1])})')
+    return lst
 
 
-def send(app_cfg, job_cfg, args, err, result):
+def _indents(message, mapping):
+    for line in message.splitlines():
+        for s in _indentables:
+            if line.lstrip().startswith('$' + s):
+                mapping[s] = textwrap.indent(mapping[s],
+                                             ' ' * line.find('$')).lstrip(' ')
+
+
+def _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result):
+    mapping = {
+        'jobid': job_cfg[None, 'job_id'],
+        'jobname': job_cfg['job', 'name'],
+        'starttime': app_cfg['start_time'].strftime(mail_cfg.datetime_format),
+        'endtime': endtime.strftime(mail_cfg.datetime_format),
+        'duration': format_timedelta(mail_cfg.duration_format,
+                                     endtime - app_cfg['start_time']),
+        'info': job_cfg['job', 'info'] or '-',
+        'logfile': app_cfg['log_file'],
+        'errstr': getattr(mail_cfg, _msg_strings[err]),
+        'source': job_cfg['source_url'],
+        'target': job_cfg['target_url'],
+        'status': (mail_cfg.status_ok if err is ErrorsEnum.NONE
+                   else mail_cfg.status_err),
+    }
+    file_list = '-'
+    if isinstance(result, JobResult):
+        res = _substitute(mail_cfg.result, result._asdict())
+        if result.file_list:
+            file_list = '\n'.join(_format_file_list(result.file_list,
+                                                    mail_cfg.duration_format))
+    else:
+        res = str(result)
+        if not res:
+            res = result.__class__.__name__
+    mapping['result'] = res
+    mapping['filelist'] = file_list
+    _indents(mail_cfg.message, mapping)
+    return mapping
+
+
+def _substitute(templ, mapping):
+    return string.Template(templ).safe_substitute(mapping)
+
+
+def send(app_cfg, job_cfg, endtime, err, result):
     """Send email.
 
     :param app_cfg: application configuration
     :type app_cfg: salmagundi.config.Config
     :param job_cfg: job configuration
     :type job_cfg: salmagundi.config.Config
-    :param dict args: arguments for email template
-    :param str err: error string
+    :param datetime.datetime endtime: end time of job
+    :param err: error string
+    :type err: filetransfer.const.ErrorsEnum
+    :param result: job result
+    :type result: :class:`filetransfer.job.JobResult` or :class:`Exception`
     """
-    _add_args_from_app_cfg(app_cfg, args, err)
-    if not args['toaddrs']:
+    to_addrs = _get_addrs(app_cfg, err)
+    if not to_addrs:
         return
-    _add_args_from_job_cfg(job_cfg, args)
-    args['status'] = (_status_strings[0] if err is ErrorsEnum.NONE
-                      else _status_strings[1])
-    if 'endtime' in args:
-        args['duration'] = args['endtime'] - app_cfg['start_time']
-        args['endtime'] = args['endtime'].strftime('%x %X')
-    args['message'] = _msg_titles[err]
-    _add_args_from_result(result, args)
+    mail_cfg = _get_mail_cfg(app_cfg, job_cfg)
+    mapping = _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result)
     if _logger.isEnabledFor(logging.DEBUG):
-        _logger.debug('mail template args:\n%s', pprint.pformat(args))
+        _logger.debug('mail template mapping:\n%s', pprint.pformat(mapping))
     emailmsg = email.message.EmailMessage()
-    emailmsg['From'] = args['fromaddr']
-    emailmsg['To'] = args['toaddrs']
-    emailmsg['Subject'] = _substitute(subject, args)
-    emailmsg.set_content(_substitute(content, args))
+    emailmsg['From'] = app_cfg['mail', 'from_addr']
+    emailmsg['To'] = to_addrs
+    emailmsg['Subject'] = _substitute(mail_cfg.subject, mapping)
+    emailmsg.set_content(_substitute(mail_cfg.message, mapping))
     host, port = app_cfg['mail', 'host']
     _logger.debug('mail host: %s:%d', host, port)
     _logger.debug('mail security: %s', app_cfg['mail', 'security'])
@@ -131,30 +185,14 @@ def send(app_cfg, job_cfg, args, err, result):
             _logger.exception(f'Notification not sent:\n{msg}')
 
 
-def _substitute(templ, args):
-    t = string.Template(templ)
-    return t.substitute(defaultdict(lambda: '-', args))
-
-
-subject = 'Job "${jobname}" finished [${status}]'
-
-content = '''\
-Job "${jobname}" (ID: ${jobid}):
-
-Start: ${starttime}
-End: ${endtime}
-Duration: ${duration}
-
-Info:
-${info}
-
-Logfile: ${logfile}
-
-${message}
-
-Source: ${source}
-Target: ${target}
-
-Files: (= is transferred, > is source error, < is target error)
-${file_list}
-'''
+if __name__ == '__main__':
+    import sys
+    try:
+        file = sys.argv[1] if len(sys.argv) > 1 else input('file: ')
+        with open(file) as fh:
+            mail_cfg = _MailCfg(fh.read())
+        for name in _names:
+            print(f'{name.upper()}: {getattr(mail_cfg, name)}')
+        print(f'===\nfile {file} OK')
+    except Exception as ex:
+        sys.exit(ex)

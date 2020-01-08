@@ -4,7 +4,6 @@ import configparser
 import io
 import logging
 import os
-import pkgutil
 import sys
 from datetime import datetime
 from email.utils import parseaddr
@@ -15,6 +14,7 @@ from salmagundi import config, strings
 
 from . import const
 from .exceptions import ConfigError
+from .utils import read_resource
 
 _LOG_FILE_FORMAT = '{:%Y%m%d-%H%M%S}.log'
 _SFTP_KEY_TYPES = {
@@ -164,7 +164,7 @@ def _configure_logging(app_cfg, job_id):
 
 
 def _load_spec(specfile, host_id=None):
-    s = pkgutil.get_data(__package__ + '.data', specfile).decode()
+    s = read_resource(specfile)
     return s.replace('*HOST_ID*', host_id) if host_id else s
 
 

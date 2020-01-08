@@ -80,9 +80,8 @@ def run(app_cfg, job_cfg, exc=None):
     finally:
         end_time = datetime.now()
         if app_cfg['mail_config_ok']:
-            args = dict(endtime=end_time)
             from . import mail
-            mail.send(app_cfg, job_cfg, args, err, result)
+            mail.send(app_cfg, job_cfg, end_time, err, result)
         _logger.info('Job "%s" finished: duration=%s',
                      job_cfg['job_id'], end_time - app_cfg['start_time'])
 

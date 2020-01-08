@@ -33,7 +33,6 @@ usage:
 
 import base64
 import hashlib
-import locale
 import logging
 import os
 import signal
@@ -55,7 +54,6 @@ _logger = logging.getLogger(__name__)
 
 def main():
     """Execute command."""
-    locale.setlocale(locale.LC_ALL, '')
     args = docopt_helper(__doc__.split('\n', 2)[2],
                          version_str=f'{progname} {__version__}',
                          prog=progname.lower(),

@@ -1,5 +1,10 @@
 """Utility functions."""
 
+try:
+    from importlib.resources import read_text
+except ImportError:
+    from importlib_resources import read_text
+
 from .const import SSH_PORT
 from .exceptions import Terminated
 
@@ -21,3 +26,8 @@ def format_knownhost(host, port):
 def terminate(n, f):
     """Signal handler for SIGTERM."""
     raise Terminated
+
+
+def read_resource(name):
+    """Read a resource as text."""
+    return read_text(__package__ + '.data', name)
