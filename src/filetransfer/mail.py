@@ -20,6 +20,7 @@ _mail_default_cfg = 'default.mail'
 _names = ['datetime_format', 'duration_format', 'err_none', 'err_files',
           'err_config', 'err_connect', 'err_transfer', 'err_other',
           'status_ok', 'status_err', 'subject', 'result', 'message']
+_indentables = ['info', 'result', 'filelist']
 _msg_strings = {
     ErrorsEnum.NONE: 'err_none',
     ErrorsEnum.FILES: 'err_files',
@@ -28,7 +29,6 @@ _msg_strings = {
     ErrorsEnum.TRANSFER: 'err_transfer',
     ErrorsEnum.OTHER: 'err_other'
 }
-_indentables = ['info', 'result', 'filelist']
 
 
 class _MailCfg:
@@ -97,8 +97,9 @@ def _indents(message, mapping):
     for line in message.splitlines():
         for s in _indentables:
             if line.lstrip().startswith('$' + s):
-                mapping[s] = textwrap.indent(mapping[s],
-                                             ' ' * line.find('$')).lstrip(' ')
+                prefix = ' ' * line.find('$')
+                value = textwrap.indent(mapping[s], prefix)
+                mapping[s] = value.lstrip(' ')
 
 
 def _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result):
@@ -186,13 +187,19 @@ def send(app_cfg, job_cfg, endtime, err, result):
 
 
 if __name__ == '__main__':
+    # check and print mail configs
     import sys
+    if len(sys.argv) == 1:
+        sys.exit(f'usage: python {__package__}.mail -m <filename>')
     try:
-        file = sys.argv[1] if len(sys.argv) > 1 else input('file: ')
-        with open(file) as fh:
-            mail_cfg = _MailCfg(fh.read())
+        file = sys.argv[1]
+        if file == _mail_default:
+            mail_cfg = _MailCfg(read_resource(_mail_default_cfg))
+        else:
+            with open(file) as fh:
+                mail_cfg = _MailCfg(fh.read())
         for name in _names:
             print(f'{name.upper()}: {getattr(mail_cfg, name)}')
-        print(f'===\nfile {file} OK')
+        print(f'===\nfile {file} OK', file=sys.stderr)
     except Exception as ex:
         sys.exit(ex)

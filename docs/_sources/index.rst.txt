@@ -9,6 +9,7 @@ Contents
 
    overview
    config
+   mails
    usage
    api
    examples

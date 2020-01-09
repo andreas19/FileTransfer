@@ -1,0 +1,41 @@
+Emails customization
+====================
+
+.. versionadded:: 0.8.0
+
+.. |appcfg| replace:: :ref:`application configuration <ref-app-configuration>`
+.. |jobcfg| replace:: :ref:`job configuration <ref-job-configuration>`
+
+Emails can be customized (e.g. translated) by setting the option
+``[notify] mail_cfg`` in the |appcfg| or in the |jobcfg| to the filename
+of the customized email configuration. For this to work the option
+``[global] mail_cfgs_dir`` must be set in the |appcfg|.
+
+The name of the default email configuration is ``default``. It can be used in a
+|jobcfg| to overwrite an email customization set in the |appcfg|. It is also
+used as a fallback if the cusotmized email configuration cannot be found or
+has errors.
+
+The default email configuration:
+
+.. literalinclude:: ../src/filetransfer/data/default.mail
+   :language: none
+
+Except ``MESSAGE`` all entries must be on one line. ``MESSAGE`` must be the last entry.
+Entrynames are not case-sensitive.
+
+The datetime format is explained :ref:`here <python:strftime-strptime-behavior>`
+and the duration format :ref:`here <salmagundi:ref-timedelta-format-specifiers>`.
+
+One of the ``ERR_*`` strings is substituted for ``$errstr`` and one of the
+``STATUS_*`` strings for ``$status`` depending on the result status of the job.
+
+The values for substituting ``$files_cnt``, ``$src_error_cnt``,
+``$tgt_error_cnt`` and ``$filelist`` are taken from the 
+:class:`job result <filetransfer.JobResult>`.
+
+The ``$result`` placeholder will either be substituted with the ``RESULT`` template
+or with an exception message depending on the outcome of the job.
+
+The other :ref:`template placeholders <python:template-strings>` should
+be self explaining.

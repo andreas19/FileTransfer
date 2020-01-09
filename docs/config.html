@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using filetransfer" href="usage.html" />
+    <link rel="next" title="Emails customization" href="mails.html" />
     <link rel="prev" title="Overview" href="overview.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -51,6 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="mails.html">Emails customization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Using filetransfer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -62,7 +63,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="overview.html" title="previous chapter">Overview</a></li>
-      <li>Next: <a href="usage.html" title="next chapter">Using filetransfer</a></li>
+      <li>Next: <a href="mails.html" title="next chapter">Emails customization</a></li>
   </ul></li>
 </ul>
 </div>
@@ -154,9 +155,9 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>collect data about transferred files and errors (default: no); the list will be shown in the notification email (can be overwritten in the job configuration)</p></td>
 </tr>
-<tr class="row-even"><td></td>
-<td></td>
-<td></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfgs_dir</span></code></p></td>
+<td><p>path to directory with mail configuration files</p></td>
+<td><p>required if customized emails are used  (see: <a class="reference internal" href="mails.html"><span class="doc">Emails customization</span></a>)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>[logging]</strong></p></td>
 <td></td>
@@ -190,53 +191,45 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </div>
 </td>
 </tr>
-<tr class="row-even"><td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>[sftp]</strong></p></td>
+<tr class="row-even"><td><p><strong>[sftp]</strong></p></td>
 <td></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></p></td>
 <td><p>path to RSA private key file</p></td>
 <td><p>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘RSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_rsa_pass</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_rsa_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code></p></td>
 <td><p>required if <code class="docutils literal notranslate"><span class="pre">key_rsa_file</span></code> is password protected</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></p></td>
 <td><p>path to DSA private key file</p></td>
 <td><p>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘DSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_dsa_pass</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_dsa_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code></p></td>
 <td><p>required if <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code> is password protected</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_ecdsa_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_ecdsa_file</span></code></p></td>
 <td><p>path to ECDSA private key file</p></td>
 <td><p>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘ECDSA’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_ecdsa_pass</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_ecdsa_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_ecdsa_file</span></code></p></td>
 <td><p>required if <code class="docutils literal notranslate"><span class="pre">key_dsa_file</span></code> is password protected</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code></p></td>
 <td><p>path to Ed25519 private key file</p></td>
 <td><p>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">key_type</span></code> is set to ‘Ed25519’ with no <code class="docutils literal notranslate"><span class="pre">key_file</span></code> in a host configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_ed25519_pass</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_ed25519_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code></p></td>
 <td><p>required if <code class="docutils literal notranslate"><span class="pre">key_ed25519_file</span></code> is password protected</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
 <td><p>path to known_hosts file</p></td>
 <td><p>required if SFTP is used and <code class="docutils literal notranslate"><span class="pre">known_hosts</span></code> is not set in a job configuration</p></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td></td>
-<td></td>
 </tr>
 <tr class="row-even"><td><p><strong>[mail]</strong></p></td>
 <td><p>SMTP config</p></td>
@@ -262,17 +255,17 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td><p>from email address</p></td>
 <td><p>required</p></td>
 </tr>
-<tr class="row-even"><td></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>[notify]</strong></p></td>
+<tr class="row-even"><td><p><strong>[notify]</strong></p></td>
 <td></td>
 <td><p>optional</p></td>
 </tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code></p></td>
+<td><p>mail configuration file</p></td>
+<td><p>default: <code class="docutils literal notranslate"><span class="pre">default</span></code> (see: <a class="reference internal" href="mails.html"><span class="doc">Emails customization</span></a>)</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
-<td><p>receipients to notify if the job succeeded (default: empty list)</p></td>
+<td><p>receipients to notify if a job succeeded (default: empty list)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
@@ -342,15 +335,11 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>default: no</p></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-even"><td><p><strong>[target]</strong></p></td>
 <td></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><strong>[target]</strong></p></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_id</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">host_id</span></code></p></td>
 <td><p>host id</p></td>
 <td><div class="line-block">
 <div class="line">required for FTP, FTPS, SFTP</div>
@@ -359,33 +348,33 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">path</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">path</span></code></p></td>
 <td><p>path to target directory</p></td>
 <td><p>required</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">temp</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">temp</span></code></p></td>
 <td><p>‘dot’ | ‘ext:’.ext | ‘dir:’subdir</p></td>
 <td><p>default: no temporary files are used</p></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td></td>
-<td></td>
 </tr>
 <tr class="row-even"><td><p><strong>[notify]</strong></p></td>
 <td></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
-<td><p>comma separated list of email addresses</p></td>
-<td><p>receipients to notify if the job succeeded (default: empty list)</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code></p></td>
+<td><p>mail configuration file</p></td>
+<td><p>default: <code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code> from application configuration (see: <a class="reference internal" href="mails.html"><span class="doc">Emails customization</span></a>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
-<td><p>receipients to notify if there was an error (default: empty list)</p></td>
+<td><p>receipients to notify if the job succeeded (added to list from application configuration)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">done</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
-<td><p>receipients to notify in both cases (default: empty list)</p></td>
+<td><p>receipients to notify if there was an error (added to list from application configuration)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">done</span></code></p></td>
+<td><p>comma separated list of email addresses</p></td>
+<td><p>receipients to notify in both cases (added to list from application configuration)</p></td>
 </tr>
 </tbody>
 </table>
@@ -432,7 +421,7 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
 <td><p>‘RSA’ | ‘DSA’ |  ‘ECDSA’ | ‘Ed25519’</p></td>
-<td><p>required for SFTP if a authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the [sftp] section in the application configuration</p></td>
+<td><p>required for SFTP if an authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the [sftp] section in the application configuration</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>path to private key file</p></td>

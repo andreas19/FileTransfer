@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Emails customization &#8212; FileTransfer 0.7.5 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using filetransfer" href="usage.html" />
+    <link rel="prev" title="Configuration" href="config.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Emails customization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Using filetransfer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="config.html" title="previous chapter">Configuration</a></li>
+      <li>Next: <a href="usage.html" title="next chapter">Using filetransfer</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="emails-customization">
+<h1>Emails customization<a class="headerlink" href="#emails-customization" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.8.0.</span></p>
+</div>
+<p>Emails can be customized (e.g. translated) by setting the option
+<code class="docutils literal notranslate"><span class="pre">[notify]</span> <span class="pre">mail_cfg</span></code> in the <a class="reference internal" href="config.html#ref-app-configuration"><span class="std std-ref">application configuration</span></a> or in the <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">job configuration</span></a> to the filename
+of the customized email configuration. For this to work the option
+<code class="docutils literal notranslate"><span class="pre">[global]</span> <span class="pre">mail_cfgs_dir</span></code> must be set in the <a class="reference internal" href="config.html#ref-app-configuration"><span class="std std-ref">application configuration</span></a>.</p>
+<p>The name of the default email configuration is <code class="docutils literal notranslate"><span class="pre">default</span></code>. It can be used in a
+<a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">job configuration</span></a> to overwrite an email customization set in the <a class="reference internal" href="config.html#ref-app-configuration"><span class="std std-ref">application configuration</span></a>. It is also
+used as a fallback if the cusotmized email configuration cannot be found or
+has errors.</p>
+<p>The default email configuration:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATETIME_FORMAT: %Y-%m-%d %H:%M:%S
+DURATION_FORMAT: %M:%02S.%03s
+
+ERR_NONE: No errors
+ERR_FILES: File error(s)
+ERR_CONFIG: Configuration error
+ERR_CONNECT: Connect error
+ERR_TRANSFER: Transfer error
+ERR_OTHER: Another error
+
+STATUS_OK: OK
+STATUS_ERR: ERROR
+
+SUBJECT: Job &quot;$jobname&quot; finished [$status]
+
+RESULT: $files_cnt files transferred, $src_error_cnt source errors, $tgt_error_cnt target errors
+
+MESSAGE:
+Job &quot;$jobname&quot; (ID: $jobid):
+
+Start: $starttime
+End: $endtime
+Duration: $duration
+
+Info:
+  $info
+
+Logfile: $logfile
+
+$errstr:
+  $result
+
+Source: $source
+Target: $target
+
+Files: (= is transferred, &gt; is source error, &lt; is target error)
+  $filelist
+</pre></div>
+</div>
+<p>Except <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> all entries must be on one line. <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> must be the last entry.
+Entrynames are not case-sensitive.</p>
+<p>The datetime format is explained <a class="reference external" href="https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior" title="(in Python v3.8)"><span class="xref std std-ref">here</span></a>
+and the duration format <a class="reference external" href="https://andreas19.github.io/salmagundi/mod_strings.html#ref-timedelta-format-specifiers" title="(in Salmagundi v0.10.0)"><span class="xref std std-ref">here</span></a>.</p>
+<p>One of the <code class="docutils literal notranslate"><span class="pre">ERR_*</span></code> strings is substituted for <code class="docutils literal notranslate"><span class="pre">$errstr</span></code> and one of the
+<code class="docutils literal notranslate"><span class="pre">STATUS_*</span></code> strings for <code class="docutils literal notranslate"><span class="pre">$status</span></code> depending on the result status of the job.</p>
+<p>The values for substituting <code class="docutils literal notranslate"><span class="pre">$files_cnt</span></code>, <code class="docutils literal notranslate"><span class="pre">$src_error_cnt</span></code>,
+<code class="docutils literal notranslate"><span class="pre">$tgt_error_cnt</span></code> and <code class="docutils literal notranslate"><span class="pre">$filelist</span></code> are taken from the
+<a class="reference internal" href="api.html#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">job</span> <span class="pre">result</span></code></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">$result</span></code> placeholder will either be substituted with the <code class="docutils literal notranslate"><span class="pre">RESULT</span></code> template
+or with an exception message depending on the outcome of the job.</p>
+<p>The other <a class="reference external" href="https://docs.python.org/3/library/string.html#template-strings" title="(in Python v3.8)"><span class="xref std std-ref">template placeholders</span></a> should
+be self explaining.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2018-2020, Andreas Suhre.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
