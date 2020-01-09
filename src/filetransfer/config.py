@@ -267,7 +267,7 @@ _CONVS = {
     'hostport': lambda s: strings.split_host_port(s, 0),
     'secopts': config.convert_choice(('STARTTLS', 'TLS'), converter=str.upper),
     'strtuple': strings.str2tuple,
-    'addrs': lambda s: set(map(parseaddr, strings.str2tuple(s))),
+    'addrs': lambda s: set(parseaddr(x) for x in strings.str2tuple(s) if x),
     'tempopts': _tempopts,
     'typeopts': config.convert_choice(('FTP', 'FTPS', 'SFTP'),
                                       converter=str.upper,
