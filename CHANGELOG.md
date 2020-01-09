@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-01-09 (0.8.0)**
  - Emails are now customizable
  - Upgrade dependencies: paramiko -> 2.7.1, salmagundi -> 0.10.0
 
