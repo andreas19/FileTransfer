@@ -23,11 +23,18 @@ examples :ref:`ref-configure-and-run` and :ref:`ref-transfer`
    :members:
 
 
+.. autoexception:: filetransfer.SingleInstanceError
+   :members:
+
+
 .. autoexception:: filetransfer.Terminated
    :members:
 
 
 .. autoclass:: filetransfer.JobResult
+
+
+.. autofunction:: filetransfer.set_sigterm_handler
 
 
 .. autofunction:: filetransfer.configure

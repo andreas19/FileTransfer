@@ -88,8 +88,11 @@ def _get_addrs(app_cfg, err):
 def _format_file_list(file_list, duration_format):
     lst = []
     for entry in file_list:
-        lst.append(f'{entry[2]} {entry[0]}'
-                   f' ({format_timedelta(duration_format, entry[1])})')
+        try:
+            s = format_timedelta(duration_format, entry[1])
+        except TypeError:
+            s = entry[1]
+        lst.append(f'{entry[2]} {entry[0]} ({s})')
     return lst
 
 

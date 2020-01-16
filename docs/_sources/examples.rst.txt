@@ -81,13 +81,10 @@ configure()
 
 .. code-block:: python3
 
-   import signal
-   from filetransfer import configure, Terminated, Error
+   from filetransfer import (configure, Terminated, Error,
+                             set_sigterm_handler)
 
-   def terminated(n, f):
-      raise Terminated
-
-   signal.signal(signal.SIGTERM, terminated)
+   set_sigterm_handler()
 
    try:
       exc = None

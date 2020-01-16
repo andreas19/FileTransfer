@@ -45,7 +45,7 @@ class _Ftp:
             return ftputil.FTPHost(session_factory=SessFac)
         except (OSError, ftputil.error.FTPError) as ex:
             raise ConnectError(f'Connection to server "{host}:{port}"'
-                               f' failed: {ex!s}')
+                               f' failed: {ex}')
 
     def _close(self):
         with suppress(Exception):

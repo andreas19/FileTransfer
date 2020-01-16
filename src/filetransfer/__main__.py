@@ -23,42 +23,44 @@ usage:
  -V, --version        show the version
 
  return codes:
-  0   success
-  1   configuration error
-  2   connect error
-  3   transfer error
-  8   terminated
-  9   another error
+  $succ   success
+  $conf   configuration error
+  $conn   connect error
+  $tran   transfer error
+  $sing   single instance error
+  $cmdl   command line error
+  $term   terminated
+  $othe   another error
 """
 
 import base64
 import hashlib
 import logging
 import os
-import signal
 import sys
 
 from paramiko import HostKeys, Transport, SSHException
 from salmagundi import strings
 from salmagundi.utils import docopt_helper
 
-from . import __version__, config, job, utils
-from .const import SSH_PORT
+from . import __version__, set_sigterm_handler, config, job, utils
+from .const import SSH_PORT, EXIT_CODES
 from .exceptions import Error, ConfigError, ConnectError, Terminated
 
 progname = 'FileTransfer'
 env_var_name = 'FILETRANSFER_CFG'
-other_err_code = 9
-_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def main():
     """Execute command."""
     args = docopt_helper(__doc__.split('\n', 2)[2],
                          version_str=f'{progname} {__version__}',
+                         err_code=EXIT_CODES['cmdl'],
                          prog=progname.lower(),
                          envvar=env_var_name,
-                         sshport=SSH_PORT)
+                         sshport=SSH_PORT,
+                         **EXIT_CODES)
     if args['--hostkey']:
         return _get_hostkey(args)
     if args['--delete']:
@@ -67,7 +69,7 @@ def main():
 
 
 def _run_filetransfer(args):
-    signal.signal(signal.SIGTERM, utils.terminate)
+    set_sigterm_handler()
     try:
         if args['--config']:
             cfg_file = args['--config']
@@ -75,7 +77,7 @@ def _run_filetransfer(args):
             cfg_file = os.getenv(env_var_name)
         app_cfg, job_cfg = config.configure(cfg_file, args['JOBID'])
         job.run(app_cfg, job_cfg)
-        status = 0
+        status = EXIT_CODES['succ']
     except Error as ex:
         status = ex.code
     except (KeyboardInterrupt, Terminated):
@@ -84,8 +86,8 @@ def _run_filetransfer(args):
         if args['--verbose']:
             import traceback
             traceback.print_exc()
-        status = other_err_code
-    _logger.debug('exit status=%d', status)
+        status = EXIT_CODES['othe']
+    logger.debug('exit status=%d', status)
     return status
 
 
@@ -146,8 +148,8 @@ def _get_hostkey(args):
         return ConnectError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return other_err_code
-    return 0
+        return EXIT_CODES['othe']
+    return EXIT_CODES['succ']
 
 
 def _del_hostkey(args):
@@ -169,8 +171,8 @@ def _del_hostkey(args):
         return ConfigError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return other_err_code
-    return 0
+        return EXIT_CODES['othe']
+    return EXIT_CODES['succ']
 
 
 if __name__ == '__main__':

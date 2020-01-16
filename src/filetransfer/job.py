@@ -2,10 +2,14 @@
 
 import logging
 from collections import namedtuple
+from contextlib import nullcontext
 from datetime import datetime
 
+from salmagundi.utils import ensure_single_instance, AlreadyRunning
+
 from .const import ErrorsEnum
-from .exceptions import ConnectError, TransferError, Terminated
+from .exceptions import (ConnectError, TransferError, SingleInstanceError,
+                         Terminated)
 from .local import LocalSource, LocalTarget
 from .ftp import FTPSource, FTPTarget
 from .sftp import SFTPSource, SFTPTarget
@@ -25,7 +29,7 @@ This class has the following fields:
 **file_list**      list of tuples: (path, info, tag)
                     - path: path relative to source/target directory
                     - info: duration of transfer or error text
-                    - tag: > (source), < (target), = (transffered)
+                    - tag: > (source), < (target), = (transferred)
 
                    if data collection is disabled this will be ``None``
 =================  ===
@@ -40,13 +44,31 @@ def run(app_cfg, job_cfg, exc=None):
     :param job_cfg: the job configuration
     :type job_cfg: salmagundi.config.Config
     :param Exception exc: Exception to be reraised
-    :raises filetransfer.exceptions.ConnectError: if there is a connection
-                                                  problem
+    :raises filetransfer.ConnectError: if there is a connection problem
     :raises filetransfer.TransferError: if there is a fatal problem
                                         during transfer
+    :raises filetransfer.SingleInstanceError: if a single instance requirement
+                                              is violated
     :raises filetransfer.Terminated: if terminatated
     :raises Exception: if another error occurs
     """
+    job_id = job_cfg['job_id']
+    if job_cfg['job', 'single_instance']:
+        ctx = ensure_single_instance(job_id,
+                                     lockdir=app_cfg['global', 'locks_dir'],
+                                     err_code=None,
+                                     err_msg=f'already running: job {job_id}')
+    else:
+        ctx = nullcontext()
+    try:
+        with ctx:
+            app_cfg['log_handler'].activate()
+            _run(app_cfg, job_cfg, exc)
+    except AlreadyRunning as ex:
+        raise SingleInstanceError(ex) from None
+
+
+def _run(app_cfg, job_cfg, exc):
     try:
         if exc and isinstance(exc, BaseException):
             raise exc

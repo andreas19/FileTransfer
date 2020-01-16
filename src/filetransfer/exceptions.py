@@ -23,6 +23,15 @@ class TransferError(Error):
     code = 3  #: Status code
 
 
+class SingleInstanceError(Error):
+    """Raised when a single instance requirement is violated.
+
+    .. versionadded:: 0.9.0
+    """
+
+    code = 4  #: Status code
+
+
 class Terminated(BaseException):
     """Raised when terminated with SIGTERM, SIGINT or KeyboardInterrupt.
 

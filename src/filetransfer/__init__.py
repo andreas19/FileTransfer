@@ -8,16 +8,18 @@
 """
 
 import configparser
+import signal
 
 from . import config, job
-from .exceptions import (Error, ConfigError, ConnectError,
+from .exceptions import (Error, ConfigError, ConnectError, SingleInstanceError,
                          TransferError, Terminated)
 from .job import JobResult
 
 __version__ = '0.8.0'
 
 __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
-           'Terminated', 'JobResult', 'configure', 'transfer']
+           'SingleInstanceError', 'Terminated', 'JobResult',
+           'set_sigterm_handler', 'configure', 'transfer']
 
 
 def configure(cfg_file, job_id, **kwargs):
@@ -26,7 +28,8 @@ def configure(cfg_file, job_id, **kwargs):
     This function returns a function (called ``run()`` from here on)
     that must be called to run the actual file transfer. ``run()`` may
     raise :exc:`~filetransfer.ConnectError`, :exc:`~filetransfer.TransferError`,
-    :exc:`Terminated`, or :exc:`Exception` if another error occurs.
+    :exc:`SingleInstanceError`, :exc:`Terminated`,
+    or :exc:`Exception` if another error occurs.
     ``run()`` takes one optional argument that must be an instance of a
     subclass of :exc:`BaseException`
     that will be reraised within ``run()``. The intended use for this is
@@ -34,7 +37,7 @@ def configure(cfg_file, job_id, **kwargs):
     the usual way (logging and sending an email notification). The transfer
     itself will not be run. See :ref:`example <ref-configure-and-run>`.
 
-    .. versionchanged:: 0.7.3 add exception parameter to run()
+    .. versionchanged:: 0.7.3 add exception parameter to ``run()``
 
     You can put your own configuration sections in the application
     and job configuration files. The names of theses sections must
@@ -76,6 +79,7 @@ def configure(cfg_file, job_id, **kwargs):
 
     def run(exc=None):
         job.run(app_cfg, job_cfg, exc)
+
     return run, cp
 
 
@@ -126,3 +130,22 @@ def transfer(src_cfg, tgt_cfg=None):
         job_cfg.add('target_host_cfg', host_cfg)
     config.set_urls(job_cfg)
     return job.transfer(job_cfg)
+
+
+def set_sigterm_handler():
+    """Set handler for SIGTERM.
+
+    .. versionadded:: 0.9.0
+
+    This function sets the same handler that is used when the
+    :doc:`filetransfer script <usage>` is run. It raises
+    :exc:`Terminated` on receiving the SIGTERM signal. This
+    function can only be run from the main thread
+    (see: :ref:`signals-and-threads` and :func:`signal.signal`).
+
+    :raises ValueError: if not called from the main thread
+    """
+    def handler(n, f):
+        raise Terminated
+
+    signal.signal(signal.SIGTERM, handler)

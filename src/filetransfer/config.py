@@ -14,7 +14,7 @@ from salmagundi import config, strings
 
 from . import const
 from .exceptions import ConfigError
-from .utils import read_resource
+from .utils import read_resource, LogHandler
 
 _LOG_FILE_FORMAT = '{:%Y%m%d-%H%M%S}.log'
 _SFTP_KEY_TYPES = {
@@ -40,6 +40,7 @@ def configure(cfg_file, job_id):
     """
     mail_config_ok = False
     job_cfg = None
+    log_enabled = False
     try:
         if not cfg_file:
             raise ConfigError('A config file is required!')
@@ -50,8 +51,9 @@ def configure(cfg_file, job_id):
                                        create_properties=False,
                                        converters=_CONVS)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError(f'in app config: {ex!s}')
+            raise ConfigError(f'in app config: {ex}')
         _configure_logging(app_cfg, job_id)
+        log_enabled = not app_cfg['logging', 'disabled']
         app_cfg.add('start_time', datetime.now())
         mail_config_ok = _check_mail_config(app_cfg)
         app_cfg.add('mail_config_ok', mail_config_ok)
@@ -64,7 +66,8 @@ def configure(cfg_file, job_id):
                                                         'job_cfg_ext'])
             job_cfg = get_job_cfg(job_cfg_file, app_cfg)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError(f'in job config: {ex!s}')
+            raise ConfigError(f'in job config: {ex}')
+        log_enabled = app_cfg['log_handler'].enabled
         job_cfg.add('job_id', job_id)
         job_cfg.add('job_cfg_file', job_cfg_file)
         if not job_cfg['job', 'name']:
@@ -83,7 +86,8 @@ def configure(cfg_file, job_id):
             else:
                 args = {}
             mail.send(app_cfg, job_cfg, args, const.ErrorsEnum.CONFIG, ex)
-        if _logger.hasHandlers():
+        if log_enabled:
+            app_cfg['log_handler'].activate()
             _logger.critical('Configuration error: %s', ex)
             _logger.info('Job "%s" finished', job_id)
         else:
@@ -101,6 +105,15 @@ def get_job_cfg(conf, app_cfg=None):
             job_cfg['job', 'collect_data'] = app_cfg['global', 'collect_data']
         else:
             job_cfg['job', 'collect_data'] = False
+    if (app_cfg and app_cfg['logging', 'disabled'] and
+            job_cfg['job', 'log_disabled'] is config.NOTFOUND or
+            job_cfg['job', 'log_disabled'] is True):
+        app_cfg['log_handler'].disable()
+    if job_cfg['job', 'single_instance']:
+        if not app_cfg['global', 'locks_dir']:
+            raise ConfigError('in job config: single_instance used but no'
+                              ' locks_dir in app config')
+        app_cfg['global', 'locks_dir'].mkdir(parents=True, exist_ok=True)
     return job_cfg
 
 
@@ -156,10 +169,11 @@ def _configure_logging(app_cfg, job_id):
     else:
         import warnings
         warnings.simplefilter('ignore')
-    logging.basicConfig(filename=log_path,
-                        level=app_cfg['logging', 'log_level'],
-                        filemode='w',
-                        format=app_cfg['logging', 'msg_format'])
+    log_handler = LogHandler(log_path)
+    logging.basicConfig(level=app_cfg['logging', 'log_level'],
+                        format=app_cfg['logging', 'msg_format'],
+                        handlers=[log_handler])
+    app_cfg.add('log_handler', log_handler)
     app_cfg.add('log_file', log_file)
 
 
@@ -211,7 +225,7 @@ def _host_config(host_kind, app_cfg, job_cfg):
             job_cfg.add(f'{host_kind}_host_cfg', host_cfg)
             _debug_config(f'{host_kind.upper()} HOST CONFIG', host_cfg)
         except _CONFIG_ERRORS as ex:
-            raise ConfigError(f'in host config {host_id!r}: {ex!s}')
+            raise ConfigError(f'in host config {host_id!r}: {ex}')
     else:
         _logger.debug('NO %s HOST CONFIG', host_kind.upper())
 
@@ -263,6 +277,7 @@ def _tempopts(s):
 
 _CONVS = {
     'path': Path,
+    'abspath': lambda s: Path(s).resolve(),
     'loglevel': config.convert_loglevel('INFO'),
     'hostport': lambda s: strings.split_host_port(s, 0),
     'secopts': config.convert_choice(('STARTTLS', 'TLS'), converter=str.upper),
@@ -274,6 +289,8 @@ _CONVS = {
                                       default=ValueError),
     'posfloat': config.convert_predicate(lambda x: x > 0.0, converter=float,
                                          default=0.0),
+    'posint': config.convert_predicate(lambda x: x > 0, converter=int,
+                                       default=0),
     'keytype': config.convert_choice(_SFTP_KEY_TYPES, converter=str.upper,
                                      default=ValueError),
 }

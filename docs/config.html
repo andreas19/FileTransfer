@@ -159,15 +159,19 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td><p>path to directory with mail configuration files</p></td>
 <td><p>required if customized emails are used  (see: <a class="reference internal" href="mails.html"><span class="doc">Emails customization</span></a>)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>[logging]</strong></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">locks_dir</span></code></p></td>
+<td><p>path to directory for lock files</p></td>
+<td><p>required if <code class="docutils literal notranslate"><span class="pre">single_instance</span></code> is used in a job configuration</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>[logging]</strong></p></td>
 <td></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log_dir</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log_dir</span></code></p></td>
 <td><p>path to base directory for log files</p></td>
-<td><p>if not set the logging messages will go to STDERR</p></td>
+<td><p>if not set the logging messages will go to the standard error stream</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">use_subdirs</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">use_subdirs</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
 <td><ul class="simple">
 <li><p>yes (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></p></li>
@@ -175,7 +179,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">msg_format</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">msg_format</span></code></p></td>
 <td><p>format string</p></td>
 <td><div class="line-block">
 <div class="line">default: <code class="docutils literal notranslate"><span class="pre">%(asctime)s</span> <span class="pre">%(levelname)-8s</span> <span class="pre">%(message)s</span></code></div>
@@ -183,13 +187,17 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log_level</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log_level</span></code></p></td>
 <td><p>log level name</p></td>
 <td><div class="line-block">
 <div class="line">default: <code class="docutils literal notranslate"><span class="pre">INFO</span></code></div>
 <div class="line">see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a></div>
 </div>
 </td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disabled</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>disable logging (default: <code class="docutils literal notranslate"><span class="pre">no</span></code>)</p></td>
 </tr>
 <tr class="row-even"><td><p><strong>[sftp]</strong></p></td>
 <td></td>
@@ -301,6 +309,14 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">collect_data</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>collect data about transferred files and errors (default: value set in the application configuration); the list will be shown in the notification email</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">single_instance</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>if <code class="docutils literal notranslate"><span class="pre">yes</span></code> only one instance can run at a time; <code class="docutils literal notranslate"><span class="pre">locks_dir</span></code> must be set in application configuration (default: <code class="docutils literal notranslate"><span class="pre">no</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log_disabled</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>disable logging (default: value of <code class="docutils literal notranslate"><span class="pre">disable</span></code> in section <code class="docutils literal notranslate"><span class="pre">[logging]</span></code> in the application configuration)</p></td>
 </tr>
 <tr class="row-odd"><td><p><strong>[source]</strong></p></td>
 <td></td>

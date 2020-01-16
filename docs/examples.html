@@ -163,13 +163,10 @@
 </div>
 <div class="section" id="configure">
 <span id="ref-configure-and-run"></span><h2>configure()<a class="headerlink" href="#configure" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">signal</span>
-<span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="n">configure</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">,</span> <span class="n">Error</span>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filetransfer</span> <span class="kn">import</span> <span class="p">(</span><span class="n">configure</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span>
+                          <span class="n">set_sigterm_handler</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">terminated</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-   <span class="k">raise</span> <span class="n">Terminated</span>
-
-<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">terminated</span><span class="p">)</span>
+<span class="n">set_sigterm_handler</span><span class="p">()</span>
 
 <span class="k">try</span><span class="p">:</span>
    <span class="n">exc</span> <span class="o">=</span> <span class="kc">None</span>

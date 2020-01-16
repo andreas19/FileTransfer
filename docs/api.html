@@ -147,6 +147,21 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 </dd></dl>
 
 <dl class="exception">
+<dt id="filetransfer.SingleInstanceError">
+<em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">SingleInstanceError</code><a class="headerlink" href="#filetransfer.SingleInstanceError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a single instance requirement is violated.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+<dl class="attribute">
+<dt id="filetransfer.SingleInstanceError.code">
+<code class="sig-name descname">code</code><em class="property"> = 4</em><a class="headerlink" href="#filetransfer.SingleInstanceError.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
 <dt id="filetransfer.Terminated">
 <em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">Terminated</code><a class="headerlink" href="#filetransfer.Terminated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when terminated with SIGTERM, SIGINT or KeyboardInterrupt.</p>
@@ -185,7 +200,7 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt>list of tuples: (path, info, tag)</dt><dd><ul class="simple">
 <li><p>path: path relative to source/target directory</p></li>
 <li><p>info: duration of transfer or error text</p></li>
-<li><p>tag: &gt; (source), &lt; (target), = (transffered)</p></li>
+<li><p>tag: &gt; (source), &lt; (target), = (transferred)</p></li>
 </ul>
 </dd>
 </dl>
@@ -197,13 +212,33 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 </dd></dl>
 
 <dl class="function">
+<dt id="filetransfer.set_sigterm_handler">
+<code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">set_sigterm_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.set_sigterm_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set handler for SIGTERM.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
+<p>This function sets the same handler that is used when the
+<a class="reference internal" href="usage.html"><span class="doc">filetransfer script</span></a> is run. It raises
+<a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a> on receiving the SIGTERM signal. This
+function can only be run from the main thread
+(see: <a class="reference external" href="https://docs.python.org/3/library/signal.html#signals-and-threads" title="(in Python v3.8)"><span>Signals and threads</span></a> and <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">signal.signal()</span></code></a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – if not called from the main thread</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="filetransfer.configure">
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">cfg_file</em>, <em class="sig-param">job_id</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.configure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure the application.</p>
 <p>This function returns a function (called <code class="docutils literal notranslate"><span class="pre">run()</span></code> from here on)
 that must be called to run the actual file transfer. <code class="docutils literal notranslate"><span class="pre">run()</span></code> may
 raise <a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConnectError</span></code></a>, <a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TransferError</span></code></a>,
-<a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a>, or <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> if another error occurs.
+<a class="reference internal" href="#filetransfer.SingleInstanceError" title="filetransfer.SingleInstanceError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SingleInstanceError</span></code></a>, <a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a>,
+or <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> if another error occurs.
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> takes one optional argument that must be an instance of a
 subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
 that will be reraised within <code class="docutils literal notranslate"><span class="pre">run()</span></code>. The intended use for this is
@@ -211,7 +246,7 @@ to handle an exception from code between  <code class="docutils literal notransl
 the usual way (logging and sending an email notification). The transfer
 itself will not be run. See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.3: </span>add exception parameter to run()</p>
+<p><span class="versionmodified changed">Changed in version 0.7.3: </span>add exception parameter to <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
 </div>
 <p>You can put your own configuration sections in the application
 and job configuration files. The names of theses sections must
