@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-01-16 (0.9.0)**
  - New: option single_instance in job configuration
  - New: logging can be disabled in application or job configuration
  - Add function set_sigterm_handler() to API
