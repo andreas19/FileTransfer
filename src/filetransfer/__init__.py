@@ -15,7 +15,7 @@ from .exceptions import (Error, ConfigError, ConnectError, SingleInstanceError,
                          TransferError, Terminated)
 from .job import JobResult
 
-__version__ = '0.8.0'
+__version__ = '0.9.0'
 
 __all__ = ['Error', 'ConfigError', 'ConnectError', 'TransferError',
            'SingleInstanceError', 'Terminated', 'JobResult',
