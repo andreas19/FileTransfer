@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-01-27 (0.10.0)**
  - New: options log_level, retries and ready_file in job configuration
  - New: single_instance in job configuration can be set to arbitrary lock name
  - Changed: JobResult.file_list tags are now FileTags enum members
