@@ -105,19 +105,17 @@ has errors.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DATETIME_FORMAT: %Y-%m-%d %H:%M:%S
 DURATION_FORMAT: %M:%02S.%03s
 
-ERR_NONE: No errors
-ERR_FILES: File error(s)
-ERR_CONFIG: Configuration error
-ERR_CONNECT: Connect error
-ERR_TRANSFER: Transfer error
-ERR_OTHER: Another error
+STAT_SUCCESS: Finished w/o errors
+STAT_ERRORS: Finished with errors
+STAT_FAILURE: Failure
+STAT_CONFIG: Configuration error
+STAT_TERMINATED: Terminated
+STAT_OTHER: Another error
 
 STATUS_OK: OK
 STATUS_ERR: ERROR
 
 SUBJECT: Job &quot;$jobname&quot; finished [$status]
-
-RESULT: $files_cnt files transferred, $src_error_cnt source errors, $tgt_error_cnt target errors
 
 MESSAGE:
 Job &quot;$jobname&quot; (ID: $jobid):
@@ -129,13 +127,16 @@ Duration: $duration
 Info:
   $info
 
-Logfile: $logfile
-
-$errstr:
-  $result
-
 Source: $source
 Target: $target
+
+Logfile: $logfile
+
+$statstr:
+  $files_cnt files transferred, $src_error_cnt source error(s), $tgt_error_cnt target error(s)
+
+Exception:
+  $errormsg
 
 Files: (= is transferred, &gt; is source error, &lt; is target error)
   $filelist
@@ -144,16 +145,19 @@ Files: (= is transferred, &gt; is source error, &lt; is target error)
 <p>Except <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> all entries must be on one line. <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> must be the last entry.
 Entrynames are not case-sensitive.</p>
 <p>The datetime format is explained <a class="reference external" href="https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior" title="(in Python v3.8)"><span class="xref std std-ref">here</span></a>
-and the duration format <a class="reference external" href="https://andreas19.github.io/salmagundi/mod_strings.html#ref-timedelta-format-specifiers" title="(in Salmagundi v0.11.1)"><span class="xref std std-ref">here</span></a>.</p>
-<p>One of the <code class="docutils literal notranslate"><span class="pre">ERR_*</span></code> strings is substituted for <code class="docutils literal notranslate"><span class="pre">$errstr</span></code> and one of the
+and the duration format <a class="reference external" href="https://andreas19.github.io/salmagundi/mod_strings.html#ref-timedelta-format-specifiers" title="(in Salmagundi v0.11.2)"><span class="xref std std-ref">here</span></a>.</p>
+<p>One of the <code class="docutils literal notranslate"><span class="pre">STAT_*</span></code> strings is substituted for <code class="docutils literal notranslate"><span class="pre">$statstr</span></code> and one of the
 <code class="docutils literal notranslate"><span class="pre">STATUS_*</span></code> strings for <code class="docutils literal notranslate"><span class="pre">$status</span></code> depending on the result status of the job.</p>
+<p>Another placeholder is <code class="docutils literal notranslate"><span class="pre">$stacktrace</span></code> (not used in the default configuration). It
+prints the stack trace if an exception occured.</p>
 <p>The values for substituting <code class="docutils literal notranslate"><span class="pre">$files_cnt</span></code>, <code class="docutils literal notranslate"><span class="pre">$src_error_cnt</span></code>,
-<code class="docutils literal notranslate"><span class="pre">$tgt_error_cnt</span></code> and <code class="docutils literal notranslate"><span class="pre">$filelist</span></code> are taken from the
+<code class="docutils literal notranslate"><span class="pre">$tgt_error_cnt</span></code> and <code class="docutils literal notranslate"><span class="pre">$filelist</span></code> are taken from the (possibly incomplete)
 <a class="reference internal" href="api.html#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">job</span> <span class="pre">result</span></code></a>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">$result</span></code> placeholder will either be substituted with the <code class="docutils literal notranslate"><span class="pre">RESULT</span></code> template
-or with an exception message depending on the outcome of the job.</p>
 <p>The other <a class="reference external" href="https://docs.python.org/3/library/string.html#template-strings" title="(in Python v3.8)"><span class="xref std std-ref">template placeholders</span></a> should
 be self explaining.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Removed: ERR_*, RESULT, $errstr, $result; Added: STAT_*, $statstr, $errormsg, $stacktrace</p>
+</div>
 </div>
 
 

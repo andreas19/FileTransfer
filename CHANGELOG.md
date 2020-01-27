@@ -1,6 +1,13 @@
 History
 -------
 
+ - New: options log_level, retries and ready_file in job configuration
+ - New: single_instance in job configuration can be set to arbitrary lock name
+ - Changed: JobResult.file_list tags are now FileTags enum members
+ - Changed: function configure() returns JobResult object and status code
+ - Changed: return/status codes of filetransfer script and exceptions
+ - Changed: names for entries and placeholders in custom email configuration
+
 **2020-01-16 (0.9.0)**
  - New: option single_instance in job configuration
  - New: logging can be disabled in application or job configuration

@@ -13,3 +13,8 @@ dl.staticmethod > dt {
     background-color: gainsboro;
     padding: 1px 5px
 }
+
+div.border {
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}

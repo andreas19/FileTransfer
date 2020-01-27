@@ -174,10 +174,11 @@
 
    <span class="k">try</span><span class="p">:</span>
       <span class="o">...</span>  <span class="c1"># e.g. prepare data that will be transferred</span>
-   <span class="k">except</span> <span class="p">(</span><span class="n">Terminated</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+   <span class="k">except</span> <span class="ne">BaseException</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
       <span class="n">exc</span> <span class="o">=</span> <span class="n">ex</span>
 
-   <span class="n">run</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+   <span class="n">_</span><span class="p">,</span> <span class="n">code</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+   <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
 <span class="k">except</span> <span class="p">(</span><span class="n">Error</span><span class="p">,</span> <span class="n">Terminated</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
    <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="n">ex</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>

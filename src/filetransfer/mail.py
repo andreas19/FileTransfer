@@ -5,11 +5,12 @@ import logging
 import pprint
 import string
 import textwrap
+import traceback
 from smtplib import SMTP, SMTP_SSL, SMTPException
 
 from salmagundi.strings import format_timedelta
 
-from .const import ErrorsEnum
+from .const import ExitCodes
 from .job import JobResult
 from .utils import read_resource
 
@@ -17,17 +18,17 @@ _logger = logging.getLogger(__name__)
 
 _mail_default = 'default'
 _mail_default_cfg = 'default.mail'
-_names = ['datetime_format', 'duration_format', 'err_none', 'err_files',
-          'err_config', 'err_connect', 'err_transfer', 'err_other',
-          'status_ok', 'status_err', 'subject', 'result', 'message']
-_indentables = ['info', 'result', 'filelist']
+_names = ['datetime_format', 'duration_format', 'stat_success', 'stat_errors',
+          'stat_failure', 'stat_config', 'stat_terminated', 'stat_other',
+          'status_ok', 'status_err', 'subject', 'message']
+_indentables = ['info', 'errormsg', 'stacktrace', 'filelist']
 _msg_strings = {
-    ErrorsEnum.NONE: 'err_none',
-    ErrorsEnum.FILES: 'err_files',
-    ErrorsEnum.CONFIG: 'err_config',
-    ErrorsEnum.CONNECT: 'err_connect',
-    ErrorsEnum.TRANSFER: 'err_transfer',
-    ErrorsEnum.OTHER: 'err_other'
+    ExitCodes.SUCCESS: 'stat_success',
+    ExitCodes.ERRORS: 'stat_errors',
+    ExitCodes.FAILURE: 'stat_failure',
+    ExitCodes.CONFIG: 'stat_config',
+    ExitCodes.TERMINATED: 'stat_terminated',
+    None: 'stat_other'
 }
 
 
@@ -52,7 +53,8 @@ class _MailCfg:
 
 
 def _get_mail_cfg(app_cfg, job_cfg):
-    mail_cfg = job_cfg['notify', 'mail_cfg'] or app_cfg['notify', 'mail_cfg']
+    mail_cfg = (job_cfg and job_cfg['notify', 'mail_cfg'] or
+                app_cfg['notify', 'mail_cfg'])
     if mail_cfg != _mail_default:
         if not app_cfg['global', 'mail_cfgs_dir']:
             _logger.warning('No mail_cfgs_dir in application configuration;'
@@ -76,8 +78,8 @@ def _get_mail_cfg(app_cfg, job_cfg):
         return _MailCfg(read_resource(_mail_default_cfg))
 
 
-def _get_addrs(app_cfg, err):
-    status = 'success' if err is ErrorsEnum.NONE else 'error'
+def _get_addrs(app_cfg, exit_code):
+    status = 'success' if exit_code is ExitCodes.SUCCESS else 'error'
     addrs = app_cfg['notify', status] | app_cfg['notify', 'done']
     if not addrs:
         _logger.warning('No email addresses for status %r', status)
@@ -93,46 +95,69 @@ def _format_file_list(file_list, duration_format):
         except TypeError:
             s = entry[1]
         lst.append(f'{entry[2]} {entry[0]} ({s})')
-    return lst
+    return '\n'.join(lst)
 
 
 def _indents(message, mapping):
     for line in message.splitlines():
         for s in _indentables:
-            if line.lstrip().startswith('$' + s):
+            if s in mapping and line.lstrip().startswith('$' + s):
                 prefix = ' ' * line.find('$')
                 value = textwrap.indent(mapping[s], prefix)
                 mapping[s] = value.lstrip(' ')
 
 
-def _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result):
+def _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result, job_id):
     mapping = {
-        'jobid': job_cfg[None, 'job_id'],
-        'jobname': job_cfg['job', 'name'],
+        'jobid': job_cfg and job_cfg[None, 'job_id'] or job_id,
+        'jobname': job_cfg and job_cfg['job', 'name'] or job_id,
         'starttime': app_cfg['start_time'].strftime(mail_cfg.datetime_format),
         'endtime': endtime.strftime(mail_cfg.datetime_format),
         'duration': format_timedelta(mail_cfg.duration_format,
                                      endtime - app_cfg['start_time']),
-        'info': job_cfg['job', 'info'] or '-',
-        'logfile': app_cfg['log_file'],
-        'errstr': getattr(mail_cfg, _msg_strings[err]),
-        'source': job_cfg['source_url'],
-        'target': job_cfg['target_url'],
-        'status': (mail_cfg.status_ok if err is ErrorsEnum.NONE
+        'info': job_cfg and job_cfg['job', 'info'] or '-',
+        'logfile': (app_cfg['log_file']
+                    if app_cfg['log_handler'].enabled else '-'),
+        'statstr': getattr(mail_cfg, _msg_strings[err]),
+        'source': job_cfg and job_cfg['source_url'] or '-',
+        'target': job_cfg and job_cfg['target_url'] or '-',
+        'status': (mail_cfg.status_ok if err is ExitCodes.SUCCESS
                    else mail_cfg.status_err),
     }
-    file_list = '-'
     if isinstance(result, JobResult):
-        res = _substitute(mail_cfg.result, result._asdict())
-        if result.file_list:
-            file_list = '\n'.join(_format_file_list(result.file_list,
-                                                    mail_cfg.duration_format))
+        exc = None
+    elif isinstance(result, BaseException) and hasattr(result, 'result'):
+        exc = result
+        result = exc.result
     else:
-        res = str(result)
-        if not res:
-            res = result.__class__.__name__
-    mapping['result'] = res
-    mapping['filelist'] = file_list
+        exc = result
+        result = None
+    if result:
+        mapping['files_cnt'] = result.files_cnt
+        mapping['src_error_cnt'] = result.src_error_cnt
+        mapping['tgt_error_cnt'] = result.tgt_error_cnt
+        if result.file_list:
+            file_list = _format_file_list(result.file_list,
+                                          mail_cfg.duration_format)
+        else:
+            file_list = '-'
+        mapping['filelist'] = file_list
+    else:
+        mapping['files_cnt'] = '-'
+        mapping['src_error_cnt'] = '-'
+        mapping['tgt_error_cnt'] = '-'
+        mapping['filelist'] = '-'
+    if exc is None:
+        mapping['errormsg'] = '-'
+        mapping['stacktrace'] = '-'
+    elif isinstance(exc, BaseException):
+        mapping['errormsg'] = (str(exc) if str(exc).strip()
+                               else exc.__class__.__name__)
+        mapping['stacktrace'] = ''.join(
+            traceback.format_exception(type(exc), exc, exc.__traceback__))
+    else:
+        mapping['errormsg'] = repr(exc)
+        mapping['stacktrace'] = '-'
     _indents(mail_cfg.message, mapping)
     return mapping
 
@@ -141,7 +166,7 @@ def _substitute(templ, mapping):
     return string.Template(templ).safe_substitute(mapping)
 
 
-def send(app_cfg, job_cfg, endtime, err, result):
+def send(app_cfg, job_cfg, endtime, exit_code, result, job_id=None):
     """Send email.
 
     :param app_cfg: application configuration
@@ -149,16 +174,18 @@ def send(app_cfg, job_cfg, endtime, err, result):
     :param job_cfg: job configuration
     :type job_cfg: salmagundi.config.Config
     :param datetime.datetime endtime: end time of job
-    :param err: error string
-    :type err: filetransfer.const.ErrorsEnum
+    :param exit_code: error
+    :type exit_code: filetransfer.const.ExitCodes
     :param result: job result
+    :param str job_id: Job ID
     :type result: :class:`filetransfer.job.JobResult` or :class:`Exception`
     """
-    to_addrs = _get_addrs(app_cfg, err)
+    to_addrs = _get_addrs(app_cfg, exit_code)
     if not to_addrs:
         return
     mail_cfg = _get_mail_cfg(app_cfg, job_cfg)
-    mapping = _create_mapping(app_cfg, job_cfg, mail_cfg, endtime, err, result)
+    mapping = _create_mapping(app_cfg, job_cfg, mail_cfg, endtime,
+                              exit_code, result, job_id)
     if _logger.isEnabledFor(logging.DEBUG):
         _logger.debug('mail template mapping:\n%s', pprint.pformat(mapping))
     emailmsg = email.message.EmailMessage()

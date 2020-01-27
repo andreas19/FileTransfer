@@ -27,11 +27,38 @@ examples :ref:`ref-configure-and-run` and :ref:`ref-transfer`
    :members:
 
 
+.. autoexception:: filetransfer.NotReadyError
+   :members:
+
+
 .. autoexception:: filetransfer.Terminated
    :members:
 
 
-.. autoclass:: filetransfer.JobResult
+.. class:: JobResult
+
+   Class that contains job results.
+
+   This class has the following fields:
+
+   =================  ===
+   **files_cnt**      number of successfully transferred files
+   **src_error_cnt**  number of files that could not be read
+   **tgt_error_cnt**  number of files that could not be written
+   **file_list**      list of tuples: (path, info, tag)
+                       - path: path relative to source/target directory
+                       - info: duration of transfer or error text
+                       - tag: :class:`FileTags`
+
+                      if data collection is disabled this will be ``None``
+   =================  ===
+
+   .. versionadded:: 0.7.0
+   .. versionchanged:: 0.10.0
+      ``file_list`` tags: string -> :class:`FileTags` members
+
+
+.. autoclass:: filetransfer.FileTags
 
 
 .. autofunction:: filetransfer.set_sigterm_handler

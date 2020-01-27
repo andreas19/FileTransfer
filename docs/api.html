@@ -91,16 +91,10 @@
   <div class="section" id="module-filetransfer">
 <span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-filetransfer" title="Permalink to this headline">¶</a></h1>
 <p>Simple API to include <code class="docutils literal notranslate"><span class="pre">filetransfer</span></code> in a Python script.</p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<dl class="simple">
-<dt>Changes in version 0.7.0:</dt><dd><ul class="simple">
-<li><p>There is no <code class="docutils literal notranslate"><span class="pre">run()</span></code> function any more. The required function is
-returned by <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a>.</p></li>
-<li><p>The function <a class="reference internal" href="#filetransfer.transfer" title="filetransfer.transfer"><code class="xref py py-func docutils literal notranslate"><span class="pre">transfer()</span></code></a> now returns a <a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a> object.</p></li>
-</ul>
-</dd>
-</dl>
+<p>This module uses <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">loggers</span></code></a> with the name <code class="docutils literal notranslate"><span class="pre">'filetransfer'</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>There is no <code class="docutils literal notranslate"><span class="pre">run()</span></code> function anymore; the required function is
+returned by <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a></p>
 </div>
 <p>See: <a class="reference internal" href="config.html"><span class="doc">Configuration</span></a>,
 examples <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">configure()</span></a> and <a class="reference internal" href="examples.html#ref-transfer"><span class="std std-ref">transfer()</span></a></p>
@@ -114,9 +108,12 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt id="filetransfer.ConfigError">
 <em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">ConfigError</code><a class="headerlink" href="#filetransfer.ConfigError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when there is a problem with the configuration.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">code</span></code> 1 -&gt; 3</p>
+</div>
 <dl class="attribute">
 <dt id="filetransfer.ConfigError.code">
-<code class="sig-name descname">code</code><em class="property"> = 1</em><a class="headerlink" href="#filetransfer.ConfigError.code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">code</code><em class="property"> = 3</em><a class="headerlink" href="#filetransfer.ConfigError.code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Status code</p>
 </dd></dl>
 
@@ -138,9 +135,12 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt id="filetransfer.TransferError">
 <em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">TransferError</code><a class="headerlink" href="#filetransfer.TransferError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when there is a fatal problem during transfer.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">code</span></code> 3 -&gt; 2</p>
+</div>
 <dl class="attribute">
 <dt id="filetransfer.TransferError.code">
-<code class="sig-name descname">code</code><em class="property"> = 3</em><a class="headerlink" href="#filetransfer.TransferError.code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">code</code><em class="property"> = 2</em><a class="headerlink" href="#filetransfer.TransferError.code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Status code</p>
 </dd></dl>
 
@@ -153,9 +153,27 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.9.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">code</span></code> 4 -&gt; 0</p>
+</div>
 <dl class="attribute">
 <dt id="filetransfer.SingleInstanceError.code">
-<code class="sig-name descname">code</code><em class="property"> = 4</em><a class="headerlink" href="#filetransfer.SingleInstanceError.code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">code</code><em class="property"> = 0</em><a class="headerlink" href="#filetransfer.SingleInstanceError.code" title="Permalink to this definition">¶</a></dt>
+<dd><p>Status code</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="filetransfer.NotReadyError">
+<em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">NotReadyError</code><a class="headerlink" href="#filetransfer.NotReadyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when a ready file is required but not present.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.10.0.</span></p>
+</div>
+<dl class="attribute">
+<dt id="filetransfer.NotReadyError.code">
+<code class="sig-name descname">code</code><em class="property"> = 0</em><a class="headerlink" href="#filetransfer.NotReadyError.code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Status code</p>
 </dd></dl>
 
@@ -164,12 +182,15 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dl class="exception">
 <dt id="filetransfer.Terminated">
 <em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">Terminated</code><a class="headerlink" href="#filetransfer.Terminated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raised when terminated with SIGTERM, SIGINT or KeyboardInterrupt.</p>
+<dd><p>Raised when terminated with SIGTERM.</p>
 <p>This is a subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>.</p>
-<p>See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
+<p>See: <a class="reference internal" href="#filetransfer.set_sigterm_handler" title="filetransfer.set_sigterm_handler"><code class="xref py py-func docutils literal notranslate"><span class="pre">filetransfer.set_sigterm_handler()</span></code></a></p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">code</span></code> 8 -&gt; 5</p>
+</div>
 <dl class="attribute">
 <dt id="filetransfer.Terminated.code">
-<code class="sig-name descname">code</code><em class="property"> = 8</em><a class="headerlink" href="#filetransfer.Terminated.code" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">code</code><em class="property"> = 5</em><a class="headerlink" href="#filetransfer.Terminated.code" title="Permalink to this definition">¶</a></dt>
 <dd><p>Status code</p>
 </dd></dl>
 
@@ -200,7 +221,7 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt>list of tuples: (path, info, tag)</dt><dd><ul class="simple">
 <li><p>path: path relative to source/target directory</p></li>
 <li><p>info: duration of transfer or error text</p></li>
-<li><p>tag: &gt; (source), &lt; (target), = (transferred)</p></li>
+<li><p>tag: <a class="reference internal" href="#filetransfer.FileTags" title="filetransfer.FileTags"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTags</span></code></a></p></li>
 </ul>
 </dd>
 </dl>
@@ -209,15 +230,36 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 </tr>
 </tbody>
 </table>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.7.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">file_list</span></code> tags: string -&gt; <a class="reference internal" href="#filetransfer.FileTags" title="filetransfer.FileTags"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileTags</span></code></a> members</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="filetransfer.FileTags">
+<em class="property">class </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">FileTags</code><a class="headerlink" href="#filetransfer.FileTags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tags for <code class="docutils literal notranslate"><span class="pre">file_list</span></code> of <a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a>.</p>
+<dl class="simple">
+<dt>Members:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">TRANSF</span></code>: <code class="docutils literal notranslate"><span class="pre">'='</span></code> (transferred)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SRCERR</span></code>: <code class="docutils literal notranslate"><span class="pre">'&gt;'</span></code> (source error)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TGTERR</span></code>: <code class="docutils literal notranslate"><span class="pre">'&lt;'</span></code> (target error)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The string representation of an enum member is just the value of the member.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.10.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="filetransfer.set_sigterm_handler">
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">set_sigterm_handler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.set_sigterm_handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set handler for SIGTERM.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.9.0.</span></p>
-</div>
 <p>This function sets the same handler that is used when the
 <a class="reference internal" href="usage.html"><span class="doc">filetransfer script</span></a> is run. It raises
 <a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a> on receiving the SIGTERM signal. This
@@ -228,25 +270,55 @@ function can only be run from the main thread
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – if not called from the main thread</p>
 </dd>
 </dl>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 0.9.0.</span></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="filetransfer.configure">
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">configure</code><span class="sig-paren">(</span><em class="sig-param">cfg_file</em>, <em class="sig-param">job_id</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.configure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Configure the application.</p>
+<div class="border docutils container">
 <p>This function returns a function (called <code class="docutils literal notranslate"><span class="pre">run()</span></code> from here on)
-that must be called to run the actual file transfer. <code class="docutils literal notranslate"><span class="pre">run()</span></code> may
-raise <a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ConnectError</span></code></a>, <a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TransferError</span></code></a>,
-<a class="reference internal" href="#filetransfer.SingleInstanceError" title="filetransfer.SingleInstanceError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SingleInstanceError</span></code></a>, <a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a>,
-or <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> if another error occurs.
+that must be called to run the actual file transfer.
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> takes one optional argument that must be an instance of a
 subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
 that will be reraised within <code class="docutils literal notranslate"><span class="pre">run()</span></code>. The intended use for this is
 to handle an exception from code between  <code class="docutils literal notranslate"><span class="pre">configure()</span></code> and <code class="docutils literal notranslate"><span class="pre">run()</span></code> in
 the usual way (logging and sending an email notification). The transfer
 itself will not be run. See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
+<dl class="function">
+<dt id="filetransfer.filetransfer.run">
+<code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">exc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.filetransfer.run" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><em>BaseException</em></a>) – exception to be reraised within this function</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>result and exit code (0: success, 1: with errors)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult">JobResult</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><strong>ConnectError</strong></a> – see above</p></li>
+<li><p><a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><strong>TransferError</strong></a> – see above</p></li>
+<li><p><a class="reference internal" href="#filetransfer.SingleInstanceError" title="filetransfer.SingleInstanceError"><strong>SingleInstanceError</strong></a> – see above</p></li>
+<li><p><a class="reference internal" href="#filetransfer.NotReadyError" title="filetransfer.NotReadyError"><strong>NotReadyError</strong></a> – see above</p></li>
+<li><p><a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><strong>Terminated</strong></a> – see above</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="versionchanged">
-<p><span class="versionmodified changed">Changed in version 0.7.3: </span>add exception parameter to <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
+<p><span class="versionmodified changed">Changed in version 0.7.3: </span>Add exception parameter to <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Return <a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a> and exit code</p>
+</div>
 </div>
 <p>You can put your own configuration sections in the application
 and job configuration files. The names of theses sections must
@@ -268,27 +340,27 @@ the extra configuration</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>run function and extra configuration</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">run()</span></code> function and extra configuration</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>function(), <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)">configparser.ConfigParser</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
-the configuration</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.Error" title="(in Python v3.8)"><strong>configparser.Error</strong></a> – if there is a problem while parsing
-one of the configuration files</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#OSError" title="(in Python v3.8)"><strong>OSError</strong></a> – if there is a problem while reading one of the
-configuration files</p></li>
-</ul>
+<dd class="field-even"><p><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
+the configuration</p>
 </dd>
 </dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>Return function for running the job</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Does not raise configparser.Error and OSError anymore</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="filetransfer.transfer">
-<code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">transfer</code><span class="sig-paren">(</span><em class="sig-param">src_cfg</em>, <em class="sig-param">tgt_cfg=None</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">transfer</code><span class="sig-paren">(</span><em class="sig-param">src_cfg</em>, <em class="sig-param">tgt_cfg=None</em>, <em class="sig-param">*</em>, <em class="sig-param">collect_data=False</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transfer files.</p>
 <p>The first parameter (<code class="docutils literal notranslate"><span class="pre">src_cfg</span></code>) may be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or a
 <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object.</p>
@@ -307,6 +379,8 @@ above configuration objects.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><em>configparser.ConfigParser</em></a>) – the source or job configuration</p></li>
 <li><p><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – the target configuration</p></li>
+<li><p><strong>collect_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the file list for the
+<a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a> will be created</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -322,10 +396,15 @@ the configuration</p></li>
 <li><p><a class="reference internal" href="#filetransfer.ConnectError" title="filetransfer.ConnectError"><strong>filetransfer.ConnectError</strong></a> – if there is a connection problem</p></li>
 <li><p><a class="reference internal" href="#filetransfer.TransferError" title="filetransfer.TransferError"><strong>filetransfer.TransferError</strong></a> – if there is a fatal problem
 during transfer</p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.8)"><strong>Exception</strong></a> – if another error occurs</p></li>
 </ul>
 </dd>
 </dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>This function now returns a <a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a> object</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.10.0: </span>Add parameter <code class="docutils literal notranslate"><span class="pre">collect_data</span></code></p>
+</div>
 </dd></dl>
 
 </div>

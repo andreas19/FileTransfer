@@ -123,6 +123,7 @@ scheduler (e.g. <code class="docutils literal notranslate"><span class="pre">cro
 <li><p><a class="reference external" href="https://pypi.org/project/paramiko">paramiko</a> &gt;= 2.7.1</p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/salmagundi">salmagundi</a> &gt;= 0.11.2</p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/importlib_resources">importlib_resources</a> &gt;= 1.0.2; python_version &lt; “3.7”</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/dataclasses">dataclasses</a> &gt;= 0.7; python_version &lt; “3.7”</p></li>
 </ul>
 </div>
 <div class="section" id="links">
@@ -134,6 +135,16 @@ scheduler (e.g. <code class="docutils literal notranslate"><span class="pre">cro
 </div>
 <div class="section" id="history">
 <h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>New: options log_level, retries and ready_file in job configuration</p></li>
+<li><p>New: single_instance in job configuration can be set to arbitrary lock name</p></li>
+<li><p>Changed: JobResult.file_list tags are now FileTags enum members</p></li>
+<li><p>Changed: function configure() returns JobResult object and status code</p></li>
+<li><p>Changed: return/status codes of filetransfer script and exceptions</p></li>
+<li><p>Changed: names for entries and placeholders in custom email configuration</p></li>
+</ul>
+</div></blockquote>
 <dl class="simple">
 <dt><strong>2020-01-16 (0.9.0)</strong></dt><dd><ul class="simple">
 <li><p>New: option single_instance in job configuration</p></li>

@@ -27,15 +27,18 @@ Entrynames are not case-sensitive.
 The datetime format is explained :ref:`here <python:strftime-strptime-behavior>`
 and the duration format :ref:`here <salmagundi:ref-timedelta-format-specifiers>`.
 
-One of the ``ERR_*`` strings is substituted for ``$errstr`` and one of the
+One of the ``STAT_*`` strings is substituted for ``$statstr`` and one of the
 ``STATUS_*`` strings for ``$status`` depending on the result status of the job.
 
-The values for substituting ``$files_cnt``, ``$src_error_cnt``,
-``$tgt_error_cnt`` and ``$filelist`` are taken from the 
-:class:`job result <filetransfer.JobResult>`.
+Another placeholder is ``$stacktrace`` (not used in the default configuration). It
+prints the stack trace if an exception occured.
 
-The ``$result`` placeholder will either be substituted with the ``RESULT`` template
-or with an exception message depending on the outcome of the job.
+The values for substituting ``$files_cnt``, ``$src_error_cnt``,
+``$tgt_error_cnt`` and ``$filelist`` are taken from the (possibly incomplete)
+:class:`job result <filetransfer.JobResult>`.
 
 The other :ref:`template placeholders <python:template-strings>` should
 be self explaining.
+
+.. versionchanged:: 0.10.0
+   Removed: ERR_*, RESULT, $errstr, $result; Added: STAT_*, $statstr, $errormsg, $stacktrace

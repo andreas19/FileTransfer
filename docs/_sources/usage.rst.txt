@@ -14,7 +14,6 @@ so that it can be omitted on the commandline of each job.
 It is also possible to get hostkeys from SFTP servers and save them to or delete them from
 the known-hosts file.
 
-
 .. seealso::
    * `OpenSSH <https://www.openssh.com/>`_
       * `ssh <https://man.openbsd.org/ssh.1>`_

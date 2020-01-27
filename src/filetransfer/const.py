@@ -2,24 +2,50 @@
 
 from enum import Enum
 
-from .exceptions import (ConfigError, ConnectError, TransferError,
-                         SingleInstanceError, Terminated)
-
 FTP_PORT = 21  #: Default FTP port.
 
 SSH_PORT = 22  #: Default SSH/SFTP port.
 
 SMTP_PORT = 25  #: Default SMTP port.
 
-ErrorsEnum = Enum('ErrorsEnum', 'NONE, FILES, CONFIG, CONNECT, TRANSFER, OTHER')
 
-EXIT_CODES = dict(
-    succ=0,                         # success
-    conf=ConfigError.code,          # configuration error
-    conn=ConnectError.code,         # connection error
-    tran=TransferError.code,        # error during transfer of files
-    sing=SingleInstanceError.code,  # single instance error
-    cmdl=7,                         # command line syntax error
-    term=Terminated.code,           # terminated by SIGTERM or SIGINT
-    othe=9                          # another error
-)
+class ExitCodes(Enum):
+    """Exit Codes."""
+
+    SUCCESS = (0, 'success')
+    ERRORS = (1, 'with errors')
+    FAILURE = (2, 'failure')
+    CONFIG = (3, 'config error')
+    CMDLINE = (4, 'cmd line syntax error')
+    TERMINATED = (5, 'terminated')
+
+    def __init__(self, code, descr):
+        self.code = code
+        self.descr = descr
+
+    @classmethod
+    def as_doc(cls):
+        """Return string for usage documentation."""
+        return '\n'.join(f'  {member.code}  {member.descr}'
+                         for member in cls.__members__.values()).strip()
+
+
+class FileTags(Enum):
+    """Tags for ``file_list`` of :class:`JobResult`.
+
+    Members:
+     - ``TRANSF``: ``'='`` (transferred)
+     - ``SRCERR``: ``'>'`` (source error)
+     - ``TGTERR``: ``'<'`` (target error)
+
+    The string representation of an enum member is just the value of the member.
+
+    .. versionadded:: 0.10.0
+    """
+
+    TRANSF = '='
+    SRCERR = '>'
+    TGTERR = '<'
+
+    def __str__(self):
+        return self.value

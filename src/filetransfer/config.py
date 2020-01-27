@@ -4,7 +4,6 @@ import configparser
 import io
 import logging
 import os
-import sys
 from datetime import datetime
 from email.utils import parseaddr
 from pathlib import Path
@@ -14,7 +13,8 @@ from salmagundi import config, strings
 
 from . import const
 from .exceptions import ConfigError
-from .utils import read_resource, LogHandler
+from .loghandler import LogHandler
+from .utils import read_resource
 
 _LOG_FILE_FORMAT = '{:%Y%m%d-%H%M%S}.log'
 _SFTP_KEY_TYPES = {
@@ -28,7 +28,7 @@ _CONFIG_ERRORS = (FileNotFoundError, configparser.Error, config.Error)
 _logger = logging.getLogger(__name__)
 
 
-def configure(cfg_file, job_id):
+def configure(cfg_file, job_id, *, activate_logging=False):
     """Configure the application.
 
     :param cfg_file: path to configuration file
@@ -54,10 +54,10 @@ def configure(cfg_file, job_id):
             raise ConfigError(f'in app config: {ex}')
         _configure_logging(app_cfg, job_id)
         log_enabled = not app_cfg['logging', 'disabled']
+        _logger.info('Job %r started', job_id)
         app_cfg.add('start_time', datetime.now())
         mail_config_ok = _check_mail_config(app_cfg)
         app_cfg.add('mail_config_ok', mail_config_ok)
-        _logger.info('Job %r started', job_id)
         _set_default_port(app_cfg, ('mail', 'host'), 'smtp')
         _debug_config('APP CONFIG', app_cfg)
         try:
@@ -68,6 +68,12 @@ def configure(cfg_file, job_id):
         except _CONFIG_ERRORS as ex:
             raise ConfigError(f'in job config: {ex}')
         log_enabled = app_cfg['log_handler'].enabled
+        if log_enabled:
+            logging.getLogger().setLevel(job_cfg['job', 'log_level'])
+            log_level = logging.getLogger().getEffectiveLevel()
+            app_cfg['log_handler'].purge(log_level)
+        if activate_logging:
+            app_cfg['log_handler'].activate()
         job_cfg.add('job_id', job_id)
         job_cfg.add('job_cfg_file', job_cfg_file)
         if not job_cfg['job', 'name']:
@@ -79,20 +85,20 @@ def configure(cfg_file, job_id):
         set_urls(job_cfg)
         return app_cfg, job_cfg
     except Exception as ex:
-        if mail_config_ok:
-            from . import mail
-            if not job_cfg:
-                args = dict(jobid=job_id, jobname=job_id)
-            else:
-                args = {}
-            mail.send(app_cfg, job_cfg, args, const.ErrorsEnum.CONFIG, ex)
         if log_enabled:
             app_cfg['log_handler'].activate()
             _logger.critical('Configuration error: %s', ex)
-            _logger.info('Job "%s" finished', job_id)
+            _logger.debug('Configuration error', exc_info=True)
+            _logger.info('Job "%s" finished; exit_code=%d',
+                         job_id, const.ExitCodes.CONFIG.code)
+        if mail_config_ok:
+            from . import mail
+            mail.send(app_cfg, job_cfg, datetime.now(),
+                      const.ExitCodes.CONFIG, ex, job_id)
+        if isinstance(ex, ConfigError):
+            raise
         else:
-            print(ex, file=sys.stderr)
-        raise
+            raise ConfigError(ex)
 
 
 def get_job_cfg(conf, app_cfg=None):
@@ -100,20 +106,20 @@ def get_job_cfg(conf, app_cfg=None):
     job_config_spec = _load_spec('job_config_spec.ini')
     job_cfg = config.configure(conf, io.StringIO(job_config_spec),
                                create_properties=False, converters=_CONVS)
-    if job_cfg['job', 'collect_data'] is config.NOTFOUND:
-        if app_cfg:
-            job_cfg['job', 'collect_data'] = app_cfg['global', 'collect_data']
-        else:
-            job_cfg['job', 'collect_data'] = False
-    if (app_cfg and app_cfg['logging', 'disabled'] and
-            job_cfg['job', 'log_disabled'] is config.NOTFOUND or
-            job_cfg['job', 'log_disabled'] is True):
-        app_cfg['log_handler'].disable()
+    if job_cfg['job', 'collect_data'] is config.NOTFOUND and app_cfg:
+        job_cfg['job', 'collect_data'] = app_cfg['global', 'collect_data']
     if job_cfg['job', 'single_instance']:
         if not app_cfg['global', 'locks_dir']:
             raise ConfigError('in job config: single_instance used but no'
                               ' locks_dir in app config')
         app_cfg['global', 'locks_dir'].mkdir(parents=True, exist_ok=True)
+    if app_cfg:
+        if job_cfg['job', 'log_level'] is config.NOTFOUND:
+            job_cfg['job', 'log_level'] = app_cfg['logging', 'log_level']
+        if (app_cfg['logging', 'disabled'] and
+                job_cfg['job', 'log_disabled'] is config.NOTFOUND or
+                job_cfg['job', 'log_disabled']):
+            app_cfg['log_handler'].disable()
     return job_cfg
 
 
@@ -170,7 +176,7 @@ def _configure_logging(app_cfg, job_id):
         import warnings
         warnings.simplefilter('ignore')
     log_handler = LogHandler(log_path)
-    logging.basicConfig(level=app_cfg['logging', 'log_level'],
+    logging.basicConfig(level=logging.NOTSET,
                         format=app_cfg['logging', 'msg_format'],
                         handlers=[log_handler])
     app_cfg.add('log_handler', log_handler)
@@ -275,6 +281,16 @@ def _tempopts(s):
     raise ValueError(f'unknown or invalid temp option: {s!r}')
 
 
+def _boolstr(s):
+    s = s.strip()
+    if not s:
+        raise ValueError('empty string not allowed')
+    try:
+        return strings.str2bool(s)
+    except ValueError:
+        return s
+
+
 _CONVS = {
     'path': Path,
     'abspath': lambda s: Path(s).resolve(),
@@ -284,6 +300,7 @@ _CONVS = {
     'strtuple': strings.str2tuple,
     'addrs': lambda s: set(parseaddr(x) for x in strings.str2tuple(s) if x),
     'tempopts': _tempopts,
+    'boolstr': _boolstr,
     'typeopts': config.convert_choice(('FTP', 'FTPS', 'SFTP'),
                                       converter=str.upper,
                                       default=ValueError),

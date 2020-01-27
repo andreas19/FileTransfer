@@ -1,7 +1,7 @@
 """Main module.
 
 usage:
- $prog [-v] [-c CONFIG] JOBID
+ $prog [-v | -vv] [-c CONFIG] JOBID
  $prog -k [-H] [-p PORT] HOST FILE
  $prog -d [-p PORT] HOST FILE
  $prog -h | -V
@@ -17,20 +17,14 @@ usage:
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
  -p, --port PORT      SFTP server port [default: $sshport]
- -v, --verbose        print stack trace for uncaught errors
+ -v, --verbose        once: print message
+                      twice: print stack trace
 
  -h, --help           show this help
  -V, --version        show the version
 
  return codes:
-  $succ   success
-  $conf   configuration error
-  $conn   connect error
-  $tran   transfer error
-  $sing   single instance error
-  $cmdl   command line error
-  $term   terminated
-  $othe   another error
+  $exit_codes
 """
 
 import base64
@@ -38,29 +32,30 @@ import hashlib
 import logging
 import os
 import sys
+from contextlib import suppress
 
 from paramiko import HostKeys, Transport, SSHException
 from salmagundi import strings
 from salmagundi.utils import docopt_helper
 
 from . import __version__, set_sigterm_handler, config, job, utils
-from .const import SSH_PORT, EXIT_CODES
+from .const import SSH_PORT, ExitCodes
 from .exceptions import Error, ConfigError, ConnectError, Terminated
 
-progname = 'FileTransfer'
-env_var_name = 'FILETRANSFER_CFG'
-logger = logging.getLogger(__name__)
+_PROGNAME = 'FileTransfer'
+_ENV_VAR_NAME = 'FILETRANSFER_CFG'
+_logger = logging.getLogger(__name__)
 
 
 def main():
     """Execute command."""
     args = docopt_helper(__doc__.split('\n', 2)[2],
-                         version_str=f'{progname} {__version__}',
-                         err_code=EXIT_CODES['cmdl'],
-                         prog=progname.lower(),
-                         envvar=env_var_name,
+                         version_str=f'{_PROGNAME} {__version__}',
+                         err_code=ExitCodes.CMDLINE.code,
+                         prog=_PROGNAME.lower(),
+                         envvar=_ENV_VAR_NAME,
                          sshport=SSH_PORT,
-                         **EXIT_CODES)
+                         exit_codes=ExitCodes.as_doc())
     if args['--hostkey']:
         return _get_hostkey(args)
     if args['--delete']:
@@ -70,25 +65,42 @@ def main():
 
 def _run_filetransfer(args):
     set_sigterm_handler()
+    verbose = args['--verbose']
     try:
         if args['--config']:
             cfg_file = args['--config']
         else:
-            cfg_file = os.getenv(env_var_name)
+            cfg_file = os.getenv(_ENV_VAR_NAME)
         app_cfg, job_cfg = config.configure(cfg_file, args['JOBID'])
-        job.run(app_cfg, job_cfg)
-        status = EXIT_CODES['succ']
+        result, status = job.run(app_cfg, job_cfg)
+        if verbose:
+            print(f'Job finished: {result}')
     except Error as ex:
+        _handle_exception(verbose, ex)
         status = ex.code
-    except (KeyboardInterrupt, Terminated):
+    except (KeyboardInterrupt, Terminated) as ex:
+        _handle_exception(verbose, ex)
         status = Terminated.code
-    except Exception:
-        if args['--verbose']:
-            import traceback
-            traceback.print_exc()
-        status = EXIT_CODES['othe']
-    logger.debug('exit status=%d', status)
+    except Exception as ex:
+        # should not happen but may be useful for debugging
+        _handle_exception(verbose, ex)
+        status = ExitCodes.FAILURE.code
+    _logger.debug('exit status=%d', status)
     return status
+
+
+def _handle_exception(verbose, exc):
+    if verbose:
+        with suppress(AttributeError):
+            print(f'Job finished: {exc.result}')
+    if verbose == 1:
+        if str(exc).strip():
+            print(f'{exc.__class__.__name__}: {exc}', file=sys.stderr)
+        else:
+            print(exc.__class__.__name__, file=sys.stderr)
+    if verbose == 2:
+        import traceback
+        traceback.print_exc()
 
 
 def _get_hostkey(args):
@@ -148,8 +160,8 @@ def _get_hostkey(args):
         return ConnectError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return EXIT_CODES['othe']
-    return EXIT_CODES['succ']
+        return ExitCodes.FAILURE.code
+    return ExitCodes.SUCCESS.code
 
 
 def _del_hostkey(args):
@@ -171,8 +183,8 @@ def _del_hostkey(args):
         return ConfigError.code
     except Exception as ex:
         print(repr(ex), file=sys.stderr)
-        return EXIT_CODES['othe']
-    return EXIT_CODES['succ']
+        return ExitCodes.FAILURE.code
+    return ExitCodes.SUCCESS.code
 
 
 if __name__ == '__main__':

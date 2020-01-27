@@ -101,28 +101,21 @@
 <p>The paths mentioned in the configuration files must be either absolute
 or relative to the working directory of the <em>filetransfer</em> process.</p>
 <p>See: example <a class="reference internal" href="examples.html#ref-configuration-files"><span class="std std-ref">Configuration files</span></a></p>
-<div class="admonition attention">
-<p class="admonition-title">Attention</p>
-<dl class="simple">
-<dt>Changes in version 0.6.0:</dt><dd><ul class="simple">
-<li><p><strong>Host configuration</strong> is now only allowed in
-<a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configuration files</span></a>.
-<code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code> in the <a class="reference internal" href="#ref-app-configuration"><span class="std std-ref">application configuration</span></a>
-and <code class="docutils literal notranslate"><span class="pre">host_id</span></code> in the sections [source] and [target] in
-<a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configurations</span></a> are not optional any more
-when using FTP, FTPS or SFTP.</p></li>
-<li><p><strong>SFTP authentication keyfiles</strong> in <a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configurations</span></a>
-must now have their type declared with <code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></li>
-</ul>
-</dd>
-<dt>Changes in version 0.7.0:</dt><dd><ul class="simple">
-<li><p>The <strong>password</strong> option in host configurations is now required except
-for SFTP when an authentication key is used.</p></li>
-<li><p>Option <code class="docutils literal notranslate"><span class="pre">name</span></code> moved from section <code class="docutils literal notranslate"><span class="pre">[notify]</span></code> to the new section <code class="docutils literal notranslate"><span class="pre">[job]</span></code>
-in <a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configuration</span></a>.</p></li>
-</ul>
-</dd>
-</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.6.0: </span>- <em>Host configuration</em> is now only allowed in
+  <a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configuration files</span></a>.
+  <code class="docutils literal notranslate"><span class="pre">hosts_cfg</span></code> in the <a class="reference internal" href="#ref-app-configuration"><span class="std std-ref">application configuration</span></a>
+  and <code class="docutils literal notranslate"><span class="pre">host_id</span></code> in the sections [source] and [target] in
+  <a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configurations</span></a> are not optional any more
+  when using FTP, FTPS or SFTP.
+- <em>SFTP authentication keyfiles</em> in <a class="reference internal" href="#ref-hosts-configuration"><span class="std std-ref">host configurations</span></a>
+  must now have their type declared with <code class="docutils literal notranslate"><span class="pre">key_type</span></code></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 0.7.0: </span>- The <em>password</em> option in host configurations is now required except
+  for SFTP when an authentication key is used.
+- Option <code class="docutils literal notranslate"><span class="pre">name</span></code> moved from section <code class="docutils literal notranslate"><span class="pre">[notify]</span></code> to the new section <code class="docutils literal notranslate"><span class="pre">[job]</span></code>
+  in <a class="reference internal" href="#ref-job-configuration"><span class="std std-ref">job configuration</span></a>.</p>
 </div>
 <div class="section" id="application-configuration">
 <span id="ref-app-configuration"></span><h2>Application Configuration<a class="headerlink" href="#application-configuration" title="Permalink to this headline">¶</a></h2>
@@ -153,7 +146,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">collect_data</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
-<td><p>collect data about transferred files and errors (default: no); the list will be shown in the notification email (can be overwritten in the job configuration)</p></td>
+<td><p>collect data about transferred files and errors (default: <code class="docutils literal notranslate"><span class="pre">no</span></code>); the list will be shown in the notification email (can be overwritten in the job configuration)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfgs_dir</span></code></p></td>
 <td><p>path to directory with mail configuration files</p></td>
@@ -174,8 +167,8 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">use_subdirs</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
 <td><ul class="simple">
-<li><p>yes (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></p></li>
-<li><p>no: the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em><span class="pre">_</span><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed directly in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> directory</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">yes</span></code> (default): the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed in a sub directory named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">no</span></code>: the logfile will be named <code class="file docutils literal notranslate"><em><span class="pre">jobid</span></em><span class="pre">_</span><em><span class="pre">timestamp</span></em><span class="pre">.log</span></code> and placed directly in the <code class="docutils literal notranslate"><span class="pre">log_dir</span></code> directory</p></li>
 </ul>
 </td>
 </tr>
@@ -191,7 +184,7 @@ environment variable (see: <a class="reference internal" href="usage.html"><span
 <td><p>log level name</p></td>
 <td><div class="line-block">
 <div class="line">default: <code class="docutils literal notranslate"><span class="pre">INFO</span></code></div>
-<div class="line">see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a></div>
+<div class="line">(see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a>)</div>
 </div>
 </td>
 </tr>
@@ -311,47 +304,30 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 <td><p>collect data about transferred files and errors (default: value set in the application configuration); the list will be shown in the notification email</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">single_instance</span></code></p></td>
-<td><p>‘yes’ | ‘no’</p></td>
-<td><p>if <code class="docutils literal notranslate"><span class="pre">yes</span></code> only one instance can run at a time; <code class="docutils literal notranslate"><span class="pre">locks_dir</span></code> must be set in application configuration (default: <code class="docutils literal notranslate"><span class="pre">no</span></code>)</p></td>
+<td><p>‘yes’ | ‘no’ | an arbitrary lock name</p></td>
+<td><p>if set to <code class="docutils literal notranslate"><span class="pre">yes</span></code> only one instance of this job can run at a time, if set to a lock name only one instance of any job that uses the same lock name can run at a time; <code class="docutils literal notranslate"><span class="pre">locks_dir</span></code> must be set in application configuration (default: <code class="docutils literal notranslate"><span class="pre">no</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ready_file</span></code></p></td>
+<td><p>file name</p></td>
+<td><p>the job will only run if this file is present in the source directory (it will not be transferred but deleted when the job finishes successfully)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">retries</span></code></p></td>
+<td><p>number of retries after the first attempt failed</p></td>
+<td><p>except for configuration errors the whole job will re-run up to <code class="docutils literal notranslate"><span class="pre">retries</span></code> times (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log_disabled</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>disable logging (default: value of <code class="docutils literal notranslate"><span class="pre">disable</span></code> in section <code class="docutils literal notranslate"><span class="pre">[logging]</span></code> in the application configuration)</p></td>
 </tr>
-<tr class="row-odd"><td><p><strong>[source]</strong></p></td>
-<td></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_id</span></code></p></td>
-<td><p>host id</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log_level</span></code></p></td>
+<td><p>log level name</p></td>
 <td><div class="line-block">
-<div class="line">required for FTP, FTPS, SFTP</div>
-<div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
-<div class="line">if omitted <code class="docutils literal notranslate"><span class="pre">path</span></code> must be on the local filesystem</div>
+<div class="line">default: value of <code class="docutils literal notranslate"><span class="pre">log_level</span></code> in section <code class="docutils literal notranslate"><span class="pre">[logging]</span></code> in the application configuration</div>
+<div class="line">(see: <a class="reference external" href="https://docs.python.org/3/library/logging.html#logging-levels">Logging Levels</a>)</div>
 </div>
 </td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">path</span></code></p></td>
-<td><p>path to source directory</p></td>
-<td><p>required</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">files</span></code></p></td>
-<td><p>one or more filepatterns (comma separated)</p></td>
-<td><p>required (UNIX shell-style wildcards pattern)</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ignore</span></code></p></td>
-<td><p>one or more filepatterns (comma separated)</p></td>
-<td><p>default: .* (UNIX shell-style wildcards pattern)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">recursive</span></code></p></td>
-<td><p>‘yes’ | ‘no’</p></td>
-<td><p>default: no</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">delete</span></code></p></td>
-<td><p>‘yes’ | ‘no’</p></td>
-<td><p>default: no</p></td>
-</tr>
-<tr class="row-even"><td><p><strong>[target]</strong></p></td>
+<tr class="row-even"><td><p><strong>[source]</strong></p></td>
 <td></td>
 <td></td>
 </tr>
@@ -365,30 +341,63 @@ saved in the <code class="docutils literal notranslate"><span class="pre">jobs_d
 </td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">path</span></code></p></td>
+<td><p>path to source directory</p></td>
+<td><p>required</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">files</span></code></p></td>
+<td><p>one or more filepatterns (comma separated)</p></td>
+<td><p>required (UNIX shell-style wildcards pattern)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ignore</span></code></p></td>
+<td><p>one or more filepatterns (comma separated)</p></td>
+<td><p>default: <code class="docutils literal notranslate"><span class="pre">.*</span></code> (UNIX shell-style wildcards pattern)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">recursive</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>default: <code class="docutils literal notranslate"><span class="pre">no</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">delete</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>default: <code class="docutils literal notranslate"><span class="pre">no</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>[target]</strong></p></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">host_id</span></code></p></td>
+<td><p>host id</p></td>
+<td><div class="line-block">
+<div class="line">required for FTP, FTPS, SFTP</div>
+<div class="line">see: <a class="reference internal" href="#hosts-configuration">Hosts Configuration</a></div>
+<div class="line">if omitted <code class="docutils literal notranslate"><span class="pre">path</span></code> must be on the local filesystem</div>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">path</span></code></p></td>
 <td><p>path to target directory</p></td>
 <td><p>required</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">temp</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">temp</span></code></p></td>
 <td><p>‘dot’ | ‘ext:’.ext | ‘dir:’subdir</p></td>
 <td><p>default: no temporary files are used</p></td>
 </tr>
-<tr class="row-even"><td><p><strong>[notify]</strong></p></td>
+<tr class="row-odd"><td><p><strong>[notify]</strong></p></td>
 <td></td>
 <td><p>optional</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code></p></td>
 <td><p>mail configuration file</p></td>
 <td><p>default: <code class="docutils literal notranslate"><span class="pre">mail_cfg</span></code> from application configuration (see: <a class="reference internal" href="mails.html"><span class="doc">Emails customization</span></a>)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">success</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
 <td><p>receipients to notify if the job succeeded (added to list from application configuration)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">error</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
 <td><p>receipients to notify if there was an error (added to list from application configuration)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">done</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">done</span></code></p></td>
 <td><p>comma separated list of email addresses</p></td>
 <td><p>receipients to notify in both cases (added to list from application configuration)</p></td>
 </tr>
@@ -425,19 +434,19 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">timeout</span></code></p></td>
 <td><p>timeout in seconds</p></td>
-<td><p>optional; default: 0.0 = no timeout</p></td>
+<td><p>optional; default: <code class="docutils literal notranslate"><span class="pre">0.0</span></code> = no timeout</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
-<td><p>optional for FTP, FTPS; default: yes</p></td>
+<td><p>optional for FTP, FTPS; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
-<td><p>optional for FTPS; default: yes</p></td>
+<td><p>optional for FTPS; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
 <td><p>‘RSA’ | ‘DSA’ |  ‘ECDSA’ | ‘Ed25519’</p></td>
-<td><p>required for SFTP if an authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the [sftp] section in the application configuration</p></td>
+<td><p>required for SFTP if an authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the <code class="docutils literal notranslate"><span class="pre">[sftp]</span></code> section in the application configuration</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>path to private key file</p></td>

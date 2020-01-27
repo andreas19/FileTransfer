@@ -12,21 +12,21 @@ or relative to the working directory of the *filetransfer* process.
 See: example :ref:`ref-configuration-files`
 
 
-.. attention::
-   Changes in version 0.6.0:
-    - **Host configuration** is now only allowed in
-      :ref:`host configuration files <ref-hosts-configuration>`.
-      ``hosts_cfg`` in the :ref:`application configuration <ref-app-configuration>`
-      and ``host_id`` in the sections [source] and [target] in
-      :ref:`job configurations <ref-job-configuration>` are not optional any more
-      when using FTP, FTPS or SFTP.
-    - **SFTP authentication keyfiles** in :ref:`host configurations <ref-hosts-configuration>`
-      must now have their type declared with ``key_type``
-   Changes in version 0.7.0:
-    - The **password** option in host configurations is now required except
-      for SFTP when an authentication key is used.
-    - Option ``name`` moved from section ``[notify]`` to the new section ``[job]``
-      in :ref:`job configuration <ref-job-configuration>`.
+.. versionchanged:: 0.6.0
+   - *Host configuration* is now only allowed in
+     :ref:`host configuration files <ref-hosts-configuration>`.
+     ``hosts_cfg`` in the :ref:`application configuration <ref-app-configuration>`
+     and ``host_id`` in the sections [source] and [target] in
+     :ref:`job configurations <ref-job-configuration>` are not optional any more
+     when using FTP, FTPS or SFTP.
+   - *SFTP authentication keyfiles* in :ref:`host configurations <ref-hosts-configuration>`
+     must now have their type declared with ``key_type``
+
+.. versionchanged:: 0.7.0
+   - The *password* option in host configurations is now required except
+     for SFTP when an authentication key is used.
+   - Option ``name`` moved from section ``[notify]`` to the new section ``[job]``
+     in :ref:`job configuration <ref-job-configuration>`.
 
 .. _ref-app-configuration:
 
@@ -41,7 +41,6 @@ environment variable (see: :doc:`usage`).
    :class: cfgtable
    :widths: auto
    :file: app_cfg.csv
-
 
 .. _ref-job-configuration:
 

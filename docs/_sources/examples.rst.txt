@@ -92,10 +92,11 @@ configure()
 
       try:
          ...  # e.g. prepare data that will be transferred
-      except (Terminated, Exception) as ex:
+      except BaseException as ex:
          exc = ex
 
-      run(exc)
+      _, code = run(exc)
+      raise SystemExit(code)
    except (Error, Terminated) as ex:
       raise SystemExit(ex.code)
    except Exception as ex:

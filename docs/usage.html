@@ -91,7 +91,7 @@
   <div class="section" id="using-filetransfer">
 <h1>Using filetransfer<a class="headerlink" href="#using-filetransfer" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage:
- filetransfer [-v] [-c CONFIG] JOBID
+ filetransfer [-v | -vv] [-c CONFIG] JOBID
  filetransfer -k [-H] [-p PORT] HOST FILE
  filetransfer -d [-p PORT] HOST FILE
  filetransfer -h | -V
@@ -107,20 +107,19 @@
  -H, --hash           hash hostnames
  -k, --hostkey        get hostkey from SFTP server
  -p, --port PORT      SFTP server port [default: 22]
- -v, --verbose        print stack trace for uncaught errors
+ -v, --verbose        once: print message
+                      twice: print stack trace
 
  -h, --help           show this help
  -V, --version        show the version
 
  return codes:
-  0   success
-  1   configuration error
-  2   connect error
-  3   transfer error
-  4   single instance error
-  7   command line error
-  8   terminated
-  9   another error
+  0  success
+  1  with errors
+  2  failure
+  3  config error
+  4  cmd line syntax error
+  5  terminated
 </pre></div>
 </div>
 <p>To start a job the JOBID (which is the <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">job configuration</span></a>
