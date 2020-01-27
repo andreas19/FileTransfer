@@ -70,8 +70,7 @@ def configure(cfg_file, job_id, *, activate_logging=False):
         log_enabled = app_cfg['log_handler'].enabled
         if log_enabled:
             logging.getLogger().setLevel(job_cfg['job', 'log_level'])
-            log_level = logging.getLogger().getEffectiveLevel()
-            app_cfg['log_handler'].purge(log_level)
+            app_cfg['log_handler'].purge(job_cfg['job', 'log_level'])
         if activate_logging:
             app_cfg['log_handler'].activate()
         job_cfg.add('job_id', job_id)

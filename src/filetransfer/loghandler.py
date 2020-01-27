@@ -1,10 +1,10 @@
 """Log handler."""
 
+import logging
 import sys
-from logging import Handler
 
 
-class LogHandler(Handler):
+class LogHandler(logging.Handler):
     """Log handler class."""
 
     terminator = '\n'
@@ -93,6 +93,10 @@ class LogHandler(Handler):
         """Purge records in buffer."""
         if not self._enabled or self._activated:
             return
+        if isinstance(level, str):
+            level = logging.getLevelName(level)
+            if isinstance(level, str):
+                raise ValueError(f'Unknown {level}')
         self.acquire()
         try:
             self._buffer = [record for record in self._buffer
