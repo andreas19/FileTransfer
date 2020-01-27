@@ -285,15 +285,17 @@ that must be called to run the actual file transfer.
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> takes one optional argument that must be an instance of a
 subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
 that will be reraised within <code class="docutils literal notranslate"><span class="pre">run()</span></code>. The intended use for this is
-to handle an exception from code between  <code class="docutils literal notranslate"><span class="pre">configure()</span></code> and <code class="docutils literal notranslate"><span class="pre">run()</span></code> in
-the usual way (logging and sending an email notification). The transfer
-itself will not be run. See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
+to handle an exception from code between  <code class="docutils literal notranslate"><span class="pre">configure()</span></code> and <code class="docutils literal notranslate"><span class="pre">run()</span></code>
+in the usual way (logging and sending an email notification). The
+transfer itself will not be run.
+See <a class="reference internal" href="examples.html#ref-configure-and-run"><span class="std std-ref">example</span></a>.</p>
 <dl class="function">
 <dt id="filetransfer.filetransfer.run">
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">exc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.filetransfer.run" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><em>BaseException</em></a>) – exception to be reraised within this function</p>
+<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><em>BaseException</em></a>) – exception to be reraised
+within this function</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>result and exit code (0: success, 1: with errors)</p>

@@ -33,13 +33,15 @@ def configure(cfg_file, job_id, **kwargs):
        ``run()`` takes one optional argument that must be an instance of a
        subclass of :exc:`BaseException`
        that will be reraised within ``run()``. The intended use for this is
-       to handle an exception from code between  ``configure()`` and ``run()`` in
-       the usual way (logging and sending an email notification). The transfer
-       itself will not be run. See :ref:`example <ref-configure-and-run>`.
+       to handle an exception from code between  ``configure()`` and ``run()``
+       in the usual way (logging and sending an email notification). The
+       transfer itself will not be run.
+       See :ref:`example <ref-configure-and-run>`.
 
        .. function:: filetransfer.run(exc=None)
-       
-          :param BaseException exc: exception to be reraised within this function
+
+          :param BaseException exc: exception to be reraised
+                                    within this function
           :returns: result and exit code (0: success, 1: with errors)
           :rtype: JobResult, int
           :raises ConnectError: see above
