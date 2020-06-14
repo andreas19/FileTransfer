@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-06-14 (0.10.1)**
  - Pin dependency ftputil to version 3.4 because of incompatible changes in version 4.0
 
 **2020-01-27 (0.10.0)**
