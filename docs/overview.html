@@ -1,17 +1,17 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
     <title>Overview &#8212; FileTransfer 0.10.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -77,7 +77,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -119,8 +119,8 @@ scheduler (e.g. <code class="docutils literal notranslate"><span class="pre">cro
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Python &gt;= 3.6</p></li>
-<li><p><a class="reference external" href="https://pypi.org/project/ftputil">ftputil</a> &gt;= 3.4</p></li>
-<li><p><a class="reference external" href="https://pypi.org/project/paramiko">paramiko</a> &gt;= 2.7.1</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/ftputil">ftputil</a> == 3.4</p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/paramiko">paramiko</a> ~= 2.7</p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/salmagundi">salmagundi</a> &gt;= 0.11.2</p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/importlib_resources">importlib_resources</a> &gt;= 1.0.2; python_version &lt; “3.7”</p></li>
 <li><p><a class="reference external" href="https://pypi.org/project/dataclasses">dataclasses</a> &gt;= 0.7; python_version &lt; “3.7”</p></li>
@@ -135,6 +135,11 @@ scheduler (e.g. <code class="docutils literal notranslate"><span class="pre">cro
 </div>
 <div class="section" id="history">
 <h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pin dependency ftputil to version 3.4 because of incompatible changes in version 4.0</p></li>
+</ul>
+</div></blockquote>
 <dl class="simple">
 <dt><strong>2020-01-27 (0.10.0)</strong></dt><dd><ul class="simple">
 <li><p>New: options log_level, retries and ready_file in job configuration</p></li>
@@ -224,7 +229,7 @@ scheduler (e.g. <code class="docutils literal notranslate"><span class="pre">cro
       &copy;2018-2020, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

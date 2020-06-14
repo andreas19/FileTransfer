@@ -5,7 +5,6 @@ import logging
 from contextlib import suppress
 
 import ftputil
-import ftputil.session
 
 from .base import BaseSource, BaseTarget
 from .exceptions import ConnectError

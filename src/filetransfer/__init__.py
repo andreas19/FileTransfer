@@ -1,6 +1,6 @@
 """Simple API to include ``filetransfer`` in a Python script.
 
-This module uses :mod:`loggers <logging>` with the name ``'filetransfer'``.
+This module uses a :mod:`logger <logging>` with the name ``'filetransfer'``.
 
 .. versionchanged:: 0.7.0
    There is no ``run()`` function anymore; the required function is

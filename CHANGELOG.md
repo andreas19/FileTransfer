@@ -1,6 +1,8 @@
 History
 -------
 
+ - Pin dependency ftputil to version 3.4 because of incompatible changes in version 4.0
+
 **2020-01-27 (0.10.0)**
  - New: options log_level, retries and ready_file in job configuration
  - New: single_instance in job configuration can be set to arbitrary lock name
