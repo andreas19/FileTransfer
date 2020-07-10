@@ -1,10 +1,10 @@
 """Main module.
 
 usage:
- $prog [-v | -vv] [-c CONFIG] JOBID
- $prog -k [-H] [-p PORT] HOST FILE
- $prog -d [-p PORT] HOST FILE
- $prog -h | -V
+ $name [-v | -vv] [-c CONFIG] JOBID
+ $name -k [-H] [-p PORT] HOST FILE
+ $name -d [-p PORT] HOST FILE
+ $name -h | -V
 
  JOBID   the job id
  HOST    server name or IP
@@ -52,7 +52,7 @@ def main():
     args = docopt_helper(__doc__.split('\n', 2)[2],
                          version_str=f'{_PROGNAME} {__version__}',
                          err_code=ExitCodes.CMDLINE.code,
-                         prog=_PROGNAME.lower(),
+                         name=_PROGNAME.lower(),
                          envvar=_ENV_VAR_NAME,
                          sshport=SSH_PORT,
                          exit_codes=ExitCodes.as_doc())
