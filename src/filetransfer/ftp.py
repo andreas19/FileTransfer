@@ -3,6 +3,7 @@
 import ftplib
 import logging
 from contextlib import suppress
+from functools import partial
 
 import ftputil
 
@@ -10,6 +11,7 @@ from .base import BaseSource, BaseTarget
 from .exceptions import ConnectError
 
 _logger = logging.getLogger(__name__)
+_ftp_util_version_4 = ftputil.__version__.startswith('4.')
 
 
 class _Ftp:
@@ -41,7 +43,9 @@ class _Ftp:
                     if tls and encrypt_data:
                         self.prot_p()
 
-            return ftputil.FTPHost(session_factory=SessFac)
+            ftp_host = ftputil.FTPHost(session_factory=SessFac)
+            ftp_host.use_list_a_option = self._host_cfg[host_id, 'dir_a_option']
+            return ftp_host
         except (OSError, ftputil.error.FTPError) as ex:
             raise ConnectError(f'Connection to server "{host}:{port}"'
                                f' failed: {ex}')
@@ -79,5 +83,8 @@ class FTPTarget(_Ftp, BaseTarget):
         self._path_base = self._conn.path.basename
         self._path_dir = self._conn.path.dirname
         self._path_exists = self._conn.path.exists
-        self._makedirs = self._conn.makedirs
+        if _ftp_util_version_4:
+            self._makedirs = partial(self._conn.makedirs, exist_ok=True)
+        else:
+            self._makedirs = self._conn.makedirs
         self._rename = self._conn.rename
