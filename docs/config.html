@@ -438,25 +438,29 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">passive_mode</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
-<td><p>optional for FTP, FTPS; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code></p></td>
+<td><p>optional for FTP/S; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">encrypt_data</span></code></p></td>
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>optional for FTPS; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dir_a_option</span></code></p></td>
+<td><p>‘yes’ | ‘no’</p></td>
+<td><p>optional for FTP/S; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code>; sending   the <code class="docutils literal notranslate"><span class="pre">-a</span></code> option with the <code class="docutils literal notranslate"><span class="pre">DIR</span></code> command (showing “hidden” files) can be disabled if the server does not understand it</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
 <td><p>‘RSA’ | ‘DSA’ |  ‘ECDSA’ | ‘Ed25519’</p></td>
 <td><p>required for SFTP if an authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the <code class="docutils literal notranslate"><span class="pre">[sftp]</span></code> section in the application configuration</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>path to private key file</p></td>
 <td><p>optional for SFTP</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>optional for SFTP (not used if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set)</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
 <td><p>path to known_hosts file</p></td>
 <td><p>required for SFTP if not set in the application configuration</p></td>
 </tr>

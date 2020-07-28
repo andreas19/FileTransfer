@@ -1,6 +1,9 @@
 History
 -------
 
+ - New: option dir_a_option in host configuration
+ - Now works with ftputil version 4
+
 **2020-06-14 (0.10.1)**
  - Pin dependency ftputil to version 3.4 because of incompatible changes in version 4.0
 
