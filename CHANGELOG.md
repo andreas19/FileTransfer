@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-07-28 (0.10.2)**
  - New: option dir_a_option in host configuration
  - Now works with ftputil version 4
 
