@@ -59,7 +59,7 @@ class FTPSource(_Ftp, BaseSource):
     """Source implementation for FTP and FTPS.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     :param bool tls: if True FTPS will be used
     """
 
@@ -74,7 +74,7 @@ class FTPTarget(_Ftp, BaseTarget):
     """Target implementation for FTP and FTPS.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     :param bool tls: if True FTPS will be used
     """
 

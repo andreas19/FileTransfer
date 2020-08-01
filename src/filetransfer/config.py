@@ -9,7 +9,8 @@ from email.utils import parseaddr
 from pathlib import Path
 from urllib.parse import urlunsplit
 
-from salmagundi import config, strings
+import easimpconf
+from salmagundi import strings
 
 from . import const
 from .exceptions import ConfigError
@@ -23,7 +24,7 @@ _SFTP_KEY_TYPES = {
     'ECDSA': ('key_ecdsa_file', 'key_ecdsa_pass'),
     'ED25519': ('key_ed25519_file', 'key_ed25519_pass')
 }
-_CONFIG_ERRORS = (FileNotFoundError, configparser.Error, config.Error)
+_CONFIG_ERRORS = (FileNotFoundError, configparser.Error, easimpconf.Error)
 
 _logger = logging.getLogger(__name__)
 
@@ -35,7 +36,7 @@ def configure(cfg_file, job_id, *, activate_logging=False):
     :type cfg_file: term:`path-like object`
     :param str job_id: the job id
     :returns: application and job configurations
-    :rtype: (salmagundi.config.Config, salmagundi.config.Config)
+    :rtype: (easimpconf.Config, easimpconf.Config)
     :raises ConfigError: if there is a problem with the configuration
     """
     mail_config_ok = False
@@ -47,9 +48,10 @@ def configure(cfg_file, job_id, *, activate_logging=False):
         cfg_file = Path(cfg_file).expanduser()
         app_config_spec = _load_spec('app_config_spec.ini')
         try:
-            app_cfg = config.configure(cfg_file, io.StringIO(app_config_spec),
-                                       create_properties=False,
-                                       converters=_CONVS)
+            app_cfg = easimpconf.configure(cfg_file,
+                                           io.StringIO(app_config_spec),
+                                           create_properties=False,
+                                           converters=_CONVS)
         except _CONFIG_ERRORS as ex:
             raise ConfigError(f'in app config: {ex}')
         _configure_logging(app_cfg, job_id)
@@ -103,9 +105,9 @@ def configure(cfg_file, job_id, *, activate_logging=False):
 def get_job_cfg(conf, app_cfg=None):
     """Return job configuration object."""
     job_config_spec = _load_spec('job_config_spec.ini')
-    job_cfg = config.configure(conf, io.StringIO(job_config_spec),
-                               create_properties=False, converters=_CONVS)
-    if job_cfg['job', 'collect_data'] is config.NOTFOUND and app_cfg:
+    job_cfg = easimpconf.configure(conf, io.StringIO(job_config_spec),
+                                   create_properties=False, converters=_CONVS)
+    if job_cfg['job', 'collect_data'] is easimpconf.NOTFOUND and app_cfg:
         job_cfg['job', 'collect_data'] = app_cfg['global', 'collect_data']
     if job_cfg['job', 'single_instance']:
         if not app_cfg['global', 'locks_dir']:
@@ -113,10 +115,10 @@ def get_job_cfg(conf, app_cfg=None):
                               ' locks_dir in app config')
         app_cfg['global', 'locks_dir'].mkdir(parents=True, exist_ok=True)
     if app_cfg:
-        if job_cfg['job', 'log_level'] is config.NOTFOUND:
+        if job_cfg['job', 'log_level'] is easimpconf.NOTFOUND:
             job_cfg['job', 'log_level'] = app_cfg['logging', 'log_level']
         if (app_cfg['logging', 'disabled'] and
-                job_cfg['job', 'log_disabled'] is config.NOTFOUND or
+                job_cfg['job', 'log_disabled'] is easimpconf.NOTFOUND or
                 job_cfg['job', 'log_disabled']):
             app_cfg['log_handler'].disable()
     return job_cfg
@@ -134,9 +136,9 @@ def _debug_config(title, cfg):
 
 
 def _check_mail_config(app_cfg):
-    if any(t[2] is not config.NOTFOUND for t in app_cfg if t[0] == 'mail'):
+    if any(t[2] is not easimpconf.NOTFOUND for t in app_cfg if t[0] == 'mail'):
         if (app_cfg['mail', 'security'] is None or
-            not all(t[2] is not config.NOTFOUND
+            not all(t[2] is not easimpconf.NOTFOUND
                     for t in app_cfg if t[0] == 'mail' and t[1] != 'security')):
             raise ConfigError('in app config: incomplete or invalid mail'
                               ' server configuration')
@@ -190,13 +192,13 @@ def _load_spec(specfile, host_id=None):
 def get_host_cfg(conf, host_id, app_cfg=None):
     """Return host configuration object."""
     host_spec = _load_spec('host_config_spec.ini', host_id)
-    host_cfg = config.configure(conf, io.StringIO(host_spec),
-                                create_properties=False, converters=_CONVS)
+    host_cfg = easimpconf.configure(conf, io.StringIO(host_spec),
+                                    create_properties=False, converters=_CONVS)
     _set_default_port(host_cfg, (host_id, 'host'),
                       host_cfg[host_id, 'type'])
     if host_cfg[host_id, 'type'] == 'SFTP':
         _sftp_settings(app_cfg, host_cfg, host_id)
-    elif host_cfg[host_id, 'password'] is config.NOTFOUND:
+    elif host_cfg[host_id, 'password'] is easimpconf.NOTFOUND:
         raise ConfigError(f'in host config {host_id!r}: password required')
     host_cfg.add('host_id', host_id)
     return host_cfg
@@ -250,9 +252,9 @@ def _sftp_settings(app_cfg, host_cfg, host_id):
         else:
             raise ConfigError(f'in host config {host_id!r}: no key_file'
                               ' authentication key')
-    if host_cfg[host_id, 'key_pass'] == config.NOTFOUND:
+    if host_cfg[host_id, 'key_pass'] == easimpconf.NOTFOUND:
         host_cfg[host_id, 'key_pass'] = None
-    if not key_type and host_cfg[host_id, 'password'] is config.NOTFOUND:
+    if not key_type and host_cfg[host_id, 'password'] is easimpconf.NOTFOUND:
         raise ConfigError(f'in host config {host_id!r}: password or'
                           f' for {key_type!r} authentication key required')
 
@@ -293,20 +295,21 @@ def _boolstr(s):
 _CONVS = {
     'path': Path,
     'abspath': lambda s: Path(s).resolve(),
-    'loglevel': config.convert_loglevel('INFO'),
+    'loglevel': easimpconf.convert_loglevel('INFO'),
     'hostport': lambda s: strings.split_host_port(s, 0),
-    'secopts': config.convert_choice(('STARTTLS', 'TLS'), converter=str.upper),
+    'secopts': easimpconf.convert_choice(('STARTTLS', 'TLS'),
+                                         converter=str.upper),
     'strtuple': strings.str2tuple,
     'addrs': lambda s: set(parseaddr(x) for x in strings.str2tuple(s) if x),
     'tempopts': _tempopts,
     'boolstr': _boolstr,
-    'typeopts': config.convert_choice(('FTP', 'FTPS', 'SFTP'),
-                                      converter=str.upper,
-                                      default=ValueError),
-    'posfloat': config.convert_predicate(lambda x: x > 0.0, converter=float,
-                                         default=0.0),
-    'posint': config.convert_predicate(lambda x: x > 0, converter=int,
-                                       default=0),
-    'keytype': config.convert_choice(_SFTP_KEY_TYPES, converter=str.upper,
-                                     default=ValueError),
+    'typeopts': easimpconf.convert_choice(('FTP', 'FTPS', 'SFTP'),
+                                          converter=str.upper,
+                                          default=ValueError),
+    'posfloat': easimpconf.convert_predicate(lambda x: x > 0.0, converter=float,
+                                             default=0.0),
+    'posint': easimpconf.convert_predicate(lambda x: x > 0, converter=int,
+                                           default=0),
+    'keytype': easimpconf.convert_choice(_SFTP_KEY_TYPES, converter=str.upper,
+                                         default=ValueError),
 }

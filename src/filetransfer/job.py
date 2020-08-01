@@ -42,9 +42,9 @@ def run(app_cfg, job_cfg, exc=None):
     """Run a job.
 
     :param app_cfg: the application configuration
-    :type app_cfg: salmagundi.config.Config
+    :type app_cfg: easimpconf.Config
     :param job_cfg: the job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     :param Exception exc: Exception to be reraised
     :returns: job result and exit code (0: success, 1: with errors)
     :rtype: JobResult, bool
@@ -161,7 +161,7 @@ def transfer(job_cfg, files):
     ``files``: path -> duration|(True|False, exc) -- True: src, False: tgt
 
     :param job_cfg: the job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     :param dict files: files
     :return: job result
     :rtype: JobResult

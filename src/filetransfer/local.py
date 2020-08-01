@@ -24,7 +24,7 @@ class LocalSource(_Local, BaseSource):
     """Source implementation for local filesystem.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):
@@ -38,7 +38,7 @@ class LocalTarget(_Local, BaseTarget):
     """Target implementation for local filesystem.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):

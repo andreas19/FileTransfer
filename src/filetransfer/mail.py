@@ -170,9 +170,9 @@ def send(app_cfg, job_cfg, endtime, exit_code, result, job_id=None):
     """Send email.
 
     :param app_cfg: application configuration
-    :type app_cfg: salmagundi.config.Config
+    :type app_cfg: easimpconf.Config
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     :param datetime.datetime endtime: end time of job
     :param exit_code: error
     :type exit_code: filetransfer.const.ExitCodes

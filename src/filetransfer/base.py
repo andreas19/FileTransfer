@@ -42,7 +42,7 @@ class BaseSource(Endpoint):
         self._isfile
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):
@@ -125,7 +125,7 @@ class BaseTarget(Endpoint):
         self._rename
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):

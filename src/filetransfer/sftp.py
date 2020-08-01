@@ -75,7 +75,7 @@ class SFTPSource(_Sftp, BaseSource):
     """Source implementation for SFTP.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):
@@ -99,7 +99,7 @@ class SFTPTarget(_Sftp, BaseTarget):
     """Target implementation for SFTP.
 
     :param job_cfg: job configuration
-    :type job_cfg: salmagundi.config.Config
+    :type job_cfg: easimpconf.Config
     """
 
     def __init__(self, job_cfg):
