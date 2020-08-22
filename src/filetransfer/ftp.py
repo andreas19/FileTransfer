@@ -2,6 +2,8 @@
 
 import ftplib
 import logging
+import threading
+import time
 from contextlib import suppress
 from functools import partial
 
@@ -12,6 +14,15 @@ from .exceptions import ConnectError
 
 _logger = logging.getLogger(__name__)
 _ftp_util_version_4 = ftputil.__version__.startswith('4.')
+
+
+def _keepalive(ftp_host, interval):
+    while True:
+        time.sleep(interval)
+        try:
+            ftp_host.keep_alive()
+        except Exception:
+            break
 
 
 class _Ftp:
@@ -45,6 +56,11 @@ class _Ftp:
 
             ftp_host = ftputil.FTPHost(session_factory=SessFac)
             ftp_host.use_list_a_option = self._host_cfg[host_id, 'dir_a_option']
+            if self._host_cfg[host_id, 'keep_alive']:
+                threading.Thread(target=_keepalive,
+                                 args=(ftp_host,
+                                       self._host_cfg[host_id, 'keep_alive']),
+                                 daemon=True).start()
             return ftp_host
         except (OSError, ftputil.error.FTPError) as ex:
             raise ConnectError(f'Connection to server "{host}:{port}"'

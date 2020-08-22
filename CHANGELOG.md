@@ -1,6 +1,9 @@
 History
 -------
 
+ - Replace salmagundi.config with easimpconf
+ - New: option keep_alive in host configuration
+
 **2020-07-28 (0.10.2)**
  - New: option dir_a_option in host configuration
  - Now works with ftputil version 4

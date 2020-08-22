@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Configuration &#8212; FileTransfer 0.10.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -448,19 +449,23 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
 <td><p>‘yes’ | ‘no’</p></td>
 <td><p>optional for FTP/S; default: <code class="docutils literal notranslate"><span class="pre">yes</span></code>; sending   the <code class="docutils literal notranslate"><span class="pre">-a</span></code> option with the <code class="docutils literal notranslate"><span class="pre">DIR</span></code> command (showing “hidden” files) can be disabled if the server does not understand it</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">keep_alive</span></code></p></td>
+<td><p>interval in seconds</p></td>
+<td><p>optional for FTP/S; default: <code class="docutils literal notranslate"><span class="pre">60.0</span></code> (<code class="docutils literal notranslate"><span class="pre">0.0</span></code> = no keep alive); keeps the control connection alive during long file transfers</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_type</span></code></p></td>
 <td><p>‘RSA’ | ‘DSA’ |  ‘ECDSA’ | ‘Ed25519’</p></td>
 <td><p>required for SFTP if an authentication key is used; if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set this will refer to the keyfile of the given type in the <code class="docutils literal notranslate"><span class="pre">[sftp]</span></code> section in the application configuration</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>path to private key file</p></td>
 <td><p>optional for SFTP</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">key_pass</span></code></p></td>
 <td><p>password for <code class="docutils literal notranslate"><span class="pre">key_file</span></code></p></td>
 <td><p>optional for SFTP (not used if <code class="docutils literal notranslate"><span class="pre">key_file</span></code> is not set)</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">known_hosts</span></code></p></td>
 <td><p>path to known_hosts file</p></td>
 <td><p>required for SFTP if not set in the application configuration</p></td>
 </tr>
@@ -480,7 +485,7 @@ a <a class="reference internal" href="#ref-job-configuration"><span class="std s
       &copy;2018-2020, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
