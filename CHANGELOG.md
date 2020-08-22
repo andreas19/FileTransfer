@@ -1,6 +1,7 @@
 History
 -------
 
+**2020-08-22 (0.10.3)**
  - Replace salmagundi.config with easimpconf
  - New: option keep_alive in host configuration
 
