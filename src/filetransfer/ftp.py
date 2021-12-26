@@ -13,7 +13,6 @@ from .base import BaseSource, BaseTarget
 from .exceptions import ConnectError
 
 _logger = logging.getLogger(__name__)
-_ftp_util_version_4 = ftputil.__version__.startswith('4.')
 
 
 def _keepalive(ftp_host, interval):
@@ -99,8 +98,5 @@ class FTPTarget(_Ftp, BaseTarget):
         self._path_base = self._conn.path.basename
         self._path_dir = self._conn.path.dirname
         self._path_exists = self._conn.path.exists
-        if _ftp_util_version_4:
-            self._makedirs = partial(self._conn.makedirs, exist_ok=True)
-        else:
-            self._makedirs = self._conn.makedirs
+        self._makedirs = partial(self._conn.makedirs, exist_ok=True)
         self._rename = self._conn.rename

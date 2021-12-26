@@ -6,13 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Emails customization &#8212; FileTransfer 0.10.3 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -145,8 +144,8 @@ Files: (= is transferred, &gt; is source error, &lt; is target error)
 </div>
 <p>Except <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> all entries must be on one line. <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> must be the last entry.
 Entrynames are not case-sensitive.</p>
-<p>The datetime format is explained <a class="reference external" href="https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior" title="(in Python v3.8)"><span class="xref std std-ref">here</span></a>
-and the duration format <a class="reference external" href="https://andreas19.github.io/salmagundi/mod_strings.html#ref-timedelta-format-specifiers" title="(in Salmagundi v0.15.0)"><span class="xref std std-ref">here</span></a>.</p>
+<p>The datetime format is explained <a class="reference external" href="https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior" title="(in Python v3.10)"><span class="xref std std-ref">here</span></a>
+and the duration format <a class="reference external" href="https://andreas19.github.io/salmagundi/mod_strings.html#ref-timedelta-format-specifiers" title="(in Salmagundi v0.17.1)"><span class="xref std std-ref">here</span></a>.</p>
 <p>One of the <code class="docutils literal notranslate"><span class="pre">STAT_*</span></code> strings is substituted for <code class="docutils literal notranslate"><span class="pre">$statstr</span></code> and one of the
 <code class="docutils literal notranslate"><span class="pre">STATUS_*</span></code> strings for <code class="docutils literal notranslate"><span class="pre">$status</span></code> depending on the result status of the job.</p>
 <p>Another placeholder is <code class="docutils literal notranslate"><span class="pre">$stacktrace</span></code> (not used in the default configuration). It
@@ -154,7 +153,7 @@ prints the stack trace if an exception occured.</p>
 <p>The values for substituting <code class="docutils literal notranslate"><span class="pre">$files_cnt</span></code>, <code class="docutils literal notranslate"><span class="pre">$src_error_cnt</span></code>,
 <code class="docutils literal notranslate"><span class="pre">$tgt_error_cnt</span></code> and <code class="docutils literal notranslate"><span class="pre">$filelist</span></code> are taken from the (possibly incomplete)
 <a class="reference internal" href="api.html#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">job</span> <span class="pre">result</span></code></a>.</p>
-<p>The other <a class="reference external" href="https://docs.python.org/3/library/string.html#template-strings" title="(in Python v3.8)"><span class="xref std std-ref">template placeholders</span></a> should
+<p>The other <a class="reference external" href="https://docs.python.org/3/library/string.html#template-strings" title="(in Python v3.10)"><span class="xref std std-ref">template placeholders</span></a> should
 be self explaining.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.10.0: </span>Removed: ERR_*, RESULT, $errstr, $result; Added: STAT_*, $statstr, $errormsg, $stacktrace</p>
@@ -169,10 +168,10 @@ be self explaining.</p>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018-2020, Andreas Suhre.
+      &copy;2018-2021, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>

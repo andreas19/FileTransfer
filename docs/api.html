@@ -6,13 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>API Reference &#8212; FileTransfer 0.10.3 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -92,7 +91,7 @@
   <div class="section" id="module-filetransfer">
 <span id="api-reference"></span><h1>API Reference<a class="headerlink" href="#module-filetransfer" title="Permalink to this headline">¶</a></h1>
 <p>Simple API to include <code class="docutils literal notranslate"><span class="pre">filetransfer</span></code> in a Python script.</p>
-<p>This module uses a <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logger</span></code></a> with the name <code class="docutils literal notranslate"><span class="pre">'filetransfer'</span></code>.</p>
+<p>This module uses a <a class="reference external" href="https://docs.python.org/3/library/logging.html#module-logging" title="(in Python v3.10)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logger</span></code></a> with the name <code class="docutils literal notranslate"><span class="pre">'filetransfer'</span></code>.</p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.7.0: </span>There is no <code class="docutils literal notranslate"><span class="pre">run()</span></code> function anymore; the required function is
 returned by <a class="reference internal" href="#filetransfer.configure" title="filetransfer.configure"><code class="xref py py-func docutils literal notranslate"><span class="pre">configure()</span></code></a></p>
@@ -184,7 +183,7 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <dt id="filetransfer.Terminated">
 <em class="property">exception </em><code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">Terminated</code><a class="headerlink" href="#filetransfer.Terminated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Raised when terminated with SIGTERM.</p>
-<p>This is a subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>.</p>
+<p>This is a subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>.</p>
 <p>See: <a class="reference internal" href="#filetransfer.set_sigterm_handler" title="filetransfer.set_sigterm_handler"><code class="xref py py-func docutils literal notranslate"><span class="pre">filetransfer.set_sigterm_handler()</span></code></a></p>
 <div class="versionchanged">
 <p><span class="versionmodified changed">Changed in version 0.10.0: </span><code class="docutils literal notranslate"><span class="pre">code</span></code> 8 -&gt; 5</p>
@@ -265,10 +264,10 @@ examples <a class="reference internal" href="examples.html#ref-configure-and-run
 <a class="reference internal" href="usage.html"><span class="doc">filetransfer script</span></a> is run. It raises
 <a class="reference internal" href="#filetransfer.Terminated" title="filetransfer.Terminated"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Terminated</span></code></a> on receiving the SIGTERM signal. This
 function can only be run from the main thread
-(see: <a class="reference external" href="https://docs.python.org/3/library/signal.html#signals-and-threads" title="(in Python v3.8)"><span>Signals and threads</span></a> and <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">signal.signal()</span></code></a>).</p>
+(see: <a class="reference external" href="https://docs.python.org/3/library/signal.html#signals-and-threads" title="(in Python v3.10)"><span>Signals and threads</span></a> and <a class="reference external" href="https://docs.python.org/3/library/signal.html#signal.signal" title="(in Python v3.10)"><code class="xref py py-func docutils literal notranslate"><span class="pre">signal.signal()</span></code></a>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><strong>ValueError</strong></a> – if not called from the main thread</p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if not called from the main thread</p>
 </dd>
 </dl>
 <div class="versionadded">
@@ -284,7 +283,7 @@ function can only be run from the main thread
 <p>This function returns a function (called <code class="docutils literal notranslate"><span class="pre">run()</span></code> from here on)
 that must be called to run the actual file transfer.
 <code class="docutils literal notranslate"><span class="pre">run()</span></code> takes one optional argument that must be an instance of a
-subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
+subclass of <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.10)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BaseException</span></code></a>
 that will be reraised within <code class="docutils literal notranslate"><span class="pre">run()</span></code>. The intended use for this is
 to handle an exception from code between  <code class="docutils literal notranslate"><span class="pre">configure()</span></code> and <code class="docutils literal notranslate"><span class="pre">run()</span></code>
 in the usual way (logging and sending an email notification). The
@@ -295,14 +294,14 @@ See <a class="reference internal" href="examples.html#ref-configure-and-run"><sp
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exc</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.filetransfer.run" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.8)"><em>BaseException</em></a>) – exception to be reraised
+<dd class="field-odd"><p><strong>exc</strong> (<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#BaseException" title="(in Python v3.10)"><em>BaseException</em></a>) – exception to be reraised
 within this function</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>result and exit code (0: success, 1: with errors)</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult">JobResult</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult">JobResult</a>, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><ul class="simple">
@@ -329,16 +328,16 @@ start with <code class="docutils literal notranslate"><span class="pre">x:</span
 files the sections will be merged with the keys in the job
 configuration file taking precedence. The prefix <code class="docutils literal notranslate"><span class="pre">x:</span></code> will
 be stripped from the section names before putting them in a newly
-created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object that will be returned.
+created <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object that will be returned.
 See <a class="reference internal" href="examples.html#ref-extra-config"><span class="std std-ref">example</span></a>.</p>
 <p>The logging configuration from <code class="docutils literal notranslate"><span class="pre">cfg_file</span></code> will only be used if
 logging was not configured before the call to this function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>cfg_file</strong> (<a class="reference external" href="https://docs.python.org/3/glossary.html#term-path-like-object" title="(in Python v3.8)"><span class="xref std std-term">path-like object</span></a>) – the application configuration file</p></li>
-<li><p><strong>job_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – the Job-ID</p></li>
-<li><p><strong>kwargs</strong> – <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> arguments for
+<li><p><strong>cfg_file</strong> (<a class="reference external" href="https://docs.python.org/3/glossary.html#term-path-like-object" title="(in Python v3.10)"><span class="xref std std-term">path-like object</span></a>) – the application configuration file</p></li>
+<li><p><strong>job_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – the Job-ID</p></li>
+<li><p><strong>kwargs</strong> – <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> arguments for
 the extra configuration</p></li>
 </ul>
 </dd>
@@ -346,7 +345,7 @@ the extra configuration</p></li>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">run()</span></code> function and extra configuration</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>function(), <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)">configparser.ConfigParser</a></p>
+<dd class="field-odd"><p>function(), <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)">configparser.ConfigParser</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
 <dd class="field-even"><p><a class="reference internal" href="#filetransfer.ConfigError" title="filetransfer.ConfigError"><strong>filetransfer.ConfigError</strong></a> – if there is a problem with
@@ -365,12 +364,12 @@ the configuration</p>
 <dt id="filetransfer.transfer">
 <code class="sig-prename descclassname">filetransfer.</code><code class="sig-name descname">transfer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src_cfg</span></em>, <em class="sig-param"><span class="n">tgt_cfg</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">collect_data</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#filetransfer.transfer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transfer files.</p>
-<p>The first parameter (<code class="docutils literal notranslate"><span class="pre">src_cfg</span></code>) may be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or a
-<a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object.</p>
-<p>If it is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> the argument <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> must also be a
+<p>The first parameter (<code class="docutils literal notranslate"><span class="pre">src_cfg</span></code>) may be a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> or a
+<a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object.</p>
+<p>If it is a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> the argument <code class="docutils literal notranslate"><span class="pre">tgt_cfg</span></code> must also be a
 dict and they must represent valid <code class="docutils literal notranslate"><span class="pre">[source]</span></code> and <code class="docutils literal notranslate"><span class="pre">[target]</span></code>
 sections of a <a class="reference internal" href="config.html#ref-job-configuration"><span class="std std-ref">Job Configuration</span></a>.</p>
-<p>Else the <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object must contain
+<p>Else the <a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> object must contain
 those sections and the second parameter can be omitted because
 it will be ignored.</p>
 <p>When using FTP, FTPS or SFTP the <code class="docutils literal notranslate"><span class="pre">host_id</span></code> option must be omitted
@@ -380,9 +379,9 @@ above configuration objects.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.8)"><em>configparser.ConfigParser</em></a>) – the source or job configuration</p></li>
-<li><p><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – the target configuration</p></li>
-<li><p><strong>collect_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the file list for the
+<li><p><strong>src_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/configparser.html#configparser.ConfigParser" title="(in Python v3.10)"><em>configparser.ConfigParser</em></a>) – the source or job configuration</p></li>
+<li><p><strong>tgt_cfg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a>) – the target configuration</p></li>
+<li><p><strong>collect_data</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> the file list for the
 <a class="reference internal" href="#filetransfer.JobResult" title="filetransfer.JobResult"><code class="xref py py-class docutils literal notranslate"><span class="pre">JobResult</span></code></a> will be created</p></li>
 </ul>
 </dd>
@@ -420,10 +419,10 @@ during transfer</p></li>
     <div class="clearer"></div>
   </div>
     <div class="footer">
-      &copy;2018-2020, Andreas Suhre.
+      &copy;2018-2021, Andreas Suhre.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.0</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.4.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
     </div>
